@@ -30,10 +30,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getquerydata/{solutionId}")]
-        public async Task<IActionResult> GetQueryData([FromRoute] int solutionId)
+        public async Task<IActionResult> GetQueryData([FromRoute] int exerciseId, [FromRoute] int solutionId)
         {
-            var result = await _solutionService.SendSolutionQuery(solutionId);
+            var result = await _solutionService.SendSolutionQueryAsync(solutionId);
             return Ok(new Result<Dictionary<int,object>>(result, "Pomyślnie zwrócono wyniki zapytania do bazy"));
         }
+
+        [HttpGet("compare/{solutionId}")]
+        public async Task<IActionResult> Compare([FromRoute] int solutionId, [FromRoute] int exerciseId)
+        {
+            var result = await _solutionService.CompareAsync(solutionId, exerciseId);
+            return Ok(new Result<bool>(result, "Pomyślnie porównano rozwiązania"));
+        }
+
     }
 }

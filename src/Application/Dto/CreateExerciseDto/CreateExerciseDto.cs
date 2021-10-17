@@ -15,7 +15,7 @@ namespace Application.Dto.CreateExerciseDto
         public string Description { get; set; }
         public int MaxPoints { get; set; }
         public string Database { get; set; }
-        public string Answer { get; set; }
+        public string ValidAnswer { get; set; }
 
         public void Mapping(Profile profile)
         {

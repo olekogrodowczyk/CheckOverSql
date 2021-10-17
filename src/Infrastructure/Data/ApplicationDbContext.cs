@@ -26,6 +26,7 @@ namespace Infrastructure.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<Database> Databases { get; set; }
         public DbSet<Solution> Solutions { get; set; }
+        public DbSet<Comparison> Comparisons { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -127,6 +128,18 @@ namespace Infrastructure.Data
                 .HasOne<User>(x => x.Creator)
                 .WithMany(x => x.Solutions)
                 .HasForeignKey(x => x.CreatorId);
+
+            modelBuilder.Entity<Comparison>()
+                .HasOne<Solution>(x => x.Solution)
+                .WithMany(x => x.Comparisons)
+                .HasForeignKey(x => x.SolutionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Comparison>()
+                .HasOne<Exercise>(x => x.Exercise)
+                .WithMany(x => x.Comparisons)
+                .HasForeignKey(x => x.ExerciseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             #endregion

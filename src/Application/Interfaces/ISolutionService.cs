@@ -9,7 +9,8 @@ namespace Application.Interfaces
 {
     public interface ISolutionService
     {
-        Task<int> CreateSolutionAsync(CreateSolutionDto model, int ExerciseId);
-        Task<Dictionary<int, object>> SendSolutionQuery(int solutionId);
+        Task<bool> CompareAsync(int solutionId, int exerciseId);
+        Task<int> CreateSolutionAsync(CreateSolutionDto model, int exerciseId);
+        Task<Dictionary<int, object>> SendSolutionQueryAsync(int solutionId);
     }
 }

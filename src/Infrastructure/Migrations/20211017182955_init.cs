@@ -383,6 +383,37 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Comparisons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Solution1Id = table.Column<int>(type: "int", nullable: false),
+                    Solution2Id = table.Column<int>(type: "int", nullable: false),
+                    Result = table.Column<bool>(type: "bit", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comparisons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comparisons_Solutions_Solution1Id",
+                        column: x => x.Solution1Id,
+                        principalTable: "Solutions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comparisons_Solutions_Solution2Id",
+                        column: x => x.Solution2Id,
+                        principalTable: "Solutions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Assignments_GroupId",
                 table: "Assignments",
@@ -408,6 +439,16 @@ namespace Infrastructure.Migrations
                 table: "Checkings",
                 column: "SolvingId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comparisons_Solution1Id",
+                table: "Comparisons",
+                column: "Solution1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comparisons_Solution2Id",
+                table: "Comparisons",
+                column: "Solution2Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exercises_CreatorId",
@@ -491,6 +532,9 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Checkings");
+
+            migrationBuilder.DropTable(
+                name: "Comparisons");
 
             migrationBuilder.DropTable(
                 name: "Invitations");

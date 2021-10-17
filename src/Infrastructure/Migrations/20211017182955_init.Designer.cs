@@ -4,14 +4,16 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211017182955_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,9 +114,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ExerciseId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -124,14 +123,17 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("Result")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SolutionId")
+                    b.Property<int>("Solution1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Solution2Id")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExerciseId");
+                    b.HasIndex("Solution1Id");
 
-                    b.HasIndex("SolutionId");
+                    b.HasIndex("Solution2Id");
 
                     b.ToTable("Comparisons");
                 });
@@ -603,21 +605,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Comparison", b =>
                 {
-                    b.HasOne("Domain.Entities.Exercise", "Exercise")
+                    b.HasOne("Domain.Entities.Solution", "Solution1")
                         .WithMany("Comparisons")
-                        .HasForeignKey("ExerciseId")
+                        .HasForeignKey("Solution1Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Solution", "Solution")
-                        .WithMany("Comparisons")
-                        .HasForeignKey("SolutionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("Domain.Entities.Solution", "Solution2")
+                        .WithMany()
+                        .HasForeignKey("Solution2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Exercise");
+                    b.Navigation("Solution1");
 
-                    b.Navigation("Solution");
+                    b.Navigation("Solution2");
                 });
 
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
@@ -767,8 +769,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
-                    b.Navigation("Comparisons");
-
                     b.Navigation("Solutions");
 
                     b.Navigation("Solvings");

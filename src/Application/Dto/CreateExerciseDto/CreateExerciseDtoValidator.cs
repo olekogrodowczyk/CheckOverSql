@@ -39,7 +39,7 @@ namespace Application.Dto.CreateExerciseDto
                 .GreaterThanOrEqualTo(1).WithMessage("Minimalna liczba maksymalnej ilości punktów zadania to 1")
                 .LessThanOrEqualTo(100).WithMessage("Maksymalna liczba maksymalnej ilości punktów zadania to 100");
 
-            RuleFor(x => x.Answer)
+            RuleFor(x => x.ValidAnswer)
                 .MinimumLength(10).WithMessage("Minimalna długość odpowiedzi do zadania to 5")
                 .MaximumLength(200).WithMessage("Maksymalna długość odpowiedzi do zadania to 500");
 

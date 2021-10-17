@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211017005902_init")]
-    partial class init
+    [Migration("20211017191616_comparisonModified")]
+    partial class comparisonModified
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -99,6 +99,43 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Checkings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Comparison", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Result")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SolutionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("SolutionId");
+
+                    b.ToTable("Comparisons");
                 });
 
             modelBuilder.Entity("Domain.Entities.Database", b =>
@@ -566,6 +603,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("Solving");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Comparison", b =>
+                {
+                    b.HasOne("Domain.Entities.Exercise", "Exercise")
+                        .WithMany("Comparisons")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Solution", "Solution")
+                        .WithMany("Comparisons")
+                        .HasForeignKey("SolutionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("Solution");
+                });
+
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Creator")
@@ -713,6 +769,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
+                    b.Navigation("Comparisons");
+
                     b.Navigation("Solutions");
 
                     b.Navigation("Solvings");
@@ -737,6 +795,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Solution", b =>
+                {
+                    b.Navigation("Comparisons");
                 });
 
             modelBuilder.Entity("Domain.Entities.Solving", b =>

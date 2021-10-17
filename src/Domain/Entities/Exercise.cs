@@ -18,6 +18,7 @@ namespace Domain.Entities
         public virtual User Creator { get; set; }
         public virtual ICollection<Solving> Solvings { get; set; }
         public virtual ICollection<Solution> Solutions { get; set; }
+        public virtual ICollection<Comparison> Comparisons { get; set; }
         public bool IsPrivate { get; set; }
         public string ValidAnswer { get; set; }
     }

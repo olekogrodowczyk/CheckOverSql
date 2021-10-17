@@ -17,5 +17,6 @@ namespace Domain.Entities
         public virtual Exercise Exercise { get; set; }
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
+        public virtual ICollection<Comparison> Comparisons { get; set; }
     }
 }
