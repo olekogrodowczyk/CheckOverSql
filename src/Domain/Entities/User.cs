@@ -23,6 +23,7 @@ namespace Domain.Entities
         public virtual ICollection<Exercise> Exercises { get; set; }
         public virtual ICollection<Checking> Checkings { get; set; }
         public virtual ICollection<Group> GroupsCreated { get; set; }
+        public virtual ICollection<Solution> Solutions { get; set; }
 
     }
 }

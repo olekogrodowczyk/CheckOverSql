@@ -21,6 +21,8 @@ namespace Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();
+            services.AddScoped<ISolutionComparerService, SolutionComparerService>();
+            services.AddScoped<ISolutionService , SolutionService>();
             return services;
         }
     }

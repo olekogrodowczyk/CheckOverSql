@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211013204559_changeColumnNameExercise")]
-    partial class changeColumnNameExercise
+    [Migration("20211017005902_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,36 @@ namespace Infrastructure.Migrations
                     b.ToTable("Checkings");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Database", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConnectionString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Databases");
+                });
+
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
                     b.Property<int>("Id")
@@ -117,11 +147,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Database")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DatabaseId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -135,9 +168,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ValidAnswer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
+
+                    b.HasIndex("DatabaseId");
 
                     b.ToTable("Exercises");
                 });
@@ -342,6 +380,53 @@ namespace Infrastructure.Migrations
                     b.ToTable("RolePermissions");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Solution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Dialect")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Query")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SolvingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("SolvingId")
+                        .IsUnique()
+                        .HasFilter("[SolvingId] IS NOT NULL");
+
+                    b.ToTable("Solutions");
+                });
+
             modelBuilder.Entity("Domain.Entities.Solving", b =>
                 {
                     b.Property<int>("Id")
@@ -489,7 +574,15 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Database", "Database")
+                        .WithMany()
+                        .HasForeignKey("DatabaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Creator");
+
+                    b.Navigation("Database");
                 });
 
             modelBuilder.Entity("Domain.Entities.Group", b =>
@@ -557,6 +650,32 @@ namespace Infrastructure.Migrations
                     b.Navigation("Permission");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Solution", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "Creator")
+                        .WithMany("Solutions")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Exercise", "Exercise")
+                        .WithMany("Solutions")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Solving", "Solving")
+                        .WithOne("Solution")
+                        .HasForeignKey("Domain.Entities.Solution", "SolvingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Exercise");
+
+                    b.Navigation("Solving");
+                });
+
             modelBuilder.Entity("Domain.Entities.Solving", b =>
                 {
                     b.HasOne("Domain.Entities.Assignment", "Assignment")
@@ -594,6 +713,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Exercise", b =>
                 {
+                    b.Navigation("Solutions");
+
                     b.Navigation("Solvings");
                 });
 
@@ -621,6 +742,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Solving", b =>
                 {
                     b.Navigation("Checking");
+
+                    b.Navigation("Solution");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -636,6 +759,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("InvitationsReceived");
 
                     b.Navigation("InvitationsSent");
+
+                    b.Navigation("Solutions");
                 });
 #pragma warning restore 612, 618
         }

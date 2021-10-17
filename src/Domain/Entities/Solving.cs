@@ -19,5 +19,6 @@ namespace Domain.Entities
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public virtual Checking Checking { get; set; }
+        public virtual Solution Solution { get; set; }
     }
 }

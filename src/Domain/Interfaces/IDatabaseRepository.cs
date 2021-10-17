@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IDatabaseQuery
+    public interface IDatabaseRepository : IRepository<Database>
     {
-        Task<Dictionary<int,object>> GetData(string query, string connectionString);
+        Task<int> GetDatabaseIdByName(string name);
     }
 }

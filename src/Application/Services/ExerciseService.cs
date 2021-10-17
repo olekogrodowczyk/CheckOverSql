@@ -22,25 +22,24 @@ namespace Application.Services
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IConfiguration _configuration;
         private readonly IDatabaseQuery _databaseQuery;
+        private readonly IDatabaseRepository _databaseRepository;
 
         public ExerciseService(IMapper mapper, IUserContextService userContextService, IExerciseRepository exerciseRepository
-            ,IConfiguration configuration, IDatabaseQuery databaseQuery)
+            ,IConfiguration configuration, IDatabaseQuery databaseQuery, IDatabaseRepository databaseRepository)
         {
             _mapper = mapper;
             _userContextService = userContextService;
             _exerciseRepository = exerciseRepository;
             _configuration = configuration;
             _databaseQuery = databaseQuery;
+            _databaseRepository = databaseRepository;
         }
 
         public async Task<int> CreateExerciseAsync(CreateExerciseDto model)
         {
-            var exercise = _mapper.Map<Exercise>(model);
-            int? loggedUserId = _userContextService.GetUserId;
-            if (loggedUserId is not null)
-            {
-                exercise.CreatorId = (int)_userContextService.GetUserId;
-            }            
+            var exercise = _mapper.Map<Exercise>(model);         
+            exercise.CreatorId = (int)_userContextService.GetUserId;  
+            exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(model.Database);
             await _exerciseRepository.Add(exercise);
             return exercise.Id;
         }
@@ -48,7 +47,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<GetExerciseDto>> GetAllExercisesAsync()
         {
-            await _databaseQuery.GetData("SELECT * FROM dbo.Footballers", ExerciseDatabaseEnum.FootballLeague);
+            //await _databaseQuery.GetData("SELECT * FROM dbo.Footballers", ExerciseDatabaseEnum.FootballLeague);
             var exercises = await _exerciseRepository.GetAllInclude(x=>x.Creator);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseDto>>(exercises);
             return exerciseDtos;

@@ -19,7 +19,8 @@ namespace Application.Dto.CreateExerciseDto
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateExerciseDto, Exercise>().ReverseMap();
+            profile.CreateMap<CreateExerciseDto, Exercise>()
+                .ForMember(x => x.Database, opt => opt.Ignore());
         }
     }
 }

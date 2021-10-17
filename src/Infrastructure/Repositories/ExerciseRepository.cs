@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Infrastructure.Repositories
         public ExerciseRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        
     }
 }

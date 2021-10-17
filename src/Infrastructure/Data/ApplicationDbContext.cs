@@ -24,6 +24,8 @@ namespace Infrastructure.Data
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Database> Databases { get; set; }
+        public DbSet<Solution> Solutions { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -110,6 +112,23 @@ namespace Infrastructure.Data
                 .HasOne<Permission>(x => x.Permission)
                 .WithMany(x => x.RolePermissions)
                 .HasForeignKey(x => x.PermissionId);
+
+            modelBuilder.Entity<Solving>()
+                .HasOne<Solution>(x => x.Solution)
+                .WithOne(x => x.Solving)
+                .HasForeignKey<Solution>(x => x.SolvingId);
+
+            modelBuilder.Entity<Solution>()
+                .HasOne<Exercise>(x => x.Exercise)
+                .WithMany(x => x.Solutions)
+                .HasForeignKey(x => x.ExerciseId);
+
+            modelBuilder.Entity<Solution>()
+                .HasOne<User>(x => x.Creator)
+                .WithMany(x => x.Solutions)
+                .HasForeignKey(x => x.CreatorId);
+
+
             #endregion
         }
 

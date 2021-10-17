@@ -22,19 +22,7 @@ namespace Infrastructure.Repositories
             _configuration = configuration;
         }
 
-        private void setConnectionString(ExerciseDatabaseEnum exerciseDatabaseEnum)
-        {
-            switch (exerciseDatabaseEnum)
-            {
-                case ExerciseDatabaseEnum.FootballLeague:
-                    _connectionString = _configuration.GetConnectionString("FootballLeagueDb");
-                    break;
-                case ExerciseDatabaseEnum.AdventureWorks:
-                    break;
-                default:
-                    throw new BadRequestException("Coś poszło nie tak");
-            }
-        }
+        
         private async Task<Dictionary<int, object>> getDataInDictionary(SqlCommand command)
         {          
             Dictionary<int,object> data = new Dictionary<int,object>();
@@ -52,10 +40,9 @@ namespace Infrastructure.Repositories
             return data;
         }
 
-        public async Task<object> GetData(string query, ExerciseDatabaseEnum exerciseDatabaseEnum)
+        public async Task<Dictionary<int,object>> GetData(string query, string connectionString)
         {    
-            setConnectionString(exerciseDatabaseEnum);
-            SqlConnection connection = new SqlConnection(_connectionString);
+            SqlConnection connection = new SqlConnection(connectionString);
 
             connection.Open();
 
