@@ -38,7 +38,7 @@ namespace Application.Services
             return solution.Id;
         }
 
-        public async Task<Dictionary<int, object>> SendSolutionQueryAsync(int solutionId)
+        public async Task<List<List<string>>> SendSolutionQueryAsync(int solutionId)
         {
             var solution = await _solutionRepository.GetById(solutionId);
             var result = await sendQueryAsync(solution.Query, await _solutionRepository.GetDatabaseConnectionString(solutionId));
@@ -54,29 +54,29 @@ namespace Application.Services
             var dict1 = await sendQueryAsync(solution.Query, connectionString);
             var dict2 = await sendQueryAsync(exercise.ValidAnswer, connectionString);
 
-            var result = compareDictionaries(dict1, dict2);
+            var result = compareValues(dict1, dict2);
 
             return result;
         }
 
-        private async Task<Dictionary<int, object>> sendQueryAsync(string query, string connectionString)
+        private async Task<List<List<string>>> sendQueryAsync(string query, string connectionString)
         {
             var result = await _databaseQuery.GetData(query, connectionString.Replace("\\\\", "\\"));
             return result;
         }
 
-        private bool compareDictionaries(Dictionary<int, object> dict1, Dictionary<int, object> dict2)
+        private bool compareValues(List<List<string>> values1, List<List<string>> values2)
         {
-            if (dict1.Count != dict2.Count)
+            if (values1.Count() != values2.Count()) {  return false; }
+            
+            int rowCount = values1[0].Count();
+
+            for (int i = 0; i < values1.Count(); i++)
             {
-                return false;
-            }
-            for (int i = 0; i < dict1.Count; i++)
-            {
-                if (!dict1[i].Equals(dict2[i]))
+                for(int j=0; j<rowCount; j++)
                 {
-                    return false;
-                }
+                    if(values1[i][j]!=values2[i][j]) { return false; }
+                }             
             }
             return true;
         }

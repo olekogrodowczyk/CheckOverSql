@@ -23,24 +23,26 @@ namespace Infrastructure.Repositories
         }
 
         
-        private async Task<Dictionary<int, object>> getDataInDictionary(SqlCommand command)
-        {          
-            Dictionary<int,object> data = new Dictionary<int,object>();
-            using(SqlDataReader reader = await command.ExecuteReaderAsync())
+        private async Task<List<List<string>>> getDataInDictionary(SqlCommand command)
+        {
+            List<List<string>> values = new List<List<string>>();         
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
             {
-                int counter = 0;
                 while(await reader.ReadAsync())
                 {
-                    var values = new Object[reader.FieldCount];
-                    reader.GetValues(values);
-                    data.Add(counter, values);
-                    counter++;
+                    List<string> RowValues = new List<string>();
+                    for (int i= 0; i < reader.FieldCount; i++)
+                    {
+                        string value = reader[i].ToString();
+                        RowValues.Add(value);
+                    }
+                    values.Add(RowValues);
                 }
             }
-            return data;
+            return values;
         }
 
-        public async Task<Dictionary<int,object>> GetData(string query, string connectionString)
+        public async Task<List<List<string>>> GetData(string query, string connectionString)
         {    
             SqlConnection connection = new SqlConnection(connectionString);
 

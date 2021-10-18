@@ -11,6 +11,6 @@ namespace Application.Interfaces
     {
         Task<bool> CompareAsync(int solutionId, int exerciseId);
         Task<int> CreateSolutionAsync(CreateSolutionDto model, int exerciseId);
-        Task<Dictionary<int, object>> SendSolutionQueryAsync(int solutionId);
+        Task<List<List<string>>> SendSolutionQueryAsync(int solutionId);
     }
 }

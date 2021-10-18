@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetQueryData([FromRoute] int exerciseId, [FromRoute] int solutionId)
         {
             var result = await _solutionService.SendSolutionQueryAsync(solutionId);
-            return Ok(new Result<Dictionary<int,object>>(result, "Pomyślnie zwrócono wyniki zapytania do bazy"));
+            return Ok(new Result<List<List<string>>>(result, "Pomyślnie zwrócono wyniki zapytania do bazy"));
         }
 
         [HttpGet("compare/{solutionId}")]

@@ -9,6 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IDatabaseQuery
     {
-        Task<Dictionary<int,object>> GetData(string query, string connectionString);
+        Task<List<List<string>>> GetData(string query, string connectionString);
     }
 }
