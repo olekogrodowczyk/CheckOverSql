@@ -1,8 +1,8 @@
 ﻿using Application.Dto.CreateExerciseDto;
-using Application.Dto.GetExerciseDto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.Responses;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _exerciseService.GetAllExercisesAsync();
-            return Ok(new Result<IEnumerable<GetExerciseDto>>(result,"Pomyślnie zwrócono wszystkie zadania"));
+            return Ok(new Result<IEnumerable<GetExerciseVm>>(result,"Pomyślnie zwrócono wszystkie zadania"));
         }
     }
 }

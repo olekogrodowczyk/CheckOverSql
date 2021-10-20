@@ -1,6 +1,5 @@
 ﻿using Application.Exceptions;
 using Domain.Interfaces;
-using Domain.ValueObjects;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;

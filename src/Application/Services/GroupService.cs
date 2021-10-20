@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Dto.GetGroupDto;
+using Application.ViewModels;
 
 namespace Application.Services
 {
@@ -51,10 +51,10 @@ namespace Application.Services
             
         }
 
-        public async Task<IEnumerable<GetGroupDto>> GetUserGroups()
+        public async Task<IEnumerable<GetGroupVm>> GetUserGroups()
         {
             var groups = await _groupRepository.GetWhere(x => x.CreatorId == _userContextService.GetUserId);
-            var groupsDto = _mapper.Map<IEnumerable<GetGroupDto>>(groups);
+            var groupsDto = _mapper.Map<IEnumerable<GetGroupVm>>(groups);
             return groupsDto;
         }
         

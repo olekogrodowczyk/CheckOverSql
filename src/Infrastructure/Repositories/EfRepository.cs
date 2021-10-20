@@ -67,8 +67,8 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<T>> GetWhereInclude(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include)
         {
             return await _context.Set<T>()
-                .Where(predicate)
                 .Include(include)
+                .Where(predicate)                
                 .ToListAsync();
         }
 

@@ -1,5 +1,5 @@
 ﻿using Application.Dto.CreateExerciseDto;
-using Application.Dto.GetExerciseDto;
+using Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,6 @@ namespace Application.Interfaces
     public interface IExerciseService
     {
         Task<int> CreateExerciseAsync(CreateExerciseDto model);
-        Task<IEnumerable<GetExerciseDto>> GetAllExercisesAsync();
+        Task<IEnumerable<GetExerciseVm>> GetAllExercisesAsync();
     }
 }

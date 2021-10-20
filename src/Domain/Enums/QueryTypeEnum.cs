@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.ValueObjects
+namespace Domain.Enums
 {
-    public enum ExerciseDatabaseEnum
+    public enum QueryType
     {
-        FootballLeague,
-        AdventureWorks
+        SELECT,
+        INSERT,
+        UPDATE,
+        DELETE,
     }
 }

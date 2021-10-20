@@ -1,6 +1,7 @@
 ﻿using Application.Dto.CreateSolutionDto;
 using Application.Interfaces;
 using Application.Responses;
+using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,12 @@ namespace WebAPI.Controllers
             _solutionService = solutionService;
         }
 
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll([FromRoute] int exerciseId)
+        {
+            var result = await _solutionService.GetAllSolutionsAsync(exerciseId);
+            return Ok(new Result<IEnumerable<GetSolutionVm>>(result, "Pomyślnie zwrócono wszystkie rozwiązania"));
+        }
         
         [HttpPost]
         public async Task<IActionResult> Create([FromRoute] int exerciseId, [FromBody] CreateSolutionDto model)
