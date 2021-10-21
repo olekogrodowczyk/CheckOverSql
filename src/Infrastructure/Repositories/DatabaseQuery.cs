@@ -21,27 +21,17 @@ namespace Infrastructure.Repositories
             _configuration = configuration;
         }
 
-        
-        private async Task<List<List<string>>> getDataInDictionary(SqlCommand command)
+        public async Task<int> ExecuteQueryNoData(string query, string connectionString)
         {
-            List<List<string>> values = new List<List<string>>();         
-            using (SqlDataReader reader = await command.ExecuteReaderAsync())
-            {
-                while(await reader.ReadAsync())
-                {
-                    List<string> RowValues = new List<string>();
-                    for (int i= 0; i < reader.FieldCount; i++)
-                    {
-                        string value = reader[i].ToString();
-                        RowValues.Add(value);
-                    }
-                    values.Add(RowValues);
-                }
-            }
-            return values;
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = new SqlCommand(query, connection);
+            var result = await command.ExecuteNonQueryAsync();
+            connection.Close();
+            return result;
         }
 
-        public async Task<List<List<string>>> GetData(string query, string connectionString)
+        public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString)
         {    
             SqlConnection connection = new SqlConnection(connectionString);
 
@@ -53,6 +43,25 @@ namespace Infrastructure.Repositories
             connection.Close();
 
             return result;
+        }
+
+        private async Task<List<List<string>>> getDataInDictionary(SqlCommand command)
+        {
+            List<List<string>> values = new List<List<string>>();
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    List<string> RowValues = new List<string>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string value = reader[i].ToString();
+                        RowValues.Add(value);
+                    }
+                    values.Add(RowValues);
+                }
+            }
+            return values;
         }
     }
 }

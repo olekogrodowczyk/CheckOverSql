@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface ISolutionRepository : IRepository<Solution>
     {
         Task<string> GetDatabaseConnectionString(int solutionId);
+        Task<string> GetDatabaseName(int solutionId);
     }
 }

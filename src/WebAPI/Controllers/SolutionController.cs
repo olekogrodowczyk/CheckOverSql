@@ -32,21 +32,21 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromRoute] int exerciseId, [FromBody] CreateSolutionDto model)
         {
-            var result =  await _solutionService.CreateSolutionAsync(model, exerciseId);
+            var result =  await _solutionService.CreateSolution(model, exerciseId);
             return Ok(new Result<int>(result, "Pomyślnie dodano nowe rozwiązanie"));
         }
 
         [HttpGet("getquerydata/{solutionId}")]
         public async Task<IActionResult> GetQueryData([FromRoute] int exerciseId, [FromRoute] int solutionId)
         {
-            var result = await _solutionService.SendSolutionQueryAsync(solutionId);
+            var result = await _solutionService.SendSolutionQuery(solutionId);
             return Ok(new Result<List<List<string>>>(result, "Pomyślnie zwrócono wyniki zapytania do bazy"));
         }
 
         [HttpGet("compare/{solutionId}")]
         public async Task<IActionResult> Compare([FromRoute] int solutionId, [FromRoute] int exerciseId)
         {
-            var result = await _solutionService.CompareAsync(solutionId, exerciseId);
+            var result = await _solutionService.Compare(solutionId, exerciseId);
             return Ok(new Result<bool>(result, "Pomyślnie porównano rozwiązania"));
         }
 

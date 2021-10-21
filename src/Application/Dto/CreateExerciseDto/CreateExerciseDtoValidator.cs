@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Dto.SendQueryDto;
+using Domain.Interfaces;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,6 @@ namespace Application.Dto.CreateExerciseDto
         public CreateExerciseDtoValidator(IDatabaseRepository databaseRepository)
         {
             _databaseRepository = databaseRepository;
-
             string[] databasesNames = getDatabasesNames();
 
             RuleFor(x => x.Title)
@@ -43,7 +43,6 @@ namespace Application.Dto.CreateExerciseDto
                 .MinimumLength(10).WithMessage("Minimalna długość odpowiedzi do zadania to 5")
                 .MaximumLength(200).WithMessage("Maksymalna długość odpowiedzi do zadania to 500");
 
-
             RuleFor(x => x.Database)
                 .NotEmpty().WithMessage("Nie wybrano bazy danych")
                 .MaximumLength(25).WithMessage("Wybrana baza danych nie może mieć więcej niż 25 znaków")
@@ -54,7 +53,8 @@ namespace Application.Dto.CreateExerciseDto
                         context.AddFailure("Database", $"Podana baza danych nie istnieje, dostępne bazy danych to " +
                             $"[{string.Join(",", databasesNames)}]");
                     }
-                });          
+                });
+
         }
     }
 }

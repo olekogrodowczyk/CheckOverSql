@@ -19,10 +19,12 @@ namespace Application.Services
         private readonly IUserContextService _userContextService;
         private readonly IDatabaseQuery _databaseQuery;
         private readonly IExerciseRepository _exerciseRepository;
-        private readonly IQueryService _queryService;
+        private readonly IDatabaseService _queryService;
+        private readonly IDataComparer _dataComparer;
 
         public SolutionService(IMapper mapper, ISolutionRepository solutionRepository, IUserContextService userContextService
-            ,IDatabaseQuery databaseQuery, IExerciseRepository exerciseRepository, IQueryService queryService)
+            ,IDatabaseQuery databaseQuery, IExerciseRepository exerciseRepository, IDatabaseService queryService
+            ,IDataComparer dataComparer)
         {
             _mapper = mapper;
             _solutionRepository = solutionRepository;
@@ -30,9 +32,10 @@ namespace Application.Services
             _databaseQuery = databaseQuery;
             _exerciseRepository = exerciseRepository;
             _queryService = queryService;
+            _dataComparer = dataComparer;
         }
 
-        public async Task<int> CreateSolutionAsync(CreateSolutionDto model, int exerciseId)
+        public async Task<int> CreateSolution(CreateSolutionDto model, int exerciseId)
         {
             var solution = _mapper.Map<Solution>(model);
             solution.CreatorId = (int)_userContextService.GetUserId; 
@@ -41,23 +44,24 @@ namespace Application.Services
             return solution.Id;
         }
 
-        public async Task<List<List<string>>> SendSolutionQueryAsync(int solutionId)
+        public async Task<List<List<string>>> SendSolutionQuery(int solutionId)
         {
             var solution = await _solutionRepository.GetById(solutionId);
-            var result = await _queryService.sendQueryAsync(solution.Query, await _solutionRepository.GetDatabaseConnectionString(solutionId));
+            string databaseName = await _solutionRepository.GetDatabaseName(solutionId);
+            var result = await _queryService.SendQueryWithData(solution.Query, databaseName);
             return result;
         }
     
-        public async Task<bool> CompareAsync(int solutionId, int exerciseId)
+        public async Task<bool> Compare(int solutionId, int exerciseId)
         {
             var solution = await _solutionRepository.GetById(solutionId);
             var exercise = await _exerciseRepository.GetById(exerciseId);
             string connectionString = await _solutionRepository.GetDatabaseConnectionString(solutionId);
 
-            var dict1 = await _queryService.sendQueryAsync(solution.Query, connectionString);
-            var dict2 = await _queryService.sendQueryAsync(exercise.ValidAnswer, connectionString);
+            var list1 = await _queryService.SendQueryWithData(solution.Query, connectionString);
+            var list2 = await _queryService.SendQueryWithData(exercise.ValidAnswer, connectionString);
 
-            var result = compareValues(dict1, dict2);
+            var result = _dataComparer.compareValues(list1, list2);
 
             return result;
         }
@@ -68,24 +72,6 @@ namespace Application.Services
             var solutionsVm = _mapper.Map<IEnumerable<GetSolutionVm>>(solutions);
             return solutionsVm;
         }
-
-        
-        private bool compareValues(List<List<string>> values1, List<List<string>> values2)
-        {
-            if (values1.Count() != values2.Count()) {  return false; }
-            
-            int rowCount = values1[0].Count();
-
-            for (int i = 0; i < values1.Count(); i++)
-            {
-                for(int j=0; j<rowCount; j++)
-                {
-                    if(values1[i][j]!=values2[i][j]) { return false; }
-                }             
-            }
-            return true;
-        }
-
 
     }
 }

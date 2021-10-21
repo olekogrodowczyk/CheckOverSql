@@ -21,5 +21,17 @@ namespace Infrastructure.Repositories
             var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
             return result.Id;
         }
+
+        public async Task<string> GetDatabaseConnectionStringByName(string name)
+        {
+            var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
+            return result.ConnectionString;
+        }
+
+        public async Task<string> GetAdminDatabaseConnectionStringByName(string name)
+        {
+            var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
+            return result.ConnectionStringAdmin;
+        }
     }
 }

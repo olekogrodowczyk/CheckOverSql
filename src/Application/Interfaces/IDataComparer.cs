@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IQueryService
+    public interface IDataComparer
     {
-        Task<List<List<string>>> sendQueryAsync(string query, string connectionString, params string[] unallowedValues);
+        bool compareValues(List<List<string>> values1, List<List<string>> values2);
     }
 }

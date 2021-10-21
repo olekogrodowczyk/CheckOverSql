@@ -22,7 +22,8 @@ namespace Application
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ISolutionService , SolutionService>();
-            services.AddScoped<IQueryService, QueryService>();
+            services.AddScoped<IDatabaseService, DatabaseService>();
+            services.AddScoped<IDataComparer, DataComparer>();
             return services;
         }
     }

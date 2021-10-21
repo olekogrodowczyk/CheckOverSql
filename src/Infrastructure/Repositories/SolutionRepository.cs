@@ -29,5 +29,20 @@ namespace Infrastructure.Repositories
             }
             return solution.Exercise.Database.ConnectionString;
         }
+
+        public async Task<string> GetDatabaseName(int solutionId)
+        {
+            var solution = await _context.Solutions
+                .Include(x => x.Exercise)
+                .ThenInclude(x=>x.Database)
+                .FirstOrDefaultAsync(x=>x.Id == solutionId);
+
+            if (solution is null)
+            {
+                throw new NotFoundException($"Nie znaleziono solucji o podanym id: {solutionId}");
+            }
+
+            return solution.Exercise.Database.Name;
+        }
     }
 }

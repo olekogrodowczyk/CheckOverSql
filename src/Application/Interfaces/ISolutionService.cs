@@ -10,9 +10,9 @@ namespace Application.Interfaces
 {
     public interface ISolutionService
     {
-        Task<bool> CompareAsync(int solutionId, int exerciseId);
-        Task<int> CreateSolutionAsync(CreateSolutionDto model, int exerciseId);
+        Task<bool> Compare(int solutionId, int exerciseId);
+        Task<int> CreateSolution(CreateSolutionDto model, int exerciseId);
         Task<IEnumerable<GetSolutionVm>> GetAllSolutionsAsync(int exerciseId);
-        Task<List<List<string>>> SendSolutionQueryAsync(int solutionId);
+        Task<List<List<string>>> SendSolutionQuery(int solutionId);
     }
 }

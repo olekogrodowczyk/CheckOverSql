@@ -44,7 +44,9 @@ namespace Infrastructure.Services
 
         public async Task<string> LoginAsync(LoginUserDto model)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+            var user = await _context.Users
+                .Include(x=>x.Role)
+                .FirstOrDefaultAsync(x => x.Email == model.Email);
 
             if(user is null)
             {
@@ -85,6 +87,7 @@ namespace Infrastructure.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.Value.ToString()),
+                new Claim(ClaimTypes.Role,user.Role.Name)
             };
             return claims;
         }    
