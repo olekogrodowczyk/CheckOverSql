@@ -56,10 +56,10 @@ namespace Application.Services
         {
             var solution = await _solutionRepository.GetById(solutionId);
             var exercise = await _exerciseRepository.GetById(exerciseId);
-            string connectionString = await _solutionRepository.GetDatabaseConnectionString(solutionId);
+            string databaseName = await _solutionRepository.GetDatabaseName(solutionId);
 
-            var list1 = await _queryService.SendQueryWithData(solution.Query, connectionString);
-            var list2 = await _queryService.SendQueryWithData(exercise.ValidAnswer, connectionString);
+            var list1 = await _queryService.SendQueryWithData(solution.Query, databaseName);
+            var list2 = await _queryService.SendQueryWithData(exercise.ValidAnswer, databaseName);
 
             var result = await _dataComparer.compareValues(list1, list2);
 

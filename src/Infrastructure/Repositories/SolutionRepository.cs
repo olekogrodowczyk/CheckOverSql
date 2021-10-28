@@ -13,18 +13,11 @@ namespace Infrastructure.Repositories
 {
     public class SolutionRepository : EfRepository<Solution>, ISolutionRepository
     {
-        public SolutionRepository(ApplicationDbContext context) : base(context)
-        {
-        }
+        private readonly IDatabaseRepository _databaseRepository;
 
-        public async Task<string> GetDatabaseConnectionString(int id)
+        public SolutionRepository(ApplicationDbContext context, IDatabaseRepository databaseRepository ) : base(context)
         {
-            var result = await _context.Solutions
-                .Include(x=>x.Exercise)
-                .ThenInclude(x=>x.Database)
-                .FirstOrDefaultAsync(x=>x.Id== id);
-            if (result == null) { throw new NotFoundException($"Result is not found with id: {id}"); }
-            return result.Exercise.Database.ConnectionString;
+            _databaseRepository = databaseRepository;
         }
 
         public async Task<string> GetDatabaseName(int id)
