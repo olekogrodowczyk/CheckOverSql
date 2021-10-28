@@ -30,10 +30,7 @@ namespace Infrastructure.Repositories
         public async Task<T> Delete(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
-            if(entity == null)
-            {
-                throw new NotFoundException("Entity not found");
-            }
+            if (entity == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -41,7 +38,9 @@ namespace Infrastructure.Repositories
 
         public async Task<T> GetById(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            var result =  await _context.Set<T>().FindAsync(id);
+            if(result == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
+            return result;
         }
 
         public async Task<IEnumerable<T>> GetAll()

@@ -20,11 +20,11 @@ namespace Application.Services
         private readonly IDatabaseQuery _databaseQuery;
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IDatabaseService _queryService;
-        private readonly IDataComparer _dataComparer;
+        private readonly IDataComparerService _dataComparer;
 
         public SolutionService(IMapper mapper, ISolutionRepository solutionRepository, IUserContextService userContextService
             ,IDatabaseQuery databaseQuery, IExerciseRepository exerciseRepository, IDatabaseService queryService
-            ,IDataComparer dataComparer)
+            ,IDataComparerService dataComparer)
         {
             _mapper = mapper;
             _solutionRepository = solutionRepository;
@@ -61,12 +61,12 @@ namespace Application.Services
             var list1 = await _queryService.SendQueryWithData(solution.Query, connectionString);
             var list2 = await _queryService.SendQueryWithData(exercise.ValidAnswer, connectionString);
 
-            var result = _dataComparer.compareValues(list1, list2);
+            var result = await _dataComparer.compareValues(list1, list2);
 
             return result;
         }
 
-        public async Task<IEnumerable<GetSolutionVm>> GetAllSolutionsAsync(int exerciseId)
+        public async Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId)
         {
             var solutions = await _solutionRepository.GetWhereInclude(x=>x.ExerciseId==exerciseId ,x=>x.Exercise);
             var solutionsVm = _mapper.Map<IEnumerable<GetSolutionVm>>(solutions);

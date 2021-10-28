@@ -36,6 +36,9 @@ namespace WebAPI.Middleware
                 {
                     case AlreadyExistsException _:
                     case NotFoundException _:
+                        code=HttpStatusCode.NotFound;
+                        result = new ErrorResult(e.Message);
+                        break;
                     case BadRequestException _:
                     case ValidationException _:
                         code = HttpStatusCode.BadRequest;

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IDataComparer
+    public interface IDataComparerService
     {
-        bool compareValues(List<List<string>> values1, List<List<string>> values2);
+        Task<bool> compareValues(List<List<string>> values1, List<List<string>> values2);
     }
 }

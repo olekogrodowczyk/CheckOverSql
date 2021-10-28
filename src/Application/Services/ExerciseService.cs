@@ -19,18 +19,14 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
         private readonly IExerciseRepository _exerciseRepository;
-        private readonly IConfiguration _configuration;
-        private readonly IDatabaseQuery _databaseQuery;
         private readonly IDatabaseRepository _databaseRepository;
 
         public ExerciseService(IMapper mapper, IUserContextService userContextService, IExerciseRepository exerciseRepository
-            ,IConfiguration configuration, IDatabaseQuery databaseQuery, IDatabaseRepository databaseRepository)
+            ,IDatabaseRepository databaseRepository)
         {
             _mapper = mapper;
             _userContextService = userContextService;
             _exerciseRepository = exerciseRepository;
-            _configuration = configuration;
-            _databaseQuery = databaseQuery;
             _databaseRepository = databaseRepository;
         }
 

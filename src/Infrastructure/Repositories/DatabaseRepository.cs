@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Exceptions;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,19 +20,14 @@ namespace Infrastructure.Repositories
         public async Task<int> GetDatabaseIdByName(string name)
         {
             var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
+            if (result == null) { throw new NotFoundException($"Result is not found with name:{name}"); }
             return result.Id;
-        }
-
-        public async Task<string> GetDatabaseConnectionStringByName(string name)
+        }      
+        public async Task<string> GetDatabaseConnectionString(string name, bool isAdmin = false)
         {
             var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
-            return result.ConnectionString;
-        }
-
-        public async Task<string> GetAdminDatabaseConnectionStringByName(string name)
-        {
-            var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
-            return result.ConnectionStringAdmin;
+            if (result == null) { throw new NotFoundException($"Result is not found with name:{name}"); }
+            return isAdmin == false ? result.ConnectionString : result.ConnectionStringAdmin;             
         }
     }
 }

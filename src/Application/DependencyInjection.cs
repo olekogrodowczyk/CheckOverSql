@@ -23,7 +23,7 @@ namespace Application
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
-            services.AddScoped<IDataComparer, DataComparer>();
+            services.AddScoped<IDataComparerService, DataComparerSercice>();
             return services;
         }
     }

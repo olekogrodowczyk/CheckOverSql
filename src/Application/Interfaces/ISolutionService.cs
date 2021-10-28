@@ -12,7 +12,7 @@ namespace Application.Interfaces
     {
         Task<bool> Compare(int solutionId, int exerciseId);
         Task<int> CreateSolution(CreateSolutionDto model, int exerciseId);
-        Task<IEnumerable<GetSolutionVm>> GetAllSolutionsAsync(int exerciseId);
+        Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId);
         Task<List<List<string>>> SendSolutionQuery(int solutionId);
     }
 }

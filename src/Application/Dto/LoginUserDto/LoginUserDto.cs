@@ -10,7 +10,5 @@ namespace Application.Dto.LoginUserVm
     {
         public string Email { get; set; }
         public string Password { get; set; }
-
-
     }
 }

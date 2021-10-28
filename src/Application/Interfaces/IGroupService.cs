@@ -11,7 +11,7 @@ namespace Application.Interfaces
 {
     public interface IGroupService
     {
-        Task<int> CreateGroupAsync(CreateGroupDto model);
+        Task<int> CreateGroup(CreateGroupDto model);
         Task<IEnumerable<GetGroupVm>> GetUserGroups();
     }
 }

@@ -31,7 +31,7 @@ namespace Application.Services
             _groupRepository = groupRepository;
         }
 
-        public async Task<int> CreateGroupAsync(CreateGroupDto model)
+        public async Task<int> CreateGroup(CreateGroupDto model)
         {
             var group = _mapper.Map<Group>(model);
             group.Creator = _userContextService.User;

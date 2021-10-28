@@ -20,23 +20,17 @@ namespace Application.Services
             _databaseQuery = databaseQuery;
             _databaseRepository = databaseRepository;
         }
-        
-        public async Task<string> GetDatabaseConnectionString(string databaseName, bool isAdmin=false)
-        {
-            return isAdmin == false ? await _databaseRepository.GetDatabaseConnectionStringByName(databaseName) :
-               await _databaseRepository.GetAdminDatabaseConnectionStringByName(databaseName);
-        }
-
+       
         public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false)
         {
-            string connectionString = await GetDatabaseConnectionString(databaseName, isAdmin);
+            string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString.Replace("\\\\", "\\"));
             return result;
         }
 
         public async Task<int> SendQueryNoData(string query, string databaseName, bool isAdmin=false)
         {
-            string connectionString = await GetDatabaseConnectionString(databaseName, isAdmin);
+            string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             var result = await _databaseQuery.ExecuteQueryNoData(query, connectionString.Replace("\\\\","\\"));
             return result;
         }

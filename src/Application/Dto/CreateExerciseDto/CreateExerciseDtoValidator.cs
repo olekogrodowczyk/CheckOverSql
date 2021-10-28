@@ -17,12 +17,14 @@ namespace Application.Dto.CreateExerciseDto
         {
             var databases = _databaseRepository.GetAll().Result;
             return databases.Select(x => x.Name.ToLower()).ToArray();
+            
         }
 
         public CreateExerciseDtoValidator(IDatabaseRepository databaseRepository)
         {
             _databaseRepository = databaseRepository;
             string[] databasesNames = getDatabasesNames();
+
 
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Nie podano tytułu zadania")
@@ -54,7 +56,6 @@ namespace Application.Dto.CreateExerciseDto
                             $"[{string.Join(",", databasesNames)}]");
                     }
                 });
-
         }
     }
 }

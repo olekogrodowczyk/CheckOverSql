@@ -8,7 +8,6 @@ namespace Application.Interfaces
 {
     public interface IDatabaseService
     {
-        Task<string> GetDatabaseConnectionString(string databaseName, bool isAdmin=false);
         Task<int> SendQueryNoData(string query, string databaseName, bool isAdmin=false);
         Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false);
     }

@@ -17,32 +17,24 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<string> GetDatabaseConnectionString(int solutionId)
+        public async Task<string> GetDatabaseConnectionString(int id)
         {
-            var solution = await _context.Solutions
+            var result = await _context.Solutions
                 .Include(x=>x.Exercise)
                 .ThenInclude(x=>x.Database)
-                .FirstOrDefaultAsync(x=>x.Id== solutionId);
-            if (solution is null)
-            {
-                throw new NotFoundException($"Nie znaleziono solucji o podanym id: {solutionId}");
-            }
-            return solution.Exercise.Database.ConnectionString;
+                .FirstOrDefaultAsync(x=>x.Id== id);
+            if (result == null) { throw new NotFoundException($"Result is not found with id: {id}"); }
+            return result.Exercise.Database.ConnectionString;
         }
 
-        public async Task<string> GetDatabaseName(int solutionId)
+        public async Task<string> GetDatabaseName(int id)
         {
-            var solution = await _context.Solutions
+            var result = await _context.Solutions
                 .Include(x => x.Exercise)
                 .ThenInclude(x=>x.Database)
-                .FirstOrDefaultAsync(x=>x.Id == solutionId);
-
-            if (solution is null)
-            {
-                throw new NotFoundException($"Nie znaleziono solucji o podanym id: {solutionId}");
-            }
-
-            return solution.Exercise.Database.Name;
+                .FirstOrDefaultAsync(x=>x.Id == id);
+            if (result == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
+            return result.Exercise.Database.Name;
         }
     }
 }

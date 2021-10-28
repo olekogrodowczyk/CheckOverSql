@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll([FromRoute] int exerciseId)
         {
-            var result = await _solutionService.GetAllSolutionsAsync(exerciseId);
+            var result = await _solutionService.GetAllSolutions(exerciseId);
             return Ok(new Result<IEnumerable<GetSolutionVm>>(result, "Pomyślnie zwrócono wszystkie rozwiązania"));
         }
         
@@ -49,6 +49,7 @@ namespace WebAPI.Controllers
             var result = await _solutionService.Compare(solutionId, exerciseId);
             return Ok(new Result<bool>(result, "Pomyślnie porównano rozwiązania"));
         }
+
 
     }
 }

@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         [HttpPost("creategroup")] 
         public async Task<IActionResult> Create([FromBody] CreateGroupDto model)
         {
-            var result = await _groupService.CreateGroupAsync(model);
+            var result = await _groupService.CreateGroup(model);
             return Ok(new Result<int>(result, "Pomyślnie dodano grupę"));
         }
 

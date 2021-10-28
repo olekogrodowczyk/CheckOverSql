@@ -9,8 +9,7 @@ namespace Domain.Interfaces
 {
     public interface IDatabaseRepository : IRepository<Database>
     {
-        Task<string> GetAdminDatabaseConnectionStringByName(string name);
-        Task<string> GetDatabaseConnectionStringByName(string name);
+        Task<string> GetDatabaseConnectionString(string name, bool isAdmin = false);
         Task<int> GetDatabaseIdByName(string name);
     }
 }
