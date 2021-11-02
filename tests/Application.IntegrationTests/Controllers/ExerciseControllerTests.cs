@@ -73,6 +73,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetAll_ForCreatedSampleData_ReturnsOkWithThisData()
         {
             //Arrange
+            //Only public exercises can be returned
             var exercise1 = getValidExercise(true);
             var exercise2 = getValidExercise(false);
             var exercise3 = getValidExercise(false);
@@ -159,6 +160,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var response = await _client.PostAsync("api/exercise/create/", httpContent);
 
             //Assert
+            //There is no option to send a query which writes something in database
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
 
