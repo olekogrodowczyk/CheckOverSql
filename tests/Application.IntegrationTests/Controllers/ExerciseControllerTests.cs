@@ -48,6 +48,7 @@ namespace WebAPI.IntegrationTests.Controllers
             using var scope = scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
+            //Seed necessary data like roles and other databases
             SeedDataHelper.SeedData(context, "FootballLeague").Wait();
 
             _client = _factory.CreateClient();
