@@ -27,15 +27,23 @@ namespace WebAPI.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateExerciseDto model)
         {
-            var result = await _exerciseService.CreateExerciseAsync(model);
-            return Ok(new Result<int>(result, "Pomyślnie dodano nowe zadanie"));
+            var result = await _exerciseService.CreateExercise(model);
+            return Ok(new Result<int>(result, "New exercises created succesfully"));
         }
 
-        [HttpGet("getall")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("getallcreated")]
+        public async Task<IActionResult> GetAllCreated()
         {
-            var result = await _exerciseService.GetAllExercisesAsync();
-            return Ok(new Result<IEnumerable<GetExerciseVm>>(result,"Pomyślnie zwrócono wszystkie zadania"));
+            var result = await _exerciseService.GetAllExercisesCreatedByLoggedUser();
+            return Ok(new Result<IEnumerable<GetExerciseVm>>
+                (result,"All exercises created by logged user returned successfully"));
+        }
+
+        [HttpGet("getallpublic")]
+        public async Task<IActionResult> GetAllPublic()
+        {
+            var result = await _exerciseService.GetAllPublicExercises();
+            return Ok(new Result<IEnumerable<GetExerciseVm>>(result, "All public exercises returned successfully"));
         }
     }
 }

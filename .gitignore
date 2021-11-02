@@ -366,3 +366,5 @@ FodyWeavers.xsd
 src/WebAPI/appsettings.json
 src/WebAPI/appsettings.Development.json
 src/Infrastructure/Migrations
+tests/Application.IntegrationTests/appsettingstest.json
+/tests/Application.IntegrationTests/appsettingstests.json

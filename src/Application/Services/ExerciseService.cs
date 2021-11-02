@@ -20,18 +20,21 @@ namespace Application.Services
         private readonly IUserContextService _userContextService;
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IDatabaseRepository _databaseRepository;
+        private readonly IDatabaseService _databaseService;
 
         public ExerciseService(IMapper mapper, IUserContextService userContextService, IExerciseRepository exerciseRepository
-            ,IDatabaseRepository databaseRepository)
+            ,IDatabaseRepository databaseRepository, IDatabaseService databaseService)
         {
             _mapper = mapper;
             _userContextService = userContextService;
             _exerciseRepository = exerciseRepository;
             _databaseRepository = databaseRepository;
+            _databaseService = databaseService;
         }
-
-        public async Task<int> CreateExerciseAsync(CreateExerciseDto model)
+     
+        public async Task<int> CreateExercise(CreateExerciseDto model)
         {
+            await _databaseService.SendQueryNoData(model.ValidAnswer, model.Database);
             var exercise = _mapper.Map<Exercise>(model);         
             exercise.CreatorId = (int)_userContextService.GetUserId;  
             exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(model.Database);
@@ -39,11 +42,16 @@ namespace Application.Services
             return exercise.Id;
         }
 
-
-        public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesAsync()
+        public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
         {
-            //await _databaseQuery.GetData("SELECT * FROM dbo.Footballers", ExerciseDatabaseEnum.FootballLeague);
             var exercises = await _exerciseRepository.GetAllInclude(x=>x.Creator);
+            var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
+            return exerciseDtos;
+        }
+
+        public async Task<IEnumerable<GetExerciseVm>> GetAllPublicExercises()
+        {
+            var exercises = await _exerciseRepository.GetWhere(x => !x.IsPrivate);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
             return exerciseDtos;
         }

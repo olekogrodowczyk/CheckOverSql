@@ -1,6 +1,7 @@
 ﻿using Application.Exceptions;
 using Application.Responses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
@@ -51,6 +52,10 @@ namespace WebAPI.Middleware
                     case ArgumentNullException _:
                         code = HttpStatusCode.InternalServerError;
                         result = new ErrorResult(e.Message);
+                        break;
+                    case SqlException _:
+                        code = HttpStatusCode.Forbidden;
+                        result = new ErrorResult("Unauthorized attempt to use a database");
                         break;
                     case Exception:
                         code = HttpStatusCode.InternalServerError;

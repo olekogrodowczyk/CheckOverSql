@@ -10,7 +10,8 @@ namespace Application.Interfaces
 {
     public interface IExerciseService
     {
-        Task<int> CreateExerciseAsync(CreateExerciseDto model);
-        Task<IEnumerable<GetExerciseVm>> GetAllExercisesAsync();
+        Task<int> CreateExercise(CreateExerciseDto model);
+        Task<IEnumerable<GetExerciseVm>> GetAllPublicExercises();
+        Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser();
     }
 }
