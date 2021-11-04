@@ -11,11 +11,11 @@ namespace Application.Interfaces
 {
     public interface IIdentityService
     {
-        Task<bool> AuthorizeAsync(int userId, string policyName);
-        Task<string> GetUserNameAsync(int userId);
-        Task<int> RegisterAsync(RegisterUserDto model);
-        Task<bool> IsInRoleAsync(int userId, string role);            
-        Task DeleteUserAsync(int userId);
-        Task<string> LoginAsync(LoginUserDto model);
+        Task<bool> Authorize(int userId, string policyName);
+        Task<string> GetUserName(int userId);
+        Task<int> Register(RegisterUserDto model);
+        Task<bool> IsInRole(int userId, string role);            
+        Task DeleteUser(int userId);
+        Task<string> Login(LoginUserDto model);
     }
 }

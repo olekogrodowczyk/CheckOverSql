@@ -32,17 +32,17 @@ namespace Infrastructure.Services
             _authenticationSettings = authenticationSettings;
         }
 
-        public Task<bool> AuthorizeAsync(int userId, string policyName)
+        public Task<bool> Authorize(int userId, string policyName)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteUserAsync(int userId)
+        public Task DeleteUser(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> LoginAsync(LoginUserDto model)
+        public async Task<string> Login(LoginUserDto model)
         {
             var user = await _context.Users
                 .Include(x=>x.Role)
@@ -92,18 +92,23 @@ namespace Infrastructure.Services
             return claims;
         }    
 
-        public Task<string> GetUserNameAsync(int userId)
+        public Task<string> GetUserName(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> IsInRoleAsync(int userId, string role)
+        public Task<bool> IsInRole(int userId, string role)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> RegisterAsync(RegisterUserDto model)
+        public async Task<int> Register(RegisterUserDto model)
         {
+            if (_context.Users.Any(x => x.Email == model.Email))
+            {
+                throw new AlreadyExistsException($"User with defined email: {model.Email} already exists");
+            }
+
             var newUser = new User()
             {
                 Email = model.Email,
@@ -112,9 +117,10 @@ namespace Infrastructure.Services
                 LastName = model.LastName,
                 Role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == "User")
             };
-            var hashedPassword = _hasher.HashPassword(newUser, model.Password);
 
+            var hashedPassword = _hasher.HashPassword(newUser, model.Password);
             newUser.PasswordHash = hashedPassword;
+
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
             return newUser.Id;

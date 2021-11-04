@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
         {
-            var result = await _identityService.RegisterAsync(model);
+            var result = await _identityService.Register(model);
             return Ok(new Result<int>(result, "Pomyślnie zarejestrowano użytkownika"));
 
         }
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDto model)
         {
-            var result = await _identityService.LoginAsync(model);
+            var result = await _identityService.Login(model);
             return Ok(new Result<string>(result, "Pomyślnie zalogowano"));
         }
     }

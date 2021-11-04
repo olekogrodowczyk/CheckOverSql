@@ -12,19 +12,18 @@ namespace Application.Dto.RegisterUserVm
         public RegisterUserDtoValidator()
         {
             RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("Nie podano imienia");
+                .NotEmpty().WithMessage("First name has not been defined");
 
             RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Nie podano nazwiska");
+                .NotEmpty().WithMessage("Last name has not been defined");
 
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Nie podano adresu e-mail");
+                .NotEmpty().WithMessage("Email has not been defined");
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Nie podano hasła");
-
-            RuleFor(x => x.DateOfBirth)
-                .NotEmpty().WithMessage("Nie podano daty urodzenia");
+                .NotEmpty().WithMessage("Password cannot be empty")
+                .Equal(x => x.ConfirmPassword).WithMessage("Password cannot be different");
+          
         }
     }
 }
