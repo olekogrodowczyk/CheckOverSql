@@ -44,7 +44,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             //Seed necessary data like roles and other databases
-            SeedDataHelper.SeedDatabeses(context, "FootballLeague").Wait();
+            SeedDataHelper.SeedDatabases(context, "FootballLeague").Wait();
             SeedDataHelper.SeedRoles(context).Wait();
         }
 

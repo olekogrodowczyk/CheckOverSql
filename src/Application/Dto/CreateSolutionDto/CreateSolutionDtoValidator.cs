@@ -10,12 +10,13 @@ namespace Application.Dto.CreateSolutionDto
 {
     public class CreateSolutionDtoValidator : AbstractValidator<CreateSolutionDto>
     {
-        private readonly IDatabaseRepository _databaseRepository;   
-        
-        public CreateSolutionDtoValidator(IDatabaseRepository databaseRepository)
+        private readonly IDatabaseRepository _databaseRepository;
+        private readonly IExerciseRepository _exerciseRepository;
+
+        public CreateSolutionDtoValidator(IDatabaseRepository databaseRepository, IExerciseRepository exerciseRepository)
         {
             _databaseRepository = databaseRepository;
-            
+            _exerciseRepository = exerciseRepository;
             RuleFor(x => x.Dialect)
                 .NotEmpty().WithMessage("Wybrany dialekt nie może być pusty")
                 .MaximumLength(25).WithMessage("Wybrany dialekt nie może mieć więcej niż 25 znaków");            

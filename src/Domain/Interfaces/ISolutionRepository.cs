@@ -9,6 +9,7 @@ namespace Domain.Interfaces
 {
     public interface ISolutionRepository : IRepository<Solution>
     {
+        Task<IEnumerable<Solution>> GetAllCreatedByUser(int exerciseId);
         Task<string> GetDatabaseName(int solutionId);
     }
 }

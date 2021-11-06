@@ -1,4 +1,5 @@
 ﻿using Application.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
@@ -14,10 +15,13 @@ namespace Infrastructure.Repositories
     public class SolutionRepository : EfRepository<Solution>, ISolutionRepository
     {
         private readonly IDatabaseRepository _databaseRepository;
+        private readonly IUserContextService _userContextService;
 
-        public SolutionRepository(ApplicationDbContext context, IDatabaseRepository databaseRepository ) : base(context)
+        public SolutionRepository(ApplicationDbContext context, IDatabaseRepository databaseRepository,
+            IUserContextService userContextService) : base(context)
         {
             _databaseRepository = databaseRepository;
+            _userContextService = userContextService;
         }
 
         public async Task<string> GetDatabaseName(int id)
@@ -28,6 +32,16 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(x=>x.Id == id);
             if (result == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
             return result.Exercise.Database.Name;
+        }
+
+        public async Task<IEnumerable<Solution>> GetAllCreatedByUser(int exerciseId)
+        {
+            var result = await _context.Solutions
+                .Include(x => x.Exercise)
+                .Where(x => x.ExerciseId == exerciseId && x.CreatorId == _userContextService.GetUserId)
+                .ToListAsync();
+            if (result == null) { throw new NotFoundException($"Result is not found with exerciseId:{exerciseId}, or user is not logged in"); }
+            return result;
         }
     }
 }

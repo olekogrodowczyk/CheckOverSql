@@ -7,9 +7,9 @@ namespace WebAPI.IntegrationTests.Helpers
 {
     public static class SeedDataHelper
     {
-        public static async Task SeedDatabeses(ApplicationDbContext context, string databaseName)
+        public static async Task SeedDatabases(ApplicationDbContext context, string databaseName)
         {
-            if(context.Databases.Any())
+            if(!context.Databases.Any())
             {
                 string readOnlyConnectionString = GetSecretDataHelper.GetDatabaseReadOnlyConnectionString(databaseName);
                 Database newDatabase = new Database

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -15,6 +16,8 @@ namespace Application.IntegrationTests.FakeAuthentication
                 {
                     new Claim(ClaimTypes.NameIdentifier,"1"),
                     new Claim(ClaimTypes.Role,"User"),
+                    new Claim(ClaimTypes.DateOfBirth, DateTime.UtcNow.AddYears(-20).ToString()),
+                    new Claim(ClaimTypes.Name,"FirstNameTest LastNameTest")
                 }));
 
             context.HttpContext.User = claimsPrincipal;

@@ -37,7 +37,8 @@ namespace Application.Services
 
         public async Task<int> CreateSolution(CreateSolutionDto model, int exerciseId)
         {
-            var solution = _mapper.Map<Solution>(model);
+            await _exerciseRepository.GetById(exerciseId);
+            var solution = _mapper.Map<Solution>(model);          
             solution.CreatorId = (int)_userContextService.GetUserId; 
             solution.ExerciseId= exerciseId;
             await _solutionRepository.Add(solution);
@@ -68,7 +69,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId)
         {
-            var solutions = await _solutionRepository.GetWhereInclude(x=>x.ExerciseId==exerciseId ,x=>x.Exercise);
+            var solutions = await _solutionRepository.GetAllCreatedByUser(exerciseId);
             var solutionsVm = _mapper.Map<IEnumerable<GetSolutionVm>>(solutions);
             return solutionsVm;
         }
