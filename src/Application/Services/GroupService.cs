@@ -36,7 +36,7 @@ namespace Application.Services
             var group = _mapper.Map<Group>(model);
             group.Creator = _userContextService.User;
 
-            var newRole = await _groupRoleRepository.GetByName("Założyciel");
+            var newRole = await _groupRoleRepository.GetByName("Owner");
 
             var newAssignment = new Assignment
             {
@@ -47,8 +47,7 @@ namespace Application.Services
 
             await _groupRepository.Add(group);
             await _assignmentRepository.Add(newAssignment);
-            return group.Id;
-            
+            return group.Id;         
         }
 
         public async Task<IEnumerable<GetGroupVm>> GetUserGroups()

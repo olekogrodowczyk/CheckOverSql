@@ -39,6 +39,7 @@ namespace WebAPI
                 .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Result>());
             services.AddApplication();
             services.AddInfrastructure(Configuration);
+            services.AddScoped<Seeder>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen(c =>
             {
@@ -70,8 +71,9 @@ namespace WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
         {
+            seeder.Seed();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
