@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             _groupService = groupService;
         }
 
-        [HttpPost("creategroup")] 
+        [HttpPost] 
         public async Task<IActionResult> Create([FromBody] CreateGroupDto model)
         {
             var result = await _groupService.CreateGroup(model);

@@ -17,39 +17,19 @@ using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
+
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class SolutionControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class SolutionControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private HttpClient _client;
-        private WebApplicationFactory<Startup> _factory;
+        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public SolutionControllerTests(WebApplicationFactory<Startup> factory)
+        public SolutionControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
-            _factory = factory
-            .WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    var dbContextOptions = services
-                           .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                    services.Remove(dbContextOptions);
-                    services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
-                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
-                    services.AddMvc(option => option.Filters.Add(new FakeUserFilter()));
-                });
-            });
-
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            //Seed necessary data like roles and other databases
-            SeedDataHelper.SeedDatabases(context, "FootballLeague").Wait();
-            SeedDataHelper.SeedRoles(context).Wait();
-
-            _client = _factory.CreateClient();
-        }
+            _factory = factory;
+            _client = factory.CreateClient();
+        }   
 
         private Solution getSolution(Exercise exercise, int creatorId)
         {

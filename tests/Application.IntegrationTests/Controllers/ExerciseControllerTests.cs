@@ -23,38 +23,17 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class ExerciseControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class ExerciseControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private HttpClient _client;
-        private WebApplicationFactory<Startup> _factory;
+        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public ExerciseControllerTests(WebApplicationFactory<Startup> factory)
+        public ExerciseControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
-            _factory = factory
-            .WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    var dbContextOptions = services
-                           .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                    services.Remove(dbContextOptions);
-                    services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
-                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
-                    services.AddMvc(option => option.Filters.Add(new FakeUserFilter()));
-                });
-            });
-
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            //Seed necessary data like roles and other databases
-            SeedDataHelper.SeedDatabases(context, "FootballLeague").Wait();
-            SeedDataHelper.SeedRoles(context).Wait();
-
-            _client = _factory.CreateClient();
+            _factory = factory;
+            _client = factory.CreateClient();
         }
-       
+            
         private Exercise getValidExercise(bool isPrivate)
         {
             var model = new Exercise
@@ -83,6 +62,7 @@ namespace WebAPI.IntegrationTests.Controllers
             using var scope = scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
+            context.Exercises.Clear();
             await context.Exercises.AddAsync(exercise1);
             await context.Exercises.AddAsync(exercise2);
             await context.Exercises.AddAsync(exercise3);
@@ -115,7 +95,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync("api/exercise/create/", httpContent);
-
+            
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }

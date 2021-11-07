@@ -19,6 +19,7 @@ namespace WebAPI.IntegrationTests.Helpers
                     ConnectionString = readOnlyConnectionString,
                 };
                 await context.Databases.AddAsync(newDatabase);
+                await context.SaveChangesAsync();
             }                         
         }
 

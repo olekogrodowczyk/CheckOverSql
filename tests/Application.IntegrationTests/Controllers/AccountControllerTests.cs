@@ -1,6 +1,7 @@
 ﻿using Application.Dto.LoginUserVm;
 using Application.Dto.RegisterUserVm;
 using Application.Interfaces;
+using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,38 +17,17 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class AccountControllerTests : IClassFixture<WebApplicationFactory<Startup>>
+    public class AccountControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private HttpClient _client;
-        private WebApplicationFactory<Startup> _factory;
-        private Mock<IIdentityService> _identityServiceMock = new Mock<IIdentityService>();
+        private readonly HttpClient _client;
+        private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public AccountControllerTests(WebApplicationFactory<Startup> factory)
+        public AccountControllerTests(CustomWebApplicationFactory<Startup> factory)
         {
-            _factory = factory
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureServices(services =>
-                    {
-                        var dbContextOptions = services
-                               .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-                        services.Remove(dbContextOptions);
-                        services.AddSingleton(_identityServiceMock.Object);
-                        services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
-
-                    });
-                });
-            _client = _factory.CreateClient();
-
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            //Seed necessary data like roles and other databases
-            SeedDataHelper.SeedDatabases(context, "FootballLeague").Wait();
-            SeedDataHelper.SeedRoles(context).Wait();
+            _factory = factory;
+            _client = factory.CreateClient();
         }
-
+       
         [Fact]
         public async Task RegisterUser_ForValidModel_ReturnsOk()
         {
@@ -87,6 +67,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             var httpContent = registerUser.ToJsonHttpContent();
 
+
             //Act
             var response = await _client.PostAsync("/api/account/register", httpContent);
 
@@ -100,7 +81,7 @@ namespace WebAPI.IntegrationTests.Controllers
             // Arrange
             var registerUser1 = new RegisterUserDto()
             {
-                Email = "test@test.com",
+                Email = "testsameemail@test.com",
                 Password = "password123",
                 ConfirmPassword = "password123",
                 FirstName = "John",
@@ -109,35 +90,17 @@ namespace WebAPI.IntegrationTests.Controllers
             };         
 
             var httpContent = registerUser1.ToJsonHttpContent();
+            await ClearTableDataHelper.cleanTable<User>(_factory);
 
             //Act
-            var response = await _client.PostAsync("/api/account/register", httpContent);
-            var response2 = await _client.PostAsync("/api/account/register", httpContent);
-
-            //Assert
-            response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Login_ForRegisteredUser_ReturnsOk()
-        {
-            //Arrange
-            _identityServiceMock.Setup(x => x.Login(It.IsAny<LoginUserDto>()))
-                .ReturnsAsync("jwt");
-
-            var loginUserDto = new LoginUserDto()
-            {
-                Email = "test@test.com",
-                Password = "password123"
-            };
-
-            var httpContent = loginUserDto.ToJsonHttpContent();
-
-            //Act
-            var response = await _client.PostAsync("api/account/login", httpContent);
+            var response = await _client.PostAsync("api/account/register/", httpContent);
+            var response2 = await _client.PostAsync("api/account/register/", httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
+
+        
     }
 }
