@@ -21,10 +21,11 @@ namespace Application.Services
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IDatabaseService _queryService;
         private readonly IDataComparerService _dataComparer;
+        private readonly IComparisonRepository _comparisonRepository;
 
         public SolutionService(IMapper mapper, ISolutionRepository solutionRepository, IUserContextService userContextService
             ,IDatabaseQuery databaseQuery, IExerciseRepository exerciseRepository, IDatabaseService queryService
-            ,IDataComparerService dataComparer)
+            ,IDataComparerService dataComparer, IComparisonRepository comparisonRepository)
         {
             _mapper = mapper;
             _solutionRepository = solutionRepository;
@@ -33,6 +34,7 @@ namespace Application.Services
             _exerciseRepository = exerciseRepository;
             _queryService = queryService;
             _dataComparer = dataComparer;
+            _comparisonRepository = comparisonRepository;
         }
 
         public async Task<int> CreateSolution(CreateSolutionDto model, int exerciseId)
@@ -65,6 +67,21 @@ namespace Application.Services
             var result = await _dataComparer.compareValues(list1, list2);
 
             return result;
+        }
+
+        public async Task CreateComparison(int solutionId, int exerciseId, bool comparisonResult)
+        {
+            var solution = await _solutionRepository.GetById(solutionId);
+            var exercise = await _exerciseRepository.GetById(exerciseId);
+            Comparison comparison = new Comparison
+            {
+                Solution = solution,
+                SolutionId = solutionId,
+                Exercise = exercise,
+                ExerciseId = exerciseId,
+                Result = comparisonResult,
+            };
+            await _comparisonRepository.Add(comparison);
         }
 
         public async Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId)

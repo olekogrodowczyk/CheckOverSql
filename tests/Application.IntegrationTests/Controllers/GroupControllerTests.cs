@@ -108,6 +108,30 @@ namespace WebAPI.IntegrationTests.Controllers
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             result.Value.Should().HaveCount(2);
         }
+
+        [Fact]
+        public async Task Create_ForCreatedGroup_CreatesRelationshipBetweenGroupAndUser()
+        {
+            //Arrange
+            var createGroupDto = new CreateGroupDto
+            {
+                Name = "Group1"
+            };
+
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            var httpContent = createGroupDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync("api/group/", httpContent);
+            bool result = await context.Assignments.AnyAsync();
+
+            //Assert
+            result.Should().BeTrue();
+
+        }
       
         private Group getGroup(int creatorId)
         {

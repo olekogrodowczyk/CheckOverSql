@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Infrastructure.Repositories
 {
     public class ExerciseRepository : EfRepository<Exercise>, IExerciseRepository
     {
-        public ExerciseRepository(ApplicationDbContext context) : base(context)
+        public ExerciseRepository(ApplicationDbContext context, ILogger<ExerciseRepository> logger) : base(context, logger)
         {
         }
 
-        
+
     }
 }

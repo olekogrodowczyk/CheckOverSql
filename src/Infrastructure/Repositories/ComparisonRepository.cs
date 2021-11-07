@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class AssignmentRepository : EfRepository<Assignment>, IAssignmentRepository
+    public class ComparisonRepository : EfRepository<Comparison>, IComparisonRepository
     {
-        public AssignmentRepository(ApplicationDbContext context, ILogger<AssignmentRepository> logger) : base(context, logger)
+        public ComparisonRepository(ApplicationDbContext context, ILogger<ComparisonRepository> logger) : base(context, logger)
         {
 
         }

@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,8 @@ namespace Infrastructure.Repositories
 {
     public class GroupRoleRepository : EfRepository<GroupRole>, IGroupRoleRepository
     {
-        public GroupRoleRepository(ApplicationDbContext context) : base(context)
+        public GroupRoleRepository(ApplicationDbContext context, ILogger<GroupRoleRepository> logger) : base(context, logger)
         {
-
         }
 
         public async Task<GroupRole> GetByName(string name)

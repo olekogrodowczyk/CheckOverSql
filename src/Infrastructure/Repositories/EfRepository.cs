@@ -2,6 +2,8 @@
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,13 @@ namespace Infrastructure.Repositories
     public class EfRepository<T> : IRepository<T> where T : class, new()
     {
         protected readonly ApplicationDbContext _context;
+        private readonly ILogger<EfRepository<T>> _logger;
+
+        public EfRepository(ApplicationDbContext context, ILogger<EfRepository<T>> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
 
         public EfRepository(ApplicationDbContext context)
         {
@@ -24,6 +33,8 @@ namespace Infrastructure.Repositories
         {
             _context.Set<T>().Add(entity);
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"New item added to database with type: {typeof(T)}");      
+
             return entity;
         }
 

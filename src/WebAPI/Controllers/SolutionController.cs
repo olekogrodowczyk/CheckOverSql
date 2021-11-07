@@ -46,7 +46,8 @@ namespace WebAPI.Controllers
         [HttpGet("compare/{solutionId}")]
         public async Task<IActionResult> Compare([FromRoute] int solutionId, [FromRoute] int exerciseId)
         {
-            var result = await _solutionService.Compare(solutionId, exerciseId);
+            bool result = await _solutionService.Compare(solutionId, exerciseId);
+            await _solutionService.CreateComparison(solutionId, exerciseId, result);
             return Ok(new Result<bool>(result, "Pomyślnie porównano rozwiązania"));
         }
 

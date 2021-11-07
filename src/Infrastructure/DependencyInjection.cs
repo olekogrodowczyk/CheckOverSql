@@ -64,6 +64,7 @@ namespace Infrastructure
             services.AddScoped<ISolutionRepository, SolutionRepository>();
             services.AddScoped<IDatabaseRepository, DatabaseRepository>();
             services.AddScoped<IDatabaseQuery, DatabaseQuery>();
+            services.AddScoped<IComparisonRepository, ComparisonRepository>();
 
 
             return services;

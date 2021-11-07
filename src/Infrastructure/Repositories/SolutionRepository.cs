@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Infrastructure.Repositories
         private readonly IUserContextService _userContextService;
 
         public SolutionRepository(ApplicationDbContext context, IDatabaseRepository databaseRepository,
-            IUserContextService userContextService) : base(context)
+            IUserContextService userContextService, ILogger<SolutionRepository> logger) : base(context, logger)
         {
             _databaseRepository = databaseRepository;
             _userContextService = userContextService;

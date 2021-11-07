@@ -236,11 +236,10 @@ namespace WebAPI.IntegrationTests.Controllers
 
             var solution = new Solution
             {
-                CreatorId = 1,
-                Dialect = "SQL Server",
                 Exercise = exercise,
-                ExerciseId = exercise.Id,
-                Query = "SELECT FirstName, LastName FROM dbo.Footballers"
+                CreatorId = 1,
+                Query = "SELECT FirstName, LastName FROM dbo.Footballers",
+                Dialect = "SQL Server"
             };
             await context.Solutions.AddAsync(solution);
             await context.SaveChangesAsync();
@@ -253,6 +252,31 @@ namespace WebAPI.IntegrationTests.Controllers
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             result.Value.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Compare_ForMakingComparison_CreatesComparison()
+        {
+            //Arrange
+            var exercise = getValidExercise();
+            var solution = getSolution(exercise, 1);
+
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            await context.AddAsync(exercise);
+            await context.SaveChangesAsync();
+            await context.AddAsync(solution);
+            await context.SaveChangesAsync();
+
+            //Act
+            var response = await _client.GetAsync($"api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
+            bool comparisonExists = await context.Comparisons.AnyAsync();
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            comparisonExists.Should().BeTrue();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,8 @@ namespace Infrastructure.Repositories
 {
     public class UserRepository : EfRepository<User>, IUserRepository
     {
-        public UserRepository(ApplicationDbContext context) : base(context)
+        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) : base(context, logger)
         {
-
         }
     }
 }

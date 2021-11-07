@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Infrastructure.Repositories
 {
     public class DatabaseRepository : EfRepository<Database>, IDatabaseRepository
     {
-        public DatabaseRepository(ApplicationDbContext context) : base(context)
+        public DatabaseRepository(ApplicationDbContext context, ILogger<DatabaseRepository> logger) : base(context, logger)
         {
         }
 
