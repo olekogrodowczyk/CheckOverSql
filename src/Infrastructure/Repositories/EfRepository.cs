@@ -80,7 +80,7 @@ namespace Infrastructure.Repositories
                 .Include(include)
                 .Where(predicate)                
                 .ToListAsync();
-        }
+        }       
 
         public async Task Update(T entity)
         {

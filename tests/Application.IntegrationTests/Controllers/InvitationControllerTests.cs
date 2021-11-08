@@ -1,6 +1,7 @@
 ﻿using Application.Dto.CreateInvitationDto;
 using Application.Dto.RegisterUserVm;
 using Application.Responses;
+using Application.ViewModels;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebAPI.IntegrationTests.FakeAuthentication;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
@@ -27,6 +27,172 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             _factory = factory;
             _client = factory.CreateClient();
+        }
+     
+        [Fact]
+        public async Task Create_ForValidModel_ReturnsOkWithValidProperties()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedUsers(context);
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "johnsmith@gmail.com",
+                RoleName = "Moderator"
+            };
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            var invitation = await context.Invitations
+                .Include(x => x.GroupRole)
+                .Include(x => x.Receiver)
+                .Include(x => x.Group)
+                .SingleOrDefaultAsync();
+            invitation.Receiver.Email.Should().Be("johnsmith@gmail.com");
+            invitation.Group.Should().NotBeNull();
+            invitation.GroupRole.Name.Should().Be("Moderator");
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSampleInvalidCreateModels))]
+        public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationDto createInvitationDto)
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task Create_ForTwoSameInvitations_ReturnsBadRequest()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "testinvitation@gmail.com",
+                RoleName = "Moderator"
+            };
+
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response2 = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+
+            //Assert
+            response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task Create_ForUserAlreadyInGroup_ReturnsBadRequest()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var assignment = new Assignment
+            {
+                GroupId = group.Id,
+                UserId = 100,
+                GroupRoleId = 2,                    
+            };
+            await context.Assignments.AddAsync(assignment);
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "testinvitation@gmail.com",
+                RoleName = "Moderator"
+            };
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Theory]
+        [InlineData(99, 100, 2, "getallsent")]
+        [InlineData(100, 99, 1, "getallsent")]
+        [InlineData(99, 101, 2, "getallsent")]
+        [InlineData(99,100, 1, "getallreceived")]
+        [InlineData(100,99, 2, "getallreceived")]
+        [InlineData(100,99, 3, "getall")]
+        public async Task GetAllWithCondition_ForValidModel_ReturnsOkWithValidCount
+            (int senderId, int receiverId, int expectedCount, string queryType)
+        {
+            //Arrange
+            await ClearContext();            
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            
+            await SeedDataHelper.SeedUsers(context);
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var invitation1 =
+                await context.AddAsync(getInvitation(senderId, receiverId, group.Id, 2, "Sent"));
+            var invitation2 =
+                await context.AddAsync(getInvitation(101, 99, group.Id, 2, "Accepted"));
+            var invitation3 =
+                await context.AddAsync(getInvitation(99, 102, group.Id, 2, "Sent"));
+
+            await context.SaveChangesAsync();
+
+            //Act
+            var response = await _client.GetAsync($"api/group/{group.Id}/invitation/{queryType}");
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetInvitationVm>>>(responseString);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            result.Value.Should().HaveCount(expectedCount);
         }
 
         public static IEnumerable<object[]> GetSampleInvalidCreateModels()
@@ -64,160 +230,26 @@ namespace WebAPI.IntegrationTests.Controllers
             context.Invitations.Clear();
 
             await context.SaveChangesAsync();
-        }
-
-        private async Task<int> registerUser(string email)
-        {
-            var registerUserDto = new RegisterUserDto
-            {
-                Email = email,
-                FirstName = "John",
-                LastName = "Smith",
-                DateOfBirth = DateTime.UtcNow.AddYears(-20),
-                Password = "password123",
-                ConfirmPassword = "password123"
-            };
-
-            var httpContent = registerUserDto.ToJsonHttpContent();
-
-            var response = await _client.PostAsync("api/account/register", httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<int>>(responseString);
-            return result.Value;
-        }
-
-        private Group getValidGroup()
+        }      
+        private Group getValidGroup(int creatorId)
         {
             return new Group
             {
                 Name = "Grupa1",
-                CreatorId = FakeUserId.Value,
+                CreatorId = creatorId
             };
         }
-
-        private async Task<(Group,int)> initGroupAndRegisterUser()
+      
+        private Invitation getInvitation(int senderId, int receiverId, int groupId, int groupRoleId, string status)
         {
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var group = getValidGroup();
-            await context.Groups.AddAsync(group);
-            await context.SaveChangesAsync();
-
-            int userId = await registerUser("testinvitation@gmail.com");
-
-            return (group,userId);
-        }
-
-
-        [Fact]
-        public async Task Create_ForValidModel_ReturnsOkWithValidProperties()
-        {
-            //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var initResult = await initGroupAndRegisterUser();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            return new Invitation
             {
-                ReceiverEmail = "testinvitation@gmail.com",
-                RoleName = "Moderator"
+                SenderId = senderId,
+                ReceiverId = receiverId,
+                GroupId = groupId,
+                GroupRoleId = groupRoleId,
+                Status = status
             };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
-
-            //Act
-            var response = await _client.PostAsync($"api/group/{initResult.Item1.Id}/invitation", httpContent);
-
-            //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            var invitation = await context.Invitations
-                .Include(x => x.GroupRole)
-                .Include(x => x.Receiver)
-                .Include(x => x.Group)
-                .SingleOrDefaultAsync();
-            invitation.Receiver.Email.Should().Be("testinvitation@gmail.com");
-            invitation.Group.Should().NotBeNull();
-            invitation.GroupRole.Name.Should().Be("Moderator");
-        }
-
-        [Theory]
-        [MemberData(nameof(GetSampleInvalidCreateModels))]
-        public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationDto createInvitationDto)
-        {
-            //Arrange
-            await ClearContext();
-            var initResult = await initGroupAndRegisterUser();
-
-            var httpContent = createInvitationDto.ToJsonHttpContent();
-
-            //Act
-            var response = await _client.PostAsync($"api/group/{initResult.Item1.Id}/invitation", httpContent);
-
-            //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Create_ForTwoSameInvitations_ReturnsBadRequest()
-        {
-            //Arrange
-            await ClearContext();
-            var initResult = await initGroupAndRegisterUser();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
-            {
-                ReceiverEmail = "testinvitation@gmail.com",
-                RoleName = "Moderator"
-            };
-
-            var httpContent = createInvitationDto.ToJsonHttpContent();
-
-            //Act
-            var response = await _client.PostAsync($"api/group/{initResult.Item1.Id}/invitation", httpContent);
-            var response2 = await _client.PostAsync($"api/group/{initResult.Item1.Id}/invitation", httpContent);
-
-            //Assert
-            response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-        }
-
-        [Fact]
-        public async Task Create_ForUserAlreadyInGroup_ReturnsBadRequest()
-        {
-            //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var initResult = await initGroupAndRegisterUser();
-
-            var assignment = new Assignment
-            {
-                GroupId = initResult.Item1.Id,
-                UserId = initResult.Item2,
-                GroupRoleId = 2,                    
-            };
-            await context.Assignments.AddAsync(assignment);
-            await context.SaveChangesAsync();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
-            {
-                ReceiverEmail = "testinvitation@gmail.com",
-                RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
-
-            //Act
-            var response = await _client.PostAsync($"api/group/{initResult.Item1.Id}/invitation", httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-        }
-
+        }       
     }
 }

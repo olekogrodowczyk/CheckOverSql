@@ -1,5 +1,7 @@
 ﻿using Application.Dto.CreateInvitationDto;
+using Application.ViewModels;
 using AutoMapper;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +15,8 @@ namespace Application.Interfaces
         Task CheckIfInvitationAlreadyExists(string email, string role, int groupId);
         Task CheckIfUserIsAlreadyInGroup(string email, string role, int groupId);
         Task<int> CreateInvitation(CreateInvitationDto model, int groupId);
+        Task<IEnumerable<GetInvitationVm>> GetAllUserInvitations();
+        Task<IEnumerable<GetInvitationVm>> GetAllUserReceivedInvitations();
+        Task<IEnumerable<GetInvitationVm>> GetAllUserSentInvitations();
     }
 }

@@ -18,6 +18,6 @@ namespace Domain.Entities
         public string Status { get; set; }
         public int GroupRoleId { get; set; }
         public virtual GroupRole GroupRole { get; set; }
-        public DateTime AnsweredAt { get; set; }
+        public DateTime? AnsweredAt { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Dto.CreateInvitationDto;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.ViewModels;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
@@ -8,6 +9,7 @@ using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -75,5 +77,33 @@ namespace Application.Services
 
             if(result) { throw new AlreadyExistsException($"User already is in the group"); }
         }
+
+        public async Task<IEnumerable<GetInvitationVm>> GetAllUserReceivedInvitations()
+        {
+            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
+            invitations = invitations.Where(x=>x.ReceiverId == _userContextService.GetUserId);
+            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
+            return invitationsVm;
+        }
+
+        public async Task<IEnumerable<GetInvitationVm>> GetAllUserSentInvitations()
+        {
+            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
+            invitations = invitations.Where(x => x.SenderId == _userContextService.GetUserId);
+            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
+            return invitationsVm;
+        }
+
+        public async Task<IEnumerable<GetInvitationVm>> GetAllUserInvitations()
+        {
+            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
+            invitations = invitations.Where
+                (x => x.ReceiverId == _userContextService.GetUserId
+                || x.SenderId == _userContextService.GetUserId);
+            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
+            return invitationsVm;
+        }
+
+
     }
 }
