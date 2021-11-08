@@ -58,12 +58,12 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Assignment>()
                 .HasOne<GroupRole>(x => x.GroupRole)
                 .WithMany(x => x.Assignments)
-                .HasForeignKey(x => x.RoleId);
+                .HasForeignKey(x => x.GroupRoleId);
 
             modelBuilder.Entity<Invitation>()
                 .HasOne<GroupRole>(x => x.GroupRole)
                 .WithMany(x => x.Invitations)
-                .HasForeignKey(x => x.RoleId);
+                .HasForeignKey(x => x.GroupRoleId);
 
             modelBuilder.Entity<Solving>()
                 .HasOne<Exercise>(x => x.Exercise)
@@ -75,12 +75,12 @@ namespace Infrastructure.Data
                 .WithMany(x => x.Solvings)
                 .HasForeignKey(x => x.AssignmentId);
 
-            modelBuilder.Entity<RolePermission>()
+            modelBuilder.Entity<GroupRolePermission>()
                 .HasOne<GroupRole>(x => x.GroupRole)
                 .WithMany(x => x.RolePermissions)
                 .HasForeignKey(x => x.RoleId);
 
-            modelBuilder.Entity<RolePermission>()
+            modelBuilder.Entity<GroupRolePermission>()
                 .HasOne<Permission>(x => x.Permission)
                 .WithMany(x => x.RolePermissions)
                 .HasForeignKey(x => x.PermissionId);

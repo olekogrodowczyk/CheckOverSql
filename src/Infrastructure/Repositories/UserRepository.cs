@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ namespace Infrastructure.Repositories
     {
         public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger) : base(context, logger)
         {
+            
+        }
+
+        public async Task<User> GetByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x=>x.Email == email);
         }
     }
 }

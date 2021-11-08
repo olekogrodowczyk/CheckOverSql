@@ -32,11 +32,11 @@ namespace Infrastructure.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
+                    b.Property<int>("GroupRoleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -45,7 +45,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("GroupRoleId");
 
                     b.HasIndex("UserId");
 
@@ -238,7 +238,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("GroupRoles");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Invitation", b =>
+            modelBuilder.Entity("Domain.Entities.GroupRolePermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -248,16 +248,47 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Invitation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AnsweredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupRoleId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<int>("SenderId")
@@ -270,9 +301,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("GroupRoleId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
 
@@ -322,34 +353,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RolePermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermissionId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Solution", b =>
@@ -488,7 +491,7 @@ namespace Infrastructure.Migrations
 
                     b.HasOne("Domain.Entities.GroupRole", "GroupRole")
                         .WithMany("Assignments")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("GroupRoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -573,42 +576,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Invitation", b =>
-                {
-                    b.HasOne("Domain.Entities.Group", "Group")
-                        .WithMany("Invitations")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "Receiver")
-                        .WithMany("InvitationsReceived")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
-                        .WithMany("Invitations")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "Sender")
-                        .WithMany("InvitationsSent")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("GroupRole");
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("Domain.Entities.RolePermission", b =>
+            modelBuilder.Entity("Domain.Entities.GroupRolePermission", b =>
                 {
                     b.HasOne("Domain.Entities.Permission", "Permission")
                         .WithMany("RolePermissions")
@@ -625,6 +593,41 @@ namespace Infrastructure.Migrations
                     b.Navigation("GroupRole");
 
                     b.Navigation("Permission");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Invitation", b =>
+                {
+                    b.HasOne("Domain.Entities.Group", "Group")
+                        .WithMany("Invitations")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
+                        .WithMany("Invitations")
+                        .HasForeignKey("GroupRoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "Receiver")
+                        .WithMany("InvitationsReceived")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "Sender")
+                        .WithMany("InvitationsSent")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("GroupRole");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Domain.Entities.Solution", b =>

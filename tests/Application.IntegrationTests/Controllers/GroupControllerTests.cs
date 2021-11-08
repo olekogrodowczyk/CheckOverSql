@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WebAPI.IntegrationTests.FakeAuthentication;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
@@ -85,9 +86,9 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetUserGroups_ForCreatedGroupsByUser_ReturnsAllTheseGroups()
         {
             //Arrange
-            var group1 = getGroup(1);
+            var group1 = getGroup(FakeUserId.Value);
             var group2 = getGroup(2);
-            var group3 = getGroup(1);
+            var group3 = getGroup(FakeUserId.Value);
 
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();

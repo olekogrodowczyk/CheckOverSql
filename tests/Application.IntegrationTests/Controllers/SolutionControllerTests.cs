@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using WebAPI.IntegrationTests.FakeAuthentication;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
@@ -51,7 +52,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 MaxPoints = 10,
                 IsPrivate = false,
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
-                CreatorId = 1,
+                CreatorId = FakeUserId.Value,
                 Title = "Zadanie1",
                 Description = "Zadanie1opis",
             };
@@ -183,9 +184,9 @@ namespace WebAPI.IntegrationTests.Controllers
             var exercise = getValidExercise();
 
             await context.Exercises.AddAsync(exercise);
-            await context.Solutions.AddAsync(getSolution(exercise,1));
+            await context.Solutions.AddAsync(getSolution(exercise,FakeUserId.Value));
             await context.Solutions.AddAsync(getSolution(exercise,2));
-            await context.Solutions.AddAsync(getSolution(exercise,1));
+            await context.Solutions.AddAsync(getSolution(exercise,FakeUserId.Value));
             await context.SaveChangesAsync();
             
             //Act
@@ -209,7 +210,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var exercise = getValidExercise();
             await context.Exercises.AddAsync(exercise);
 
-            var solution = getSolution(exercise, 1);
+            var solution = getSolution(exercise, FakeUserId.Value);
             await context.Solutions.AddAsync(solution);
             await context.SaveChangesAsync();
 
@@ -237,7 +238,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solution = new Solution
             {
                 Exercise = exercise,
-                CreatorId = 1,
+                CreatorId = FakeUserId.Value,
                 Query = "SELECT FirstName, LastName FROM dbo.Footballers",
                 Dialect = "SQL Server"
             };
@@ -259,7 +260,7 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             var exercise = getValidExercise();
-            var solution = getSolution(exercise, 1);
+            var solution = getSolution(exercise, FakeUserId.Value);
 
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();

@@ -21,7 +21,7 @@ namespace Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<GroupRole> GroupRoles { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
-        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<GroupRolePermission> RolePermissions { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Database> Databases { get; set; }

@@ -11,7 +11,7 @@ namespace Domain.Entities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<RolePermission> RolePermissions { get; set; }
+        public virtual ICollection<GroupRolePermission> RolePermissions { get; set; }
 
     }
 }

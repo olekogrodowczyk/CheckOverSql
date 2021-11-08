@@ -41,6 +41,7 @@ namespace WebAPI.IntegrationTests
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
                 services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
                 services.AddMvc(option => option.Filters.Add(new FakeUserFilter()));
+                
 
                 var sp = services.BuildServiceProvider();
 

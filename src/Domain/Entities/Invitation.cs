@@ -16,7 +16,8 @@ namespace Domain.Entities
         public int ReceiverId { get; set; }
         public virtual User Receiver { get; set; }
         public string Status { get; set; }
-        public int RoleId { get; set; }
+        public int GroupRoleId { get; set; }
         public virtual GroupRole GroupRole { get; set; }
+        public DateTime AnsweredAt { get; set; }
     }
 }

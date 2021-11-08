@@ -15,8 +15,7 @@ namespace Application.Dto.CreateGroupVm
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateGroupDto, Group>();
-            profile.CreateMap<Group, CreateGroupDto>();              
+            profile.CreateMap<CreateGroupDto, Group>();           
         }
     }
 }

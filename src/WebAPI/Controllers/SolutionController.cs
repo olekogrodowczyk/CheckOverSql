@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
     [Authorize]
-    [Route("api/exercise/{exerciseId}/solution")]
+    [Route("api/exercise/{exerciseId}/[controller]")]
     [ApiController]
     public class SolutionController : ControllerBase
     {

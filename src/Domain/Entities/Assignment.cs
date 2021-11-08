@@ -13,7 +13,7 @@ namespace Domain.Entities
         public virtual User User { get; set; }
         public int GroupId { get; set; }
         public virtual Group Group{ get; set; }
-        public int RoleId { get; set; }
+        public int GroupRoleId { get; set; }
         public virtual GroupRole GroupRole {  get; set; }
 
         public virtual ICollection<Solving> Solvings { get; set; }

@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IInvitationRepository : IRepository<Invitation>
     {
-        Task<User> GetByEmail(string email);
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class RolePermission : AuditableEntity
+    public class GroupRolePermission : AuditableEntity
     {
         public int RoleId { get; set; }
         public virtual GroupRole GroupRole { get; set; }

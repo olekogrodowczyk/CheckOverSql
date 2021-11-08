@@ -17,7 +17,7 @@ namespace Application.Dto.CreateSolutionDto
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateSolutionDto, Solution>().ReverseMap();
+            profile.CreateMap<CreateSolutionDto, Solution>();
         }
     }
 }

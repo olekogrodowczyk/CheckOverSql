@@ -87,5 +87,10 @@ namespace Infrastructure.Repositories
             var post = _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> Exists(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().AnyAsync(predicate);
+        }
     }
 }

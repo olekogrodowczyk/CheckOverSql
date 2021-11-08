@@ -24,6 +24,7 @@ namespace Application
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
+            services.AddScoped<IInvitationService, InvitationService>();
             return services;
         }
     }
