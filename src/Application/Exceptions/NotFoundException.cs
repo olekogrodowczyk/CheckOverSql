@@ -8,9 +8,10 @@ namespace Application.Exceptions
 {
     public class NotFoundException : Exception
     {
-        public NotFoundException(string message) : base(message)
+        public bool IsPublic { get; }
+        public NotFoundException(string message, bool isPublic = false) : base(message)
         {
-
-        }
+            IsPublic = IsPublic;
+        }      
     }
 }

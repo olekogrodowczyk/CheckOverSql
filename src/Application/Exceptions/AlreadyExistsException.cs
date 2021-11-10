@@ -8,9 +8,10 @@ namespace Application.Exceptions
 {
     public class AlreadyExistsException : Exception
     {
-        public AlreadyExistsException(string message) : base(message)
+        public bool IsPublic { get; set; }
+        public AlreadyExistsException(string message, bool isPublic = false) : base(message)
         {
-
+            IsPublic = isPublic;
         }
     }
 }

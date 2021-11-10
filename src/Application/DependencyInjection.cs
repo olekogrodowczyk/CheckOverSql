@@ -11,13 +11,17 @@ using System.Reflection;
 using Application.Services;
 using Domain.Interfaces;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
+using Application.Authorization;
 
 namespace Application
 {
     public static class DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
-        {           
+        {
+            services.AddAuthorization();
+            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();

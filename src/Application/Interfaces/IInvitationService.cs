@@ -13,6 +13,7 @@ namespace Application.Interfaces
     public interface IInvitationService
     {
         Task CheckIfInvitationAlreadyExists(string email, string role, int groupId);
+        Task CheckIfSenderIsInTheGroup(int groupId);
         Task CheckIfUserIsAlreadyInGroup(string email, string role, int groupId);
         Task<int> CreateInvitation(CreateInvitationDto model, int groupId);
         Task<IEnumerable<GetInvitationVm>> GetAllUserInvitations();

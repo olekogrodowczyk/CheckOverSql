@@ -92,5 +92,10 @@ namespace Infrastructure.Repositories
         {
             return await _context.Set<T>().AnyAsync(predicate);
         }
+
+        public async Task<T> SingleOrDefault(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().SingleOrDefaultAsync(predicate);
+        }
     }
 }

@@ -13,7 +13,6 @@ namespace Application.Dto.CreateInvitationDto
     public class CreateInvitationDto
     {
         public string ReceiverEmail { get; set; }
-        public string RoleName { get; set; }
-
+        public string RoleName { get; set; }     
     }
 }

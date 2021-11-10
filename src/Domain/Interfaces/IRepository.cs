@@ -18,5 +18,6 @@ namespace Domain.Interfaces
         Task<IEnumerable<T>> GetWhereInclude(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include);
         Task<IEnumerable<T>> GetAllInclude(Expression<Func<T, object>> include);
         Task<bool> Exists(Expression<Func<T, bool>> predicate);
+        Task<T> SingleOrDefault(Expression<Func<T, bool>> predicate);
     }
 }

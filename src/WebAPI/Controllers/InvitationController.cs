@@ -25,8 +25,9 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateInvitationDto model, [FromRoute] int groupId)
         {
+            await _invitationService.CheckIfSenderIsInTheGroup(groupId);
             await _invitationService.CheckIfInvitationAlreadyExists(model.ReceiverEmail, model.RoleName, groupId);
-            await _invitationService.CheckIfUserIsAlreadyInGroup(model.ReceiverEmail, model.RoleName, groupId);
+            await _invitationService.CheckIfUserIsAlreadyInGroup(model.ReceiverEmail, model.RoleName, groupId);        
             int result = await _invitationService.CreateInvitation(model, groupId);
             return Ok(new Result<int>(result, "Invitation sent successfully"));
         }

@@ -40,7 +40,10 @@ namespace WebAPI.IntegrationTests.Controllers
             await SeedDataHelper.SeedUsers(context);
 
             var group = getValidGroup(99);
-            await context.AddAsync(group);
+            
+            await context.Groups.AddAsync(group);
+            await context.SaveChangesAsync();
+            await context.Assignments.AddAsync(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
             await context.SaveChangesAsync();
 
             CreateInvitationDto createInvitationDto = new CreateInvitationDto
@@ -56,14 +59,42 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            var invitation = await context.Invitations
-                .Include(x => x.GroupRole)
-                .Include(x => x.Receiver)
-                .Include(x => x.Group)
+            var invitation = await context.Invitations.Include(x => x.GroupRole).Include(x => x.Receiver).Include(x => x.Group)
                 .SingleOrDefaultAsync();
             invitation.Receiver.Email.Should().Be("johnsmith@gmail.com");
             invitation.Group.Should().NotBeNull();
             invitation.GroupRole.Name.Should().Be("Moderator");
+        }
+
+        [Fact]
+        public async Task Create_ForSenderIsNotInTheGroup_ReturnsBadRequest()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedUsers(context);
+
+            var group = getValidGroup(99);
+
+            await context.Groups.AddAsync(group);
+            await context.SaveChangesAsync();
+            await context.Assignments.AddAsync(new Assignment { GroupId = group.Id, UserId = 102, GroupRoleId = 2 });
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "johnsmith@gmail.com",
+                RoleName = "Moderator"
+            };
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Theory]
@@ -104,7 +135,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             CreateInvitationDto createInvitationDto = new CreateInvitationDto
             {
-                ReceiverEmail = "testinvitation@gmail.com",
+                ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
             };
 
@@ -195,6 +226,44 @@ namespace WebAPI.IntegrationTests.Controllers
             result.Value.Should().HaveCount(expectedCount);
         }
 
+        [Fact]
+        public async Task Create_ForInvalidGroupRoleInAssignment_ReturnsForbidden()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedUsers(context);
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var assignment = new Assignment
+            {
+                GroupId = group.Id,
+                UserId = 99,
+                GroupRoleId = 3,
+            };
+            await context.Assignments.AddAsync(assignment);
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "johnsmith@gmail.com",
+                RoleName = "Moderator"
+            };
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+        }
+
         public static IEnumerable<object[]> GetSampleInvalidCreateModels()
         {
             var list = new List<CreateInvitationDto>()
@@ -217,6 +286,7 @@ namespace WebAPI.IntegrationTests.Controllers
             };
             return list.Select(x => new object[] { x });
         }
+
 
         private async Task ClearContext()
         {

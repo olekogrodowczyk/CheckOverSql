@@ -8,9 +8,10 @@ namespace Application.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public BadRequestException(string message) : base(message)
+        public bool IsPublic { get; }
+        public BadRequestException(string message, bool isPublic = false) : base(message)
         {
-
-        }
+            IsPublic = isPublic;
+        }      
     }
 }

@@ -248,22 +248,22 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("GroupRoleId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupRoleId");
 
                     b.HasIndex("PermissionId");
 
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("RolePermissions");
+                    b.ToTable("GroupRolePermissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Invitation", b =>
@@ -273,7 +273,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("AnsweredAt")
+                    b.Property<DateTime?>("AnsweredAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("Created")
@@ -578,15 +578,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.GroupRolePermission", b =>
                 {
-                    b.HasOne("Domain.Entities.Permission", "Permission")
+                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
                         .WithMany("RolePermissions")
-                        .HasForeignKey("PermissionId")
+                        .HasForeignKey("GroupRoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
+                    b.HasOne("Domain.Entities.Permission", "Permission")
                         .WithMany("RolePermissions")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

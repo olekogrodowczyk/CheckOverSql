@@ -22,6 +22,7 @@ namespace WebAPI.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            string globalMessage = "Something went wrong";
             var code = HttpStatusCode.InternalServerError;
             var result = new ErrorResult();
             try
@@ -35,26 +36,26 @@ namespace WebAPI.Middleware
                 context.Response.StatusCode = 500;
                 switch (e)
                 {
-                    case AlreadyExistsException _:
+                    case AlreadyExistsException alreadyExistsException:
                         code = HttpStatusCode.BadRequest;
-                        result = new ErrorResult(e.Message);
+                        result = alreadyExistsException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
-                    case NotFoundException _:
-                        code=HttpStatusCode.NotFound;
-                        result = new ErrorResult(e.Message);
+                    case NotFoundException notFoundException:
+                        code = HttpStatusCode.BadRequest;
+                        result = notFoundException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
                     case BadRequestException _:
                     case ValidationException _:
                         code = HttpStatusCode.BadRequest;
                         result = new ErrorResult(e.Message);
                         break;
-                    case ForbidException _:
+                    case ForbidException forbidException:
                         code = HttpStatusCode.Forbidden;
-                        result = new ErrorResult(e.Message);
+                        result = forbidException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
                     case ArgumentNullException _:
                         code = HttpStatusCode.InternalServerError;
-                        result = new ErrorResult(e.Message);
+                        result = new ErrorResult(globalMessage);
                         break;
                     case SqlException _:
                         code = HttpStatusCode.Forbidden;

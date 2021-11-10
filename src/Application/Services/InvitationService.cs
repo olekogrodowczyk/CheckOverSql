@@ -1,4 +1,5 @@
-﻿using Application.Dto.CreateInvitationDto;
+﻿using Application.Authorization;
+using Application.Dto.CreateInvitationDto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
@@ -6,6 +7,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +26,12 @@ namespace Application.Services
         private readonly IUserContextService _userContextService;
         private readonly IGroupRoleRepository _groupRoleRepository;
         private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IAuthorizationService _authorizationService;
 
         public InvitationService(IMapper mapper, IGroupRepository groupRepository
             ,IInvitationRepository invitationRepository, IUserRepository userRepository
             ,IUserContextService userContextService, IGroupRoleRepository groupRoleRepository
-            ,IAssignmentRepository assignmentRepository)
+            ,IAssignmentRepository assignmentRepository, IAuthorizationService authorizationService)
         {
             _mapper = mapper;
             _groupRepository = groupRepository;
@@ -37,6 +40,7 @@ namespace Application.Services
             _userContextService = userContextService;
             _groupRoleRepository = groupRoleRepository;
             _assignmentRepository = assignmentRepository;
+            _authorizationService = authorizationService;
         }
 
         public async Task<int> CreateInvitation(CreateInvitationDto model, int groupId)
@@ -44,6 +48,10 @@ namespace Application.Services
             var receiver = await _userRepository.GetByEmail(model.ReceiverEmail);
             var groupRole = await _groupRoleRepository.GetByName(model.RoleName);
             var group = await _groupRepository.GetById(groupId);
+            var assignment = await _assignmentRepository.SingleOrDefault(x => x.UserId == _userContextService.GetUserId);
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
+                , assignment, new PermissionRequirement("Sending invitations"));
 
             var invitation = new Invitation
             {
@@ -76,6 +84,14 @@ namespace Application.Services
             bool result = await _assignmentRepository.Exists(x=>x.UserId==receiver.Id && x.GroupId == groupId);
 
             if(result) { throw new AlreadyExistsException($"User already is in the group"); }
+        }
+
+        public async Task CheckIfSenderIsInTheGroup(int groupId)
+        {
+            int senderId = (int)_userContextService.GetUserId;
+            var result = await _assignmentRepository.Exists(x => x.GroupId == groupId && x.UserId == senderId);
+            
+            if(!result) { throw new NotFoundException($"Sender is not in the group"); }
         }
 
         public async Task<IEnumerable<GetInvitationVm>> GetAllUserReceivedInvitations()

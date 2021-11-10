@@ -53,6 +53,7 @@ namespace WebAPI.IntegrationTests
                     context.Database.EnsureCreated();
                     SeedDataHelper.SeedRoles(context).Wait();
                     SeedDataHelper.SeedDatabases(context,"FootballLeague").Wait();
+                    SeedDataHelper.SeedPermissionWithGroupRoles(context).Wait();
                 }
             });
         }

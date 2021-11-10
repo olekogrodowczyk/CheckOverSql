@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IAssignmentRepository : IRepository<Assignment>
     {
+        Task<bool> CheckIfAssignmentHasPermission(int assignmentId, string permissionTitle);
     }
 }

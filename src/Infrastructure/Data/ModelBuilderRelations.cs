@@ -78,7 +78,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<GroupRolePermission>()
                 .HasOne<GroupRole>(x => x.GroupRole)
                 .WithMany(x => x.RolePermissions)
-                .HasForeignKey(x => x.RoleId);
+                .HasForeignKey(x => x.GroupRoleId);
 
             modelBuilder.Entity<GroupRolePermission>()
                 .HasOne<Permission>(x => x.Permission)

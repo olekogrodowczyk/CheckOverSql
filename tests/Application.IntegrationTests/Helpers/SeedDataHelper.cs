@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,30 @@ namespace WebAPI.IntegrationTests.Helpers
                 await context.Roles.AddAsync(new Role { Id = 2, Name = "User" });
                 await context.SaveChangesAsync();
             }
+        }
+
+        public static async Task SeedPermissionWithGroupRoles(ApplicationDbContext context)
+        {
+            var permissions = Seeder.getPermissions();
+            var groupRoles = Seeder.getGroupRoles();
+            if (!await context.Permissions.AnyAsync())
+            {
+                await context.Permissions.AddRangeAsync(permissions);
+            }
+            if (!await context.GroupRoles.AnyAsync())
+            {
+                await context.GroupRoles.AddRangeAsync(groupRoles);
+            }
+            await context.SaveChangesAsync();
+
+            var groupRolesPermissions = Seeder.GetGroupRolePermissions(permissions, groupRoles);
+         
+            if (!await context.GroupRolePermissions.AnyAsync())
+            {
+                await context.GroupRolePermissions.AddRangeAsync(groupRolesPermissions);
+                await context.SaveChangesAsync();
+            }
+            
         }
 
         public static async Task SeedUsers(ApplicationDbContext context)

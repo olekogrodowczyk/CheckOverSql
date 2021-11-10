@@ -5,6 +5,7 @@ using Application.Responses;
 using FluentValidation.AspNetCore;
 using Infrastructure;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
