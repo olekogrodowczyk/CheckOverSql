@@ -47,8 +47,8 @@ namespace Application.Services
         {
             var receiver = await _userRepository.GetByEmail(model.ReceiverEmail);
             var groupRole = await _groupRoleRepository.GetByName(model.RoleName);
-            var group = await _groupRepository.GetById(groupId);
-            var assignment = await _assignmentRepository.SingleOrDefault(x => x.UserId == _userContextService.GetUserId);
+            var group = await _groupRepository.GetByIdAsync(groupId);
+            var assignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , assignment, new PermissionRequirement("Sending invitations"));
@@ -62,7 +62,7 @@ namespace Application.Services
                 Group = group
             };
 
-            await _invitationRepository.Add(invitation);
+            await _invitationRepository.AddAsync(invitation);
             return invitation.Id;
         }
 
@@ -72,7 +72,7 @@ namespace Application.Services
             var groupRole = await _groupRoleRepository.GetByName(role);
 
             bool result = await _invitationRepository
-                .Exists(x => x.ReceiverId == receiver.Id && x.Status == "Sent"
+                .ExistsAsync(x => x.ReceiverId == receiver.Id && x.Status == "Sent"
                 && x.GroupId == groupId && x.GroupRoleId == groupRole.Id);
 
             if(result) { throw new AlreadyExistsException($"Similar invitation already exists"); }
@@ -81,7 +81,7 @@ namespace Application.Services
         public async Task CheckIfUserIsAlreadyInGroup(string email, string role, int groupId)
         {
             var receiver = await _userRepository.GetByEmail(email);
-            bool result = await _assignmentRepository.Exists(x=>x.UserId==receiver.Id && x.GroupId == groupId);
+            bool result = await _assignmentRepository.ExistsAsync(x=>x.UserId==receiver.Id && x.GroupId == groupId);
 
             if(result) { throw new AlreadyExistsException($"User already is in the group"); }
         }
@@ -89,7 +89,7 @@ namespace Application.Services
         public async Task CheckIfSenderIsInTheGroup(int groupId)
         {
             int senderId = (int)_userContextService.GetUserId;
-            var result = await _assignmentRepository.Exists(x => x.GroupId == groupId && x.UserId == senderId);
+            var result = await _assignmentRepository.ExistsAsync(x => x.GroupId == groupId && x.UserId == senderId);
             
             if(!result) { throw new NotFoundException($"Sender is not in the group"); }
         }
@@ -118,6 +118,37 @@ namespace Application.Services
                 || x.SenderId == _userContextService.GetUserId);
             var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
             return invitationsVm;
+        }
+
+        public async Task AcceptInvitation(int invitationId)
+        {
+            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
+            if(invitation.Status != InvitationStatus.Sent.ToString())
+            {
+                throw new BadRequestException("The invitation isn't pending", true);
+            }
+
+            await _assignmentRepository.AddAsync(new Assignment
+            {
+                GroupId = invitation.GroupId,
+                GroupRoleId = invitation.GroupRoleId,
+                UserId = invitation.ReceiverId,               
+            });
+
+            invitation.Status = InvitationStatus.Accepted.ToString();
+            await _invitationRepository.UpdateAsync(invitation);
+        }
+        
+        public async Task RejectInvitation(int invitationId)
+        {
+            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
+            if(invitation.Status != InvitationStatus.Sent.ToString())
+            {
+                throw new BadRequestException("The invitation isn't pending", true);
+            }
+
+            invitation.Status = InvitationStatus.Rejected.ToString();
+            await _invitationRepository.UpdateAsync(invitation);
         }
 
 

@@ -44,10 +44,9 @@ namespace WebAPI.Middleware
                         code = HttpStatusCode.BadRequest;
                         result = notFoundException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
-                    case BadRequestException _:
-                    case ValidationException _:
-                        code = HttpStatusCode.BadRequest;
-                        result = new ErrorResult(e.Message);
+                    case BadRequestException badRequestException:
+                        code = HttpStatusCode.Forbidden;
+                        result = badRequestException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
                     case ForbidException forbidException:
                         code = HttpStatusCode.Forbidden;

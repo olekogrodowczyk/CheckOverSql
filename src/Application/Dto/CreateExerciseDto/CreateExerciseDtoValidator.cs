@@ -15,7 +15,7 @@ namespace Application.Dto.CreateExerciseDto
 
         private string[] getDatabasesNames()
         {
-            var databases = _databaseRepository.GetAll().Result;
+            var databases = _databaseRepository.GetAllAsync().Result;
             return databases.Select(x => x.Name.ToLower()).ToArray();
             
         }

@@ -9,15 +9,15 @@ namespace Domain.Interfaces
 {
     public interface IRepository<T> where T : class, new()
     {
-        Task<IEnumerable<T>> GetAll();
-        Task<T> GetById(int id);
-        Task<T> Add(T entity);
-        Task Update(T entity);
-        Task<T> Delete(int id);
-        Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> GetWhereInclude(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include);
-        Task<IEnumerable<T>> GetAllInclude(Expression<Func<T, object>> include);
-        Task<bool> Exists(Expression<Func<T, bool>> predicate);
-        Task<T> SingleOrDefault(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(int id);
+        Task<T> AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task<T> DeleteAsync(int id);
+        Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetWhereIncludeAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include);
+        Task<IEnumerable<T>> GetAllIncludeAsync(Expression<Func<T, object>> include);
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
     }
 }

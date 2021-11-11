@@ -12,6 +12,7 @@ namespace Application.Interfaces
 {
     public interface IInvitationService
     {
+        Task AcceptInvitation(int invitationId);
         Task CheckIfInvitationAlreadyExists(string email, string role, int groupId);
         Task CheckIfSenderIsInTheGroup(int groupId);
         Task CheckIfUserIsAlreadyInGroup(string email, string role, int groupId);
@@ -19,5 +20,6 @@ namespace Application.Interfaces
         Task<IEnumerable<GetInvitationVm>> GetAllUserInvitations();
         Task<IEnumerable<GetInvitationVm>> GetAllUserReceivedInvitations();
         Task<IEnumerable<GetInvitationVm>> GetAllUserSentInvitations();
+        Task RejectInvitation(int invitationId);
     }
 }

@@ -3,6 +3,7 @@ using Application.Dto.RegisterUserVm;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
+using Domain.Enums;
 using FluentAssertions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -258,10 +259,85 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+        }
+
+        [Theory]
+        [InlineData("accept")]
+        [InlineData("reject")]
+        public async Task AcceptAndReject_ForValidInvitation_ReturnsOk(string queryType)
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedUsers(context);
+
+            var group = getValidGroup(100);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var assignment = new Assignment
+            {
+                GroupId = group.Id,
+                UserId = 100,
+                GroupRoleId = 2,
+            };
+            await context.Assignments.AddAsync(assignment);
+            await context.SaveChangesAsync();
+
+            var invitation = getInvitation(100, 99, group.Id, 3, InvitationStatus.Sent.ToString());
+            await context.AddAsync(invitation);
+            await context.SaveChangesAsync();
+
+            //Act
+            var response = await _client.PatchAsync($"api/group/{group.Id}/invitation/{queryType}/{invitation.Id}", null);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            var assignmentExists = await context.Assignments.AnyAsync(x => x.UserId == invitation.SenderId);
+            assignmentExists.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Create_ForSendingInvitationForYourself_ReturnsBadRequest()
+        {
+            //Arrange
+            await ClearContext();
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedUsers(context);
+
+            var group = getValidGroup(99);
+            await context.AddAsync(group);
+            await context.SaveChangesAsync();
+
+            var assignment = new Assignment
+            {
+                GroupId = group.Id,
+                UserId = 99,
+                GroupRoleId = 3,
+            };
+            await context.Assignments.AddAsync(assignment);
+            await context.SaveChangesAsync();
+
+            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            {
+                ReceiverEmail = "testfakeuser@gmail.com",
+                RoleName = "Moderator"
+            };
+            var httpContent = createInvitationDto.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
         public static IEnumerable<object[]> GetSampleInvalidCreateModels()

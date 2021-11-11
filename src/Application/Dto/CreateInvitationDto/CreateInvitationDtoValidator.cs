@@ -38,7 +38,7 @@ namespace Application.Dto.CreateInvitationDto
 
         public IEnumerable<string> getGroupRoleNames()
         {
-            var groupRoles = _groupRoleRepository.GetAll().Result;
+            var groupRoles = _groupRoleRepository.GetAllAsync().Result;
             return groupRoleNames = groupRoles.Select(x => x.Name);
         }
 
@@ -49,7 +49,7 @@ namespace Application.Dto.CreateInvitationDto
 
         public async Task<bool> EmailExists(string email, CancellationToken cancellationToken)
         {
-            return await _userRepository.Exists(x => x.Email == email);
+            return await _userRepository.ExistsAsync(x => x.Email == email);
         }
 
         

@@ -45,14 +45,14 @@ namespace Application.Services
                 Group=group,
             };
 
-            await _groupRepository.Add(group);
-            await _assignmentRepository.Add(newAssignment);
+            await _groupRepository.AddAsync(group);
+            await _assignmentRepository.AddAsync(newAssignment);
             return group.Id;         
         }
 
         public async Task<IEnumerable<GetGroupVm>> GetUserGroups()
         {
-            var groups = await _groupRepository.GetWhere(x => x.CreatorId == _userContextService.GetUserId);
+            var groups = await _groupRepository.GetWhereAsync(x => x.CreatorId == _userContextService.GetUserId);
             var groupsDto = _mapper.Map<IEnumerable<GetGroupVm>>(groups);
             return groupsDto;
         }

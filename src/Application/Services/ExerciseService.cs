@@ -38,20 +38,20 @@ namespace Application.Services
             var exercise = _mapper.Map<Exercise>(model);         
             exercise.CreatorId = (int)_userContextService.GetUserId;  
             exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(model.Database);
-            await _exerciseRepository.Add(exercise);
+            await _exerciseRepository.AddAsync(exercise);
             return exercise.Id;
         }
 
         public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
         {
-            var exercises = await _exerciseRepository.GetAllInclude(x=>x.Creator);
+            var exercises = await _exerciseRepository.GetAllIncludeAsync(x=>x.Creator);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
             return exerciseDtos;
         }
 
         public async Task<IEnumerable<GetExerciseVm>> GetAllPublicExercises()
         {
-            var exercises = await _exerciseRepository.GetWhere(x => !x.IsPrivate);
+            var exercises = await _exerciseRepository.GetWhereAsync(x => !x.IsPrivate);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
             return exerciseDtos;
         }

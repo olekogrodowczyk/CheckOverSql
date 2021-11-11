@@ -39,17 +39,17 @@ namespace Application.Services
 
         public async Task<int> CreateSolution(CreateSolutionDto model, int exerciseId)
         {
-            await _exerciseRepository.GetById(exerciseId);
+            await _exerciseRepository.GetByIdAsync(exerciseId);
             var solution = _mapper.Map<Solution>(model);          
             solution.CreatorId = (int)_userContextService.GetUserId; 
             solution.ExerciseId= exerciseId;
-            await _solutionRepository.Add(solution);
+            await _solutionRepository.AddAsync(solution);
             return solution.Id;
         }
 
         public async Task<List<List<string>>> SendSolutionQuery(int solutionId)
         {
-            var solution = await _solutionRepository.GetById(solutionId);
+            var solution = await _solutionRepository.GetByIdAsync(solutionId);
             string databaseName = await _solutionRepository.GetDatabaseName(solutionId);
             var result = await _queryService.SendQueryWithData(solution.Query, databaseName);
             return result;
@@ -57,8 +57,8 @@ namespace Application.Services
     
         public async Task<bool> Compare(int solutionId, int exerciseId)
         {
-            var solution = await _solutionRepository.GetById(solutionId);
-            var exercise = await _exerciseRepository.GetById(exerciseId);
+            var solution = await _solutionRepository.GetByIdAsync(solutionId);
+            var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
             string databaseName = await _solutionRepository.GetDatabaseName(solutionId);
 
             var list1 = await _queryService.SendQueryWithData(solution.Query, databaseName);
@@ -71,8 +71,8 @@ namespace Application.Services
 
         public async Task CreateComparison(int solutionId, int exerciseId, bool comparisonResult)
         {
-            var solution = await _solutionRepository.GetById(solutionId);
-            var exercise = await _exerciseRepository.GetById(exerciseId);
+            var solution = await _solutionRepository.GetByIdAsync(solutionId);
+            var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
             Comparison comparison = new Comparison
             {
                 Solution = solution,
@@ -81,7 +81,7 @@ namespace Application.Services
                 ExerciseId = exerciseId,
                 Result = comparisonResult,
             };
-            await _comparisonRepository.Add(comparison);
+            await _comparisonRepository.AddAsync(comparison);
         }
 
         public async Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId)

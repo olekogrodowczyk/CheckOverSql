@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<T> Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             _context.Set<T>().Add(entity);
             await _context.SaveChangesAsync();
@@ -38,7 +38,7 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<T> Delete(int id)
+        public async Task<T> DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             if (entity == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
@@ -47,34 +47,34 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<T> GetById(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             var result =  await _context.Set<T>().FindAsync(id);
-            if(result == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
+            if(result == null) { throw new NotFoundException($"Result is not found with id:{id} with given type: {typeof(T)}"); }
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllInclude(Expression<Func<T, object>> include)
+        public async Task<IEnumerable<T>> GetAllIncludeAsync(Expression<Func<T, object>> include)
         {
             return await _context.Set<T>()
                 .Include(include)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate)
+        public async Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>()
                 .Where(predicate)
                 .ToListAsync();              
         }
 
-        public async Task<IEnumerable<T>> GetWhereInclude(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include)
+        public async Task<IEnumerable<T>> GetWhereIncludeAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include)
         {
             return await _context.Set<T>()
                 .Include(include)
@@ -82,20 +82,22 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }       
 
-        public async Task Update(T entity)
+        public async Task UpdateAsync(T entity)
         {
             var post = _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(Expression<Func<T, bool>> predicate)
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().AnyAsync(predicate);
         }
 
-        public async Task<T> SingleOrDefault(Expression<Func<T, bool>> predicate)
+        public async Task<T> SingleAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _context.Set<T>().SingleOrDefaultAsync(predicate);
+            var result = await _context.Set<T>().SingleOrDefaultAsync(predicate);
+            if (result == null) { throw new NotFoundException("Entity within single method in repository cannot be found"); }
+            return result;
         }
     }
 }

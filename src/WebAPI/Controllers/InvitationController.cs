@@ -52,5 +52,20 @@ namespace WebAPI.Controllers
             var result = await _invitationService.GetAllUserInvitations();
             return Ok(new Result<IEnumerable<GetInvitationVm>>(result, "All Invitations returned successfully"));
         }
+
+        [HttpPatch("accept/{invitationId}")]
+        public async Task<IActionResult> Accept([FromRoute] int invitationId)
+        {
+            await _invitationService.AcceptInvitation(invitationId);
+            return Ok(new Result("Invitation accepted successfully"));
+        }
+
+        [HttpPatch("reject/{invitationId}")]
+        public async Task<IActionResult> Reject([FromRoute] int invitationId)
+        {
+            await _invitationService.RejectInvitation(invitationId);
+            return Ok(new Result("Invitation accepted successfully"));
+        }
+
     }
 }
