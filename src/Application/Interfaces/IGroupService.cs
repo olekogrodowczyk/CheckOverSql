@@ -12,6 +12,7 @@ namespace Application.Interfaces
     public interface IGroupService
     {
         Task<int> CreateGroup(CreateGroupDto model);
+        Task DeleteGroup(int groupId);
         Task<IEnumerable<GetGroupVm>> GetUserGroups();
     }
 }

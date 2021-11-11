@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
     [Authorize]
-    [Route("api/group/{groupId}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class InvitationController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
             _invitationService = invitationService;
         }
 
-        [HttpPost]
+        [HttpPost("{groupId}")]
         public async Task<IActionResult> Create([FromBody] CreateInvitationDto model, [FromRoute] int groupId)
         {
             await _invitationService.CheckIfSenderIsInTheGroup(groupId);

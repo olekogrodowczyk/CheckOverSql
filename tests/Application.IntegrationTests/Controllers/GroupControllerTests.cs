@@ -34,7 +34,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("api/group/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -50,7 +50,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("api/group/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -63,7 +63,7 @@ namespace WebAPI.IntegrationTests.Controllers
             await ClearTableInContext<Group>();
 
             //Act
-            var response = await _client.GetAsync("api/group/getusergroups");
+            var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
             string responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetGroupVm>>>(responseString);
 
@@ -82,7 +82,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var group3 = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
 
             //Act
-            var response = await _client.GetAsync("api/group/getusergroups");
+            var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
             string responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetGroupVm>>>(responseString);
 
@@ -101,7 +101,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
           
             //Act
-            var response = await _client.PostAsync("api/group/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
             
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
@@ -111,6 +111,47 @@ namespace WebAPI.IntegrationTests.Controllers
             bool result = await context.Assignments.AnyAsync();
 
             result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeleteGroup_ForValidData_DeletesGroupWithAssignments()
+        {
+            //Arrange
+            var group = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment1 = addNewEntity<Assignment>
+                (new Assignment { UserId = 99, GroupId = group.Id, GroupRoleId = 1 });
+            var assignment2 = addNewEntity<Assignment>
+                (new Assignment { UserId = 100, GroupId = group.Id, GroupRoleId = 1 });
+
+            //Act
+            var response = await _client.DeleteAsync
+                (ApiRoutes.Group.DeleteGroup.Replace("{groupId}", group.Id.ToString()));
+
+            bool groupExists = await EntityExists<Group>(x => x.Id == group.Id);
+            bool assignment1Exists = await EntityExists<Assignment>(x => x.Id == assignment1.Id);
+            bool assignment2Exists = await EntityExists<Assignment>(x => x.Id == assignment2.Id);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            groupExists.Should().BeFalse();
+            assignment1Exists.Should().BeFalse();
+            assignment2Exists.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task DeleteGroup_ForInvalidGroupRole_ReturnsForbidden()
+        {
+            //Arrange
+            var group = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment1 = addNewEntity<Assignment>
+                (new Assignment { UserId = 99, GroupId = group.Id, GroupRoleId = 2 });
+
+            //Act
+            var response = await _client.DeleteAsync
+                (ApiRoutes.Group.DeleteGroup.Replace("{groupId}", group.Id.ToString()));
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
       
         

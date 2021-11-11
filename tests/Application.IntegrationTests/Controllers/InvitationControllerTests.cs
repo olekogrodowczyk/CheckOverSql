@@ -42,7 +42,8 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync
+                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
@@ -76,7 +77,8 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.
+                PostAsync(ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -97,7 +99,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = createInvitationDto.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync
+                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -121,8 +124,10 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
-            var response2 = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync
+                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+            var response2 = await _client.PostAsync
+                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -147,7 +152,8 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync
+                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
@@ -183,7 +189,8 @@ namespace WebAPI.IntegrationTests.Controllers
                     , Status = InvitationStatus.Sent.ToString() });
 
             //Act
-            var response = await _client.GetAsync($"api/group/{group.Id}/invitation/{queryType}");
+            var response = await _client.GetAsync
+                (ApiRoutes.Invitation.Base.Replace("{groupId}", group.Id.ToString()) + $"/{queryType}");
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetInvitationVm>>>(responseString);
 
@@ -210,7 +217,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
@@ -237,8 +244,12 @@ namespace WebAPI.IntegrationTests.Controllers
             });
 
             //Act
-            var response = await _client.PatchAsync($"api/group/{group.Id}/invitation/{queryType}/{invitation.Id}", null);
+            string routeBase = queryType == "accept" ? ApiRoutes.Invitation.Accept : ApiRoutes.Invitation.Reject;
+            string route = routeBase.Replace("{invitationId}", invitation.Id.ToString());
 
+            var response = await _client.PatchAsync(route, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+  
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();
@@ -265,7 +276,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Invitation.Create, httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert

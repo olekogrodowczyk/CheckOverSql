@@ -108,6 +108,11 @@ namespace WebAPI
                 {
                     Title = "Deleting users",
                     Description = "This permission lets a user to delete other users from group"
+                },
+                new Permission()
+                {
+                    Title = "Deleting group",
+                    Description = "This permission lets a user to delete a group"
                 }
             };
         }
@@ -125,6 +130,11 @@ namespace WebAPI
                 {
                     GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Owner").Id,
                     PermissionId = permissions.SingleOrDefault(x=>x.Title == "Deleting users").Id
+                },
+                new GroupRolePermission
+                {
+                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Owner").Id,
+                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Deleting group").Id
                 },
                 new GroupRolePermission
                 {

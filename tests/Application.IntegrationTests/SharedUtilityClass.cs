@@ -1,5 +1,8 @@
 ﻿using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
@@ -35,6 +38,15 @@ namespace WebAPI.IntegrationTests
             context.Set<T>().Clear();
             
             await context.SaveChangesAsync();
+        }
+
+        protected async Task<bool> EntityExists<T>(Expression<Func<T,bool>> predicate) where T : class, new()
+        {
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            return await context.Set<T>().AnyAsync(predicate);
         }
 
         protected async Task SeedUsers()

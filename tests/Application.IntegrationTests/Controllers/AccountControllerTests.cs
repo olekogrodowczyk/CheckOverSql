@@ -36,7 +36,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("/api/account/register", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);            
@@ -57,7 +57,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("/api/account/register", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -80,8 +80,8 @@ namespace WebAPI.IntegrationTests.Controllers
             await ClearTableInContext<User>();
 
             //Act
-            var response = await _client.PostAsync("api/account/register/", httpContent);
-            var response2 = await _client.PostAsync("api/account/register/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
+            var response2 = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

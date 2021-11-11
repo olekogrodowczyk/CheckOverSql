@@ -54,7 +54,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var exercise3 = addNewEntity<Exercise>(getValidExercise(false));
 
             //Act
-            var response = await _client.GetAsync("api/exercise/getallpublic");
+            var response = await _client.GetAsync(ApiRoutes.Exercise.GetAllPublic);
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetExerciseVm>>>(responseString);
 
@@ -77,7 +77,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("api/exercise/create/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Exercise.Create, httpContent);
             
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -97,7 +97,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync("api/exercise/create/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Exercise.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -116,8 +116,9 @@ namespace WebAPI.IntegrationTests.Controllers
                 ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')"
             }.ToJsonHttpContent();
 
+
             //Act
-            var response = await _client.PostAsync("api/exercise/create/", httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Exercise.Create, httpContent);
 
             //Assert
             //There is no option to send a query which writes something in database

@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Create([FromBody] CreateGroupDto model)
         {
             var result = await _groupService.CreateGroup(model);
-            return Ok(new Result<int>(result, "Pomyślnie dodano grupę"));
+            return Ok(new Result<int>(result, "Group created successfully"));
         }
 
         
@@ -35,7 +35,14 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetUserGroups()
         {
             var result = await _groupService.GetUserGroups();
-            return Ok(new Result<IEnumerable<GetGroupVm>>(result, "Pomyślnie zwrócono wszystkie grupy użytkownika"));
+            return Ok(new Result<IEnumerable<GetGroupVm>>(result, "Groups created by user returned successfully"));
+        }
+
+        [HttpDelete("deletegroup/{groupId}")]
+        public async Task<IActionResult> DeleteGroup(int groupId)
+        {
+            await _groupService.DeleteGroup(groupId);
+            return Ok(new Result("Group deleted successfully"));
         }
     }
 }

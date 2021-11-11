@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateExerciseDto model)
         {
             var result = await _exerciseService.CreateExercise(model);
@@ -45,5 +45,7 @@ namespace WebAPI.Controllers
             var result = await _exerciseService.GetAllPublicExercises();
             return Ok(new Result<IEnumerable<GetExerciseVm>>(result, "All public exercises returned successfully"));
         }
+
+        
     }
 }
