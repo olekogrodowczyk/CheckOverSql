@@ -20,62 +20,22 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class SolutionControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class SolutionControllerTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Startup> _factory;
-
-        public SolutionControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }   
-
-        private Solution getSolution(Exercise exercise, int creatorId)
-        {
-            return new Solution
-            {
-                Dialect = "SQL Server",
-                Exercise = exercise,
-                CreatorId = creatorId,
-                ExerciseId = exercise.Id,
-                Query = "SELECT * FROM dbo.Footballers",
-            };
-        }
-
-        private Exercise getValidExercise()
-        {
-            return new Exercise
-            {
-                DatabaseId = 1,
-                MaxPoints = 10,
-                IsPrivate = false,
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
-                CreatorId = 99,
-                Title = "Zadanie1",
-                Description = "Zadanie1opis",
-            };
-        }
-
+        public SolutionControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { } 
+           
         [Fact]
         public async Task Create_ForValidModel_ReturnsOk()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
 
-            var solution = new CreateSolutionDto
+            var httpContent = new CreateSolutionDto
             {
                 Query = "SELECT * FROM dbo.Footballers",
                 SolvingId = null,
                 Dialect = "SQL Server"
-            };
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-            await context.SaveChangesAsync();
-
-            var httpContent = solution.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"/api/exercise/{exercise.Id}/solution", httpContent);
@@ -88,23 +48,15 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetQueryData_ForForbiddenSolution_ReturnsForbidden()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-           
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-           
-            var solution = new Solution
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var solution = await addNewEntity<Solution>(new Solution
             {
                 Query = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo', 'Messi')",
                 SolvingId = null,
                 Dialect = "SQL Server",
                 CreatorId = 1,
-                ExerciseId = exercise.Id,                
-            };
-            await context.Solutions.AddAsync(solution);
-            await context.SaveChangesAsync();
+                ExerciseId = exercise.Id,
+            });
 
             //Act
             var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/getquerydata/{solution.Id}");
@@ -117,23 +69,15 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetQueryData_ForValidSolution_ReturnsNotNullValue()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-
-            var solution = new Solution
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var solution = await addNewEntity<Solution>(new Solution
             {
                 Query = "SELECT * FROM dbo.Footballers",
                 SolvingId = null,
                 Dialect = "SQL Server",
                 CreatorId = 1,
                 ExerciseId = exercise.Id,
-            };
-            await context.Solutions.AddAsync(solution);
-            await context.SaveChangesAsync();
+            });
 
             //Act
             var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/getquerydata/{solution.Id}");
@@ -149,21 +93,14 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidModel_ReturnsBadRequest()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
 
-            var solutionDto = new CreateSolutionDto
+            var httpContent = new CreateSolutionDto
             {
                 Query = "",
                 SolvingId = null,
                 Dialect = "SQL Server"
-            };
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-            await context.SaveChangesAsync();
-
-            var httpContent = solutionDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"/api/exercise/{exercise.Id}/solution", httpContent);
@@ -176,17 +113,14 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetAll_ForSolutionsCreatedByUser_ReturnsAllTheseSolutions()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var exercise = getValidExercise();
-
-            await context.Exercises.AddAsync(exercise);
-            await context.Solutions.AddAsync(getSolution(exercise,99));
-            await context.Solutions.AddAsync(getSolution(exercise,2));
-            await context.Solutions.AddAsync(getSolution(exercise,99));
-            await context.SaveChangesAsync();
+            string query = "SELECT * FROM dbo.Footballers";
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
+            await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 2, Query = query });
+            await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
             
             //Act
             var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/getall");
@@ -202,16 +136,10 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Compare_ForValidSolution_ReturnsTrueWithOk()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-
-            var solution = getSolution(exercise, 99);
-            await context.Solutions.AddAsync(solution);
-            await context.SaveChangesAsync();
+            string query = "SELECT * FROM dbo.Footballers";
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var solution = await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
 
             //Act
             var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
@@ -227,22 +155,10 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Compare_ForInvalidSolution_ReturnsFalseWithOk()
         {
             //Arrange
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            var exercise = getValidExercise();
-            await context.Exercises.AddAsync(exercise);
-
-            var solution = new Solution
-            {
-                Exercise = exercise,
-                CreatorId = 99,
-                Query = "SELECT FirstName, LastName FROM dbo.Footballers",
-                Dialect = "SQL Server"
-            };
-            await context.Solutions.AddAsync(solution);
-            await context.SaveChangesAsync();
+            string query = "SELECT FirstName, LastName FROM dbo.Footballers";
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var solution = await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
 
             //Act
             var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
@@ -258,25 +174,37 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Compare_ForMakingComparison_CreatesComparison()
         {
             //Arrange
-            var exercise = getValidExercise();
-            var solution = getSolution(exercise, 99);
+            string query = "SELECT * FROM dbo.Footballers";
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var solution = await addNewEntity<Solution>
+                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });         
 
+            //Act
+            var response = await _client.GetAsync($"api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
+            
+            //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-            await context.AddAsync(exercise);
-            await context.SaveChangesAsync();
-            await context.AddAsync(solution);
-            await context.SaveChangesAsync();
-
-            //Act
-            var response = await _client.GetAsync($"api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
             bool comparisonExists = await context.Comparisons.AnyAsync();
 
-            //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             comparisonExists.Should().BeTrue();
+        }
+
+        private Exercise getValidExercise()
+        {
+            return new Exercise
+            {
+                DatabaseId = 1,
+                MaxPoints = 10,
+                IsPrivate = false,
+                ValidAnswer = "SELECT * FROM dbo.Footballers",
+                CreatorId = 99,
+                Title = "Zadanie1",
+                Description = "Zadanie1opis",
+            };
         }
     }
 }

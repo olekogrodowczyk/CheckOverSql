@@ -23,17 +23,10 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class ExerciseControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class ExerciseControllerTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Startup> _factory;
+        public ExerciseControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { }
 
-        public ExerciseControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }
-            
         private Exercise getValidExercise(bool isPrivate)
         {
             var model = new Exercise
@@ -54,19 +47,11 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             //Only public exercises can be returned
-            var exercise1 = getValidExercise(true);
-            var exercise2 = getValidExercise(false);
-            var exercise3 = getValidExercise(false);
+            await ClearTableInContext<Exercise>();
 
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            context.Exercises.Clear();
-            await context.Exercises.AddAsync(exercise1);
-            await context.Exercises.AddAsync(exercise2);
-            await context.Exercises.AddAsync(exercise3);
-            await context.SaveChangesAsync();
+            var exercise1 = addNewEntity<Exercise>(getValidExercise(true));
+            var exercise2 = addNewEntity<Exercise>(getValidExercise(false));
+            var exercise3 = addNewEntity<Exercise>(getValidExercise(false));
 
             //Act
             var response = await _client.GetAsync("api/exercise/getallpublic");
@@ -82,16 +67,14 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForValidDto_ReturnsOk()
         {
             //Arrange
-            var exerciseDto = new CreateExerciseDto
+            var httpContent = new CreateExerciseDto
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",
                 MaxPoints = 1,
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers"
-            };
-
-            var httpContent = exerciseDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync("api/exercise/create/", httpContent);
@@ -104,16 +87,14 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidDto_ReturnsBadRequest()
         {
             //Arrange
-            var exerciseDto = new CreateExerciseDto
+            var httpContent = new CreateExerciseDto
             {
                 Database = "dsadwqdwq",
                 Description = "Opis2dsadsa",
                 MaxPoints = 0,
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers"
-            };
-
-            var httpContent = exerciseDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync("api/exercise/create/", httpContent);
@@ -126,16 +107,14 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidQuery_ReturnsForbidden()
         {
             //Arrange
-            var exerciseDto = new CreateExerciseDto
+            var httpContent = new CreateExerciseDto
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",
                 MaxPoints = 1,
                 Title = "Zadanie2 title",
                 ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')"
-            };
-
-            var httpContent = exerciseDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync("api/exercise/create/", httpContent);

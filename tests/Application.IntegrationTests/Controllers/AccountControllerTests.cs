@@ -17,22 +17,15 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class AccountControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class AccountControllerTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Startup> _factory;
+        public AccountControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { }
 
-        public AccountControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }
-       
         [Fact]
         public async Task RegisterUser_ForValidModel_ReturnsOk()
         {
             // Arrange
-            var registerUser = new RegisterUserDto()
+            var httpContent = new RegisterUserDto()
             {
                 Email = "test@test.com",
                 Password = "password123",
@@ -40,9 +33,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 FirstName = "John",
                 LastName = "Smith",
                 DateOfBirth = DateTime.UtcNow.AddYears(-20)
-            };
-
-            var httpContent = registerUser.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync("/api/account/register", httpContent);
@@ -55,7 +46,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForInvalidModel_ReturnsBadRequest()
         {
             // Arrange
-            var registerUser = new RegisterUserDto()
+            var httpContent = new RegisterUserDto()
             {
                 Email = "test@test.com",
                 Password = "password123",
@@ -63,10 +54,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 FirstName = "John",
                 LastName = "",
                 DateOfBirth = DateTime.UtcNow.AddYears(-20)
-            };
-
-            var httpContent = registerUser.ToJsonHttpContent();
-
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync("/api/account/register", httpContent);
@@ -79,7 +67,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForTwoSameEmails_ReturnsBadRequest()
         {
             // Arrange
-            var registerUser1 = new RegisterUserDto()
+            var httpContent = new RegisterUserDto()
             {
                 Email = "testsameemail@test.com",
                 Password = "password123",
@@ -87,10 +75,9 @@ namespace WebAPI.IntegrationTests.Controllers
                 FirstName = "John",
                 LastName = "Smith",
                 DateOfBirth = DateTime.UtcNow.AddYears(-20)
-            };         
+            }.ToJsonHttpContent();
 
-            var httpContent = registerUser1.ToJsonHttpContent();
-            await ClearTableDataHelper.cleanTable<User>(_factory);
+            await ClearTableInContext<User>();
 
             //Act
             var response = await _client.PostAsync("api/account/register/", httpContent);

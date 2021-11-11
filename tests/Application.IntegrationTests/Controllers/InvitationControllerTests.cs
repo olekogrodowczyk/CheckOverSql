@@ -19,46 +19,37 @@ using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    public class InvitationControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
-    {
-        private readonly HttpClient _client;
-        private readonly CustomWebApplicationFactory<Startup> _factory;
+    
 
-        public InvitationControllerTests(CustomWebApplicationFactory<Startup> factory)
-        {
-            _factory = factory;
-            _client = factory.CreateClient();
-        }
-     
+    public class InvitationControllerTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
+    {
+        public InvitationControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { }
+
         [Fact]
         public async Task Create_ForValidModel_ReturnsOkWithValidProperties()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
-            
-            await context.Groups.AddAsync(group);
-            await context.SaveChangesAsync();
-            await context.Assignments.AddAsync(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
-            await context.SaveChangesAsync();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
 
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var invitation = await context.Invitations.Include(x => x.GroupRole).Include(x => x.Receiver).Include(x => x.Group)
                 .SingleOrDefaultAsync();
@@ -71,25 +62,18 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForSenderIsNotInTheGroup_ReturnsBadRequest()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 102, GroupRoleId = 2 });
 
-            await context.Groups.AddAsync(group);
-            await context.SaveChangesAsync();
-            await context.Assignments.AddAsync(new Assignment { GroupId = group.Id, UserId = 102, GroupRoleId = 2 });
-            await context.SaveChangesAsync();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
@@ -103,14 +87,12 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationDto createInvitationDto)
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
 
             var httpContent = createInvitationDto.ToJsonHttpContent();
 
@@ -125,28 +107,25 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForTwoSameInvitations_ReturnsBadRequest()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
 
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
-            };
-
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
             var response2 = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
 
             //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
@@ -154,30 +133,18 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForUserAlreadyInGroup_ReturnsBadRequest()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 100, GroupRoleId = 2 });
 
-            var assignment = new Assignment
-            {
-                GroupId = group.Id,
-                UserId = 100,
-                GroupRoleId = 2,                    
-            };
-            await context.Assignments.AddAsync(assignment);
-            await context.SaveChangesAsync();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "testinvitation@gmail.com",
                 RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
@@ -191,31 +158,29 @@ namespace WebAPI.IntegrationTests.Controllers
         [InlineData(99, 100, 2, "getallsent")]
         [InlineData(100, 99, 1, "getallsent")]
         [InlineData(99, 101, 2, "getallsent")]
-        [InlineData(99,100, 1, "getallreceived")]
-        [InlineData(100,99, 2, "getallreceived")]
-        [InlineData(100,99, 3, "getall")]
+        [InlineData(99, 100, 1, "getallreceived")]
+        [InlineData(100, 99, 2, "getallreceived")]
+        [InlineData(100, 99, 3, "getall")]
         public async Task GetAllWithCondition_ForValidModel_ReturnsOkWithValidCount
             (int senderId, int receiverId, int expectedCount, string queryType)
         {
             //Arrange
-            await ClearContext();            
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            
-            await SeedDataHelper.SeedUsers(context);
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var invitation1 =
-                await context.AddAsync(getInvitation(senderId, receiverId, group.Id, 2, "Sent"));
-            var invitation2 =
-                await context.AddAsync(getInvitation(101, 99, group.Id, 2, "Accepted"));
-            var invitation3 =
-                await context.AddAsync(getInvitation(99, 102, group.Id, 2, "Sent"));
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
 
-            await context.SaveChangesAsync();
+            var invitation1 = await addNewEntity<Invitation>
+                (new Invitation { SenderId = senderId, ReceiverId = receiverId, GroupId = group.Id, GroupRoleId = 2
+                    , Status = InvitationStatus.Sent.ToString() });
+
+            var invitation2 = await addNewEntity<Invitation>
+                (new Invitation { SenderId = 101, ReceiverId = 99, GroupId = group.Id, GroupRoleId = 2
+                    , Status = InvitationStatus.Accepted.ToString() });
+
+            var invitation3 = await addNewEntity<Invitation>
+                (new Invitation { SenderId = 99, ReceiverId = 102, GroupId = group.Id, GroupRoleId = 2
+                    , Status = InvitationStatus.Sent.ToString() });
 
             //Act
             var response = await _client.GetAsync($"api/group/{group.Id}/invitation/{queryType}");
@@ -231,31 +196,18 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidGroupRoleInAssignment_ReturnsForbidden()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 3 });
 
-            var assignment = new Assignment
-            {
-                GroupId = group.Id,
-                UserId = 99,
-                GroupRoleId = 3,
-            };
-            await context.Assignments.AddAsync(assignment);
-            await context.SaveChangesAsync();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
@@ -270,33 +222,28 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task AcceptAndReject_ForValidInvitation_ReturnsOk(string queryType)
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
+            await ClearInvitationContext();
+            await SeedUsers();
 
-            var group = getValidGroup(100);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
-
-            var assignment = new Assignment
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var assignment = await addNewEntity<Assignment>
+                (new Assignment { GroupId = group.Id, UserId = 100, GroupRoleId = 2 });
+            var invitation = await addNewEntity<Invitation>(new Invitation
             {
+                SenderId = 100,
+                ReceiverId = 99,
                 GroupId = group.Id,
-                UserId = 100,
-                GroupRoleId = 2,
-            };
-            await context.Assignments.AddAsync(assignment);
-            await context.SaveChangesAsync();
-
-            var invitation = getInvitation(100, 99, group.Id, 3, InvitationStatus.Sent.ToString());
-            await context.AddAsync(invitation);
-            await context.SaveChangesAsync();
+                Status = InvitationStatus.Sent.ToString(),
+            });
 
             //Act
             var response = await _client.PatchAsync($"api/group/{group.Id}/invitation/{queryType}/{invitation.Id}", null);
 
             //Assert
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var assignmentExists = await context.Assignments.AnyAsync(x => x.UserId == invitation.SenderId);
             assignmentExists.Should().BeTrue();
@@ -306,31 +253,16 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForSendingInvitationForYourself_ReturnsBadRequest()
         {
             //Arrange
-            await ClearContext();
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
+            await ClearInvitationContext();
+            await SeedUsers();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment = await addNewEntity<Assignment>(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 3 });
 
-            var group = getValidGroup(99);
-            await context.AddAsync(group);
-            await context.SaveChangesAsync();
-
-            var assignment = new Assignment
-            {
-                GroupId = group.Id,
-                UserId = 99,
-                GroupRoleId = 3,
-            };
-            await context.Assignments.AddAsync(assignment);
-            await context.SaveChangesAsync();
-
-            CreateInvitationDto createInvitationDto = new CreateInvitationDto
+            var httpContent = new CreateInvitationDto
             {
                 ReceiverEmail = "testfakeuser@gmail.com",
                 RoleName = "Moderator"
-            };
-            var httpContent = createInvitationDto.ToJsonHttpContent();
+            }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync($"api/group/{group.Id}/invitation", httpContent);
@@ -363,8 +295,7 @@ namespace WebAPI.IntegrationTests.Controllers
             return list.Select(x => new object[] { x });
         }
 
-
-        private async Task ClearContext()
+        private async Task ClearInvitationContext()
         {
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();
@@ -376,26 +307,6 @@ namespace WebAPI.IntegrationTests.Controllers
             context.Invitations.Clear();
 
             await context.SaveChangesAsync();
-        }      
-        private Group getValidGroup(int creatorId)
-        {
-            return new Group
-            {
-                Name = "Grupa1",
-                CreatorId = creatorId
-            };
         }
-      
-        private Invitation getInvitation(int senderId, int receiverId, int groupId, int groupRoleId, string status)
-        {
-            return new Invitation
-            {
-                SenderId = senderId,
-                ReceiverId = receiverId,
-                GroupId = groupId,
-                GroupRoleId = groupRoleId,
-                Status = status
-            };
-        }       
     }
 }

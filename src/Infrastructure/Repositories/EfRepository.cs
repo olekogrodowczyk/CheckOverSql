@@ -31,7 +31,7 @@ namespace Infrastructure.Repositories
 
         public async Task<T> AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             _logger.LogInformation($"New item added to database with type: {typeof(T)}");      
 
