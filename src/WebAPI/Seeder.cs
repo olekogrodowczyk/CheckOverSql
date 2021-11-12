@@ -113,40 +113,36 @@ namespace WebAPI
                 {
                     Title = "Deleting group",
                     Description = "This permission lets a user to delete a group"
+                },
+                new Permission()
+                {
+                    Title = "Assigning exercises",
+                    Description = "This permission lets a user to assign exercises to do"
                 }
             };
         }
 
         public static IEnumerable<GroupRolePermission> GetGroupRolePermissions(IEnumerable<Permission> permissions, IEnumerable<GroupRole> groupRoles)
         {         
+            GroupRolePermission getGroupRolePermission(string groupRoleName, string permission)
+            {
+                return new GroupRolePermission
+                {
+                    GroupRoleId = groupRoles.SingleOrDefault(x => x.Name == groupRoleName).Id,
+                    PermissionId = permissions.SingleOrDefault(x => x.Title == permission).Id
+                };
+            }
             return new List<GroupRolePermission>
             {
-                new GroupRolePermission
-                {
-                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Owner").Id,
-                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Sending invitations").Id
-                },
-                new GroupRolePermission
-                {
-                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Owner").Id,
-                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Deleting users").Id
-                },
-                new GroupRolePermission
-                {
-                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Owner").Id,
-                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Deleting group").Id
-                },
-                new GroupRolePermission
-                {
-                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Moderator").Id,
-                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Sending invitations").Id
-                },
-                new GroupRolePermission
-                {
-                    GroupRoleId = groupRoles.SingleOrDefault(x=>x.Name == "Moderator").Id,
-                    PermissionId = permissions.SingleOrDefault(x=>x.Title == "Deleting users").Id
-                },
+                getGroupRolePermission("Owner","Sending invitations"),
+                getGroupRolePermission("Owner","Deleting users"),
+                getGroupRolePermission("Owner","Deleting group"),
+                getGroupRolePermission("Owner","Assigning exercises"),
+                getGroupRolePermission("Moderator", "Sending invitations"),
+                getGroupRolePermission("Moderator", "Deleting users"),
+                getGroupRolePermission("Moderator", "Assigning exercises"),
+                getGroupRolePermission("Checker","Assigning exercises")                
             };
-        }
+        }     
     }
 }

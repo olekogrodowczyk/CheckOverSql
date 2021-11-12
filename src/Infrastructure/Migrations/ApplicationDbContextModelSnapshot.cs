@@ -412,6 +412,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DeadLine")
                         .HasColumnType("datetime2");
 
@@ -433,6 +436,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId");
+
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("ExerciseId");
 
@@ -664,6 +669,12 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.User", "Creator")
+                        .WithMany("SolvingsCreated")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Exercise", "Exercise")
                         .WithMany("Solvings")
                         .HasForeignKey("ExerciseId")
@@ -671,6 +682,8 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Assignment");
+
+                    b.Navigation("Creator");
 
                     b.Navigation("Exercise");
                 });
@@ -748,6 +761,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("InvitationsSent");
 
                     b.Navigation("Solutions");
+
+                    b.Navigation("SolvingsCreated");
                 });
 #pragma warning restore 612, 618
         }

@@ -40,6 +40,21 @@ namespace WebAPI.IntegrationTests
             await context.SaveChangesAsync();
         }
 
+        protected async Task ClearNotNecesseryData()
+        {
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            context.Groups.Clear();
+            context.Assignments.Clear();
+            context.Users.Clear();            
+            context.Invitations.Clear();
+            context.Solutions.Clear();
+            context.Exercises.Clear();
+            await context.SaveChangesAsync();
+        }
+
         protected async Task<bool> EntityExists<T>(Expression<Func<T,bool>> predicate) where T : class, new()
         {
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();

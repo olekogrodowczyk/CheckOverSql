@@ -111,6 +111,12 @@ namespace Infrastructure.Data
                 .WithMany(x => x.Comparisons)
                 .HasForeignKey(x => x.ExerciseId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Solving>()
+                .HasOne<User>(x => x.Creator)
+                .WithMany(x => x.SolvingsCreated)
+                .HasForeignKey(x => x.CreatorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         
     }

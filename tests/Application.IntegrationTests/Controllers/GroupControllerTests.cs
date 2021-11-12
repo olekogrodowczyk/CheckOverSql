@@ -77,9 +77,9 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             await ClearTableInContext<Group>();
-            var group1 = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
-            var group2 = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 102 });
-            var group3 = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var group2 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 102 });
+            var group3 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
@@ -92,7 +92,7 @@ namespace WebAPI.IntegrationTests.Controllers
         }
 
         [Fact]
-        public async Task Create_ForCreatedGroup_CreatesRelationshipBetweenGroupAndUser()
+        public async Task Create_ForCreatedGroup_CreatesAssignmentWithOwnerGroupRole()
         {
             //Arrange
             var httpContent = new CreateGroupDto
@@ -102,14 +102,18 @@ namespace WebAPI.IntegrationTests.Controllers
           
             //Act
             var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
-            
-            //Assert
+
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             bool result = await context.Assignments.AnyAsync();
+            bool isOwnerGroupRole = await context.Assignments
+                .Include(x => x.GroupRole)
+                .AnyAsync(x => x.GroupRole.Name == "Owner");
 
+            //Assert
+            isOwnerGroupRole.Should().BeTrue();
             result.Should().BeTrue();
         }
 
@@ -117,10 +121,11 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task DeleteGroup_ForValidData_DeletesGroupWithAssignments()
         {
             //Arrange
-            var group = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
-            var assignment1 = addNewEntity<Assignment>
+            await ClearNotNecesseryData();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment1 = await addNewEntity<Assignment>
                 (new Assignment { UserId = 99, GroupId = group.Id, GroupRoleId = 1 });
-            var assignment2 = addNewEntity<Assignment>
+            var assignment2 = await addNewEntity<Assignment>
                 (new Assignment { UserId = 100, GroupId = group.Id, GroupRoleId = 1 });
 
             //Act
@@ -142,8 +147,9 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task DeleteGroup_ForInvalidGroupRole_ReturnsForbidden()
         {
             //Arrange
-            var group = addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
-            var assignment1 = addNewEntity<Assignment>
+            await ClearNotNecesseryData();
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment1 = await addNewEntity<Assignment>
                 (new Assignment { UserId = 99, GroupId = group.Id, GroupRoleId = 2 });
 
             //Act
@@ -153,8 +159,8 @@ namespace WebAPI.IntegrationTests.Controllers
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
-      
-        
+
+
 
     }
 }

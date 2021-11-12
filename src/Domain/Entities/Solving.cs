@@ -13,6 +13,8 @@ namespace Domain.Entities
         public virtual Assignment Assignment { get; set; }
         public int ExerciseId { get; set; }
         public virtual Exercise Exercise { get; set; }
+        public int CreatorId { get; set; }
+        public virtual User Creator { get; set; }
         public string Status { get; set; }
         public string Dialect { get; set; }
         public string Answer { get; set; }

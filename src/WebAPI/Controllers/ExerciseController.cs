@@ -1,4 +1,5 @@
-﻿using Application.Dto.CreateExerciseDto;
+﻿using Application.Dto.AssignExerciseToUsersTo;
+using Application.Dto.CreateExerciseDto;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.Responses;
@@ -6,6 +7,7 @@ using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -46,6 +48,13 @@ namespace WebAPI.Controllers
             return Ok(new Result<IEnumerable<GetExerciseVm>>(result, "All public exercises returned successfully"));
         }
 
-        
+        [HttpPost("assignexercise")]
+        public async Task<IActionResult> AssignExerciseToUsersInGroup
+            ([FromQuery] int groupId, [FromQuery] int exerciseId, [FromBody] AssignExerciseToUsersDto model)
+        {
+            await _exerciseService.CheckIfUserCanAssignExerciseToUsers(groupId);
+            var result = await _exerciseService.AssignExerciseToAllUsers(groupId, exerciseId, model);
+            return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
+        }
     }
 }

@@ -22,6 +22,7 @@
             public const string Create = Base;
             public const string GetAllCreated = Base + "/getallcreated";
             public const string GetAllPublic = Base + "/getallpublic";
+            public const string AssignExercise = Base + "/assignexercise";
         }
         public static class Group
         {

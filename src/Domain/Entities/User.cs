@@ -24,6 +24,7 @@ namespace Domain.Entities
         public virtual ICollection<Checking> Checkings { get; set; }
         public virtual ICollection<Group> GroupsCreated { get; set; }
         public virtual ICollection<Solution> Solutions { get; set; }
+        public virtual ICollection<Solving> SolvingsCreated { get; set; }
 
     }
 }
