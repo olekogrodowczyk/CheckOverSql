@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
+using Domain.Enums;
 
 namespace Application.Services
 {
@@ -64,18 +65,16 @@ namespace Application.Services
         public async Task DeleteGroup(int groupId)
         {
             var userAssignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
+
+            string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup);
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
-                , userAssignment, new PermissionRequirement("Deleting group"));
+                , userAssignment, new PermissionRequirement(permission));
 
             var group = await _groupRepository.GetByIdAsync(groupId);
             var assignments = await _assignmentRepository.GetWhereAsync(x => x.Group == group);
             assignments.ToList().ForEach(async x => await _assignmentRepository.DeleteAsync(x.Id));
             await _groupRepository.DeleteAsync(groupId);
-        }
-
-        
-
-
+        }      
 
     }
 }

@@ -178,15 +178,15 @@ namespace WebAPI.IntegrationTests.Controllers
 
             var invitation1 = await addNewEntity<Invitation>
                 (new Invitation { SenderId = senderId, ReceiverId = receiverId, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatus.Sent.ToString() });
+                    , Status = InvitationStatusEnum.Sent.ToString() });
 
             var invitation2 = await addNewEntity<Invitation>
                 (new Invitation { SenderId = 101, ReceiverId = 99, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatus.Accepted.ToString() });
+                    , Status = InvitationStatusEnum.Accepted.ToString() });
 
             var invitation3 = await addNewEntity<Invitation>
                 (new Invitation { SenderId = 99, ReceiverId = 102, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatus.Sent.ToString() });
+                    , Status = InvitationStatusEnum.Sent.ToString() });
 
             //Act
             var response = await _client.GetAsync
@@ -240,7 +240,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 SenderId = 100,
                 ReceiverId = 99,
                 GroupId = group.Id,
-                Status = InvitationStatus.Sent.ToString(),
+                Status = InvitationStatusEnum.Sent.ToString(),
             });
 
             //Act

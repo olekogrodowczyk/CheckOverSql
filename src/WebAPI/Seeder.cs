@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -101,27 +102,27 @@ namespace WebAPI
             {
                 new Permission()
                 {
-                    Title = "Sending invitations",
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations),
                     Description = "This permission lets a user to send invitations to other users"
                 },
                 new Permission()
                 {
-                    Title = "Deleting users",
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers),
                     Description = "This permission lets a user to delete other users from group"
                 },
                 new Permission()
                 {
-                    Title = "Deleting group",
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup),
                     Description = "This permission lets a user to delete a group"
                 },
                 new Permission()
                 {
-                    Title = "Assigning exercises",
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises),
                     Description = "This permission lets a user to assign exercises to do"
                 },
                 new Permission()
                 {
-                    Title = "Checking exercises",
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises),
                     Description = "This permission lets a user in group to check other exercises"
                 }
             };
@@ -139,17 +140,17 @@ namespace WebAPI
             }
             return new List<GroupRolePermission>
             {
-                getGroupRolePermission("Owner","Sending invitations"),
-                getGroupRolePermission("Owner","Deleting users"),
-                getGroupRolePermission("Owner","Deleting group"),
-                getGroupRolePermission("Owner","Assigning exercises"),
-                getGroupRolePermission("Owner","Checking exercises"),
-                getGroupRolePermission("Moderator", "Sending invitations"),
-                getGroupRolePermission("Moderator", "Deleting users"),
-                getGroupRolePermission("Moderator", "Assigning exercises"),
-                getGroupRolePermission("Moderator", "Checking exercises"),
-                getGroupRolePermission("Checker","Assigning exercises"),           
-                getGroupRolePermission("Checker","Checking exercises")                
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations)),
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers)),
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup)),
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
+                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations)),
+                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers)),
+                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
+                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
+                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),           
+                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises))                
             };
         }     
     }

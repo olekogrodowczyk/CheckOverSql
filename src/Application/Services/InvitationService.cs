@@ -50,14 +50,15 @@ namespace Application.Services
             var group = await _groupRepository.GetByIdAsync(groupId);
             var assignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
 
+            string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations);
             var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                ,new PermissionRequirement("Sending invitations"));
+                ,new PermissionRequirement(permission));
 
             var invitation = new Invitation
             {
                 SenderId = (int)_userContextService.GetUserId,
                 Receiver = receiver,
-                Status = InvitationStatus.Sent.ToString(),
+                Status = InvitationStatusEnum.Sent.ToString(),
                 GroupRole = groupRole,
                 Group = group
             };
@@ -123,7 +124,7 @@ namespace Application.Services
         public async Task AcceptInvitation(int invitationId)
         {
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if(invitation.Status != InvitationStatus.Sent.ToString())
+            if(invitation.Status != InvitationStatusEnum.Sent.ToString())
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
@@ -135,19 +136,19 @@ namespace Application.Services
                 UserId = invitation.ReceiverId,               
             });
 
-            invitation.Status = InvitationStatus.Accepted.ToString();
+            invitation.Status = InvitationStatusEnum.Accepted.ToString();
             await _invitationRepository.UpdateAsync(invitation);
         }
         
         public async Task RejectInvitation(int invitationId)
         {
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if(invitation.Status != InvitationStatus.Sent.ToString())
+            if(invitation.Status != InvitationStatusEnum.Sent.ToString())
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
 
-            invitation.Status = InvitationStatus.Rejected.ToString();
+            invitation.Status = InvitationStatusEnum.Rejected.ToString();
             await _invitationRepository.UpdateAsync(invitation);
         }
 

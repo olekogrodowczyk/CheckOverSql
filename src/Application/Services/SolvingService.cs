@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;
+using Domain.Enums;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -53,8 +54,10 @@ namespace Application.Services
                 //Solving exists and now we should check the permission
                 var loggedUserAssignment =
                 await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment(loggedUserId, solving.AssignmentId);
+
+                string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises);
                 var authorizationPermissionRequirement = await _authorizationService.AuthorizeAsync
-                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement("Checking exercises"));
+                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(permission));
             }
          
             var solvingDto = _mapper.Map<GetSolvingVm>(solving);
