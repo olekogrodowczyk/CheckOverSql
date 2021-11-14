@@ -15,5 +15,6 @@ namespace Infrastructure.Repositories
         public GroupRepository(ApplicationDbContext context, ILogger<GroupRepository> logger) : base(context, logger)
         {
         }
+
     }
 }

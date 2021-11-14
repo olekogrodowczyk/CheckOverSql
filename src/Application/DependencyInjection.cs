@@ -21,7 +21,8 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddAuthorization();
-            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();        
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();
@@ -29,6 +30,8 @@ namespace Application
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
             services.AddScoped<IInvitationService, InvitationService>();
+            services.AddScoped<ISolvingService, SolvingService>();
+
             return services;
         }
     }

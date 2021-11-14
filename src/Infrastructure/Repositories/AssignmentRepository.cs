@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Exceptions;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,21 @@ namespace Infrastructure.Repositories
             var permission = await _context.Permissions.SingleOrDefaultAsync(x=>x.Title == permissionTitle);
             var result = assignment.GroupRole.RolePermissions.Select(x => x.Permission.Title).Contains(permissionTitle);
             return result;
+        }
+
+        public async Task<Assignment> GetUserAssignmentBasedOnOtherAssignment(int userId, int assignmentId)
+        {
+            var assignment = await _context.Assignments
+                .Include(x => x.Group)
+                .ThenInclude(x=>x.Assignments)
+                .SingleOrDefaultAsync(x => x.Id == assignmentId); 
+            if(assignment is null) { throw new NotFoundException($"Assignment with id: {assignmentId} cannot be found"); }
+
+            var userAssignment = assignment.Group.Assignments.SingleOrDefault(x => x.UserId == userId);
+            if(userAssignment is null) 
+            { throw new ForbidException($"You're not in the group and access the exercise", true); }
+
+            return userAssignment;
         }
     }
 }

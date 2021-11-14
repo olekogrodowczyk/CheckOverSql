@@ -50,6 +50,12 @@
             public const string GetQueryData = Base + "/getquerydata/{solutionId}";
             public const string Compare = Base + "/compare/{solutionId}";
         }
+
+        public static class Solving
+        {
+            public const string Base = Root + "/solving/";
+            public const string AssignSolutionToSolving = "/assignsolutiontosolving";
+        }
         
     }
 }

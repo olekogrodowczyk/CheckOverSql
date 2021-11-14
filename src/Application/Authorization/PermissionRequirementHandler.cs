@@ -38,6 +38,7 @@ namespace Application.Authorization
             {
                 throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true);
             }
+            context.Succeed(requirement);
         }
     }
 }

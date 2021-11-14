@@ -99,5 +99,12 @@ namespace Infrastructure.Repositories
             if (result == null) { throw new NotFoundException("Entity within single method in repository cannot be found"); }
             return result;
         }
+
+        public async Task<IEnumerable<T>> GetWithInclude(Expression<Func<T,object>> include)
+        {
+            return await _context.Set<T>()
+                .Include(include)
+                .ToListAsync();
+        }
     }
 }

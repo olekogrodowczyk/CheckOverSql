@@ -204,18 +204,6 @@ namespace WebAPI.IntegrationTests.Controllers
             comparisonExists.Should().BeTrue();
         }
 
-        private Exercise getValidExercise()
-        {
-            return new Exercise
-            {
-                DatabaseId = 1,
-                MaxPoints = 10,
-                IsPrivate = false,
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
-                CreatorId = 99,
-                Title = "Zadanie1",
-                Description = "Zadanie1opis",
-            };
-        }
+        
     }
 }

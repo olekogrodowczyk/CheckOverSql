@@ -118,6 +118,11 @@ namespace WebAPI
                 {
                     Title = "Assigning exercises",
                     Description = "This permission lets a user to assign exercises to do"
+                },
+                new Permission()
+                {
+                    Title = "Checking exercises",
+                    Description = "This permission lets a user in group to check other exercises"
                 }
             };
         }
@@ -138,10 +143,13 @@ namespace WebAPI
                 getGroupRolePermission("Owner","Deleting users"),
                 getGroupRolePermission("Owner","Deleting group"),
                 getGroupRolePermission("Owner","Assigning exercises"),
+                getGroupRolePermission("Owner","Checking exercises"),
                 getGroupRolePermission("Moderator", "Sending invitations"),
                 getGroupRolePermission("Moderator", "Deleting users"),
                 getGroupRolePermission("Moderator", "Assigning exercises"),
-                getGroupRolePermission("Checker","Assigning exercises")                
+                getGroupRolePermission("Moderator", "Checking exercises"),
+                getGroupRolePermission("Checker","Assigning exercises"),           
+                getGroupRolePermission("Checker","Checking exercises")                
             };
         }     
     }

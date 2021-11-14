@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Entities;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -70,6 +71,21 @@ namespace WebAPI.IntegrationTests
             using var scope = scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
             await SeedDataHelper.SeedUsers(context);
+        }
+
+        protected Exercise getValidExercise(bool isPrivate = false)
+        {
+            var model = new Exercise
+            {
+                DatabaseId = 1,
+                Description = "Opis2dsadsa",
+                MaxPoints = 1,
+                Title = "Zadanie2 title",
+                ValidAnswer = "SELECT * FROM dbo.Footballers",
+                IsPrivate = isPrivate,
+                CreatorId = 1,
+            };
+            return model;
         }
     }
 }

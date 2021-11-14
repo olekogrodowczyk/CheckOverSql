@@ -29,20 +29,7 @@ namespace WebAPI.IntegrationTests.Controllers
     {
         public ExerciseControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { }
 
-        private Exercise getValidExercise(bool isPrivate)
-        {
-            var model = new Exercise
-            {
-                DatabaseId = 1,
-                Description = "Opis2dsadsa",
-                MaxPoints = 1,
-                Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
-                IsPrivate=isPrivate,  
-                CreatorId=1,                
-            };
-            return model;
-        }
+        
 
         [Fact]
         public async Task GetAll_ForCreatedSampleData_ReturnsOkWithThisData()

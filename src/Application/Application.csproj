@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Authorization\PermissionRequirementHandler.cs~RF310361e.TMP" />
     <None Remove="u4c54qls.uxs~" />
   </ItemGroup>
 
