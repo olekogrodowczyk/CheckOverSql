@@ -53,6 +53,7 @@ namespace WebAPI.IntegrationTests
             context.Invitations.Clear();
             context.Solutions.Clear();
             context.Exercises.Clear();
+            context.Comparisons.Clear();
             await context.SaveChangesAsync();
         }
 
@@ -63,6 +64,14 @@ namespace WebAPI.IntegrationTests
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             return await context.Set<T>().AnyAsync(predicate);
+        }
+
+        protected async Task SeedPublicExercises()
+        {
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedPublicExercises(context);
         }
 
         protected async Task SeedUsers()
@@ -83,7 +92,7 @@ namespace WebAPI.IntegrationTests
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
                 IsPrivate = isPrivate,
-                CreatorId = 1,
+                CreatorId = 104,
             };
             return model;
         }

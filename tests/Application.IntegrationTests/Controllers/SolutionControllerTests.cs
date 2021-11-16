@@ -3,6 +3,7 @@ using Application.IntegrationTests.FakeAuthentication;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
+using Domain.Enums;
 using FluentAssertions;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -24,26 +26,129 @@ namespace WebAPI.IntegrationTests.Controllers
     {
         public SolutionControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { } 
            
-        [Fact]
-        public async Task Create_ForValidModel_ReturnsOk()
+        private async Task<(int,int)> InitForCreate(DateTime deadline)
+        {
+            await ClearNotNecesseryData();
+            await SeedUsers();
+
+            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var assignment = await addNewEntity<Assignment>(new Assignment
+            {
+                UserId = 99,
+                GroupId = group.Id,
+                GroupRoleId = 4
+            });
+            var solving = await addNewEntity<Solving>(new Solving
+            {
+                AssignmentId = assignment.Id,
+                ExerciseId = exercise.Id,
+                CreatorId = 100,
+                Status = SolvingStatus.ToDo.ToString(),
+                DeadLine = deadline,
+                SentAt = DateTime.UtcNow
+            });
+            return (exercise.Id, solving.Id);
+        }
+
+        [Theory]
+        [InlineData("SELECT * FROM dbo.Footballers", true)]
+        [InlineData("SELECT FirstName FROM dbo.Footballers", false)]
+        [InlineData("SELECT FirstName, LastName FROM dbo.Footballers", false)]
+        [InlineData("SELECT Id, FirstName, LastName FROM dbo.Footballers", true)]
+        public async Task Create_ForValidData_ReturnsOkWithExpectedResults(string query, bool expectedResult)
         {
             //Arrange
-            var exercise = await addNewEntity<Exercise>(getValidExercise());
+            var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
 
-            var httpContent = new CreateSolutionDto
-            {
-                Query = "SELECT * FROM dbo.Footballers",
-                SolvingId = null,
-                Dialect = "SQL Server"
-            }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionDto { Query = query }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Solution.Create.Replace("{exerciseId}", exercise.Id.ToString()), httpContent);
+                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Result<GetComparisonVm>>(responseString);
+
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            result.Value.SolutionSolver.Should().NotBeNullOrEmpty();
+            result.Value.Result.Should().Be(expectedResult);
         }
+
+        [Theory]
+        [InlineData("INSERT INTO Footballers (FirstName, LastName) VALUES ('Leo','Messi')")]
+        [InlineData("dnwuqidnuwqu")]
+        [InlineData("DROP TABLE dbo.Footballers")]
+        public async Task Create_ForInvalidQueries_ReturnsForbidden(string query)
+        {
+            //Arrange
+            var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
+            var httpContent = new CreateSolutionDto { Query = query }.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync
+                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+
+            //Assert
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+            context.Comparisons.Count().Should().Be(0);
+        }
+
+        [Fact]
+        public async Task Create_ForValidData_ReturnsOkWithProperlyCreatedData()
+        {
+            //Arrange
+            var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
+
+            var httpContent = new CreateSolutionDto { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+
+            //Act
+            var response = await _client.PostAsync
+                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+
+            //Assert
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            context.Comparisons.Count().Should().Be(1);
+
+            var solvingResult = await context.Solvings.Include(x=>x.Solution).FirstOrDefaultAsync(x=>x.Id == initResult.Item2);
+            solvingResult.Status.Should().Be(SolvingStatus.Done.ToString());
+            solvingResult.Solution.Outcome.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Create_ForValidDataWithOverdueSentSolution_ReturnsOkWithSentButOverdueStatus()
+        {
+            //Arrange
+            var initResult = await InitForCreate(DateTime.UtcNow.AddHours(-1));
+            var httpContent = new CreateSolutionDto { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+
+
+            //Act
+            var response = await _client.PostAsync
+                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+
+            //Assert
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            context.Comparisons.Count().Should().Be(1);
+            var solvingResult = await context.Solvings.Include(x => x.Solution).FirstOrDefaultAsync(x => x.Id == initResult.Item2);
+            solvingResult.Status.Should().Be(SolvingStatus.DoneButOverdue.ToString());
+            solvingResult.Solution.Outcome.Should().BeTrue();
+        }
+
+
 
         [Fact] 
         public async Task GetQueryData_ForForbiddenSolution_ReturnsForbidden()
@@ -104,8 +209,6 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateSolutionDto
             {
                 Query = "",
-                SolvingId = null,
-                Dialect = "SQL Server"
             }.ToJsonHttpContent();
 
             //Act
@@ -139,70 +242,8 @@ namespace WebAPI.IntegrationTests.Controllers
             result.Value.Should().HaveCount(2);
         }
 
-        [Fact]
-        public async Task Compare_ForValidSolution_ReturnsTrueWithOk()
-        {
-            //Arrange
-            string query = "SELECT * FROM dbo.Footballers";
-            var exercise = await addNewEntity<Exercise>(getValidExercise());
-            var solution = await addNewEntity<Solution>
-                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
 
-            //Act
-            var response = await _client.GetAsync
-                (ApiRoutes.Solution.Compare
-                .Replace("{exerciseId}", exercise.Id.ToString())
-                .Replace("{solutionId}", solution.Id.ToString()));
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<bool>>(responseString);
-
-            //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            result.Value.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task Compare_ForInvalidSolution_ReturnsFalseWithOk()
-        {
-            //Arrange
-            string query = "SELECT FirstName, LastName FROM dbo.Footballers";
-            var exercise = await addNewEntity<Exercise>(getValidExercise());
-            var solution = await addNewEntity<Solution>
-                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
-
-            //Act
-            var response = await _client.GetAsync($"/api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<bool>>(responseString);
-
-            //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            result.Value.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task Compare_ForMakingComparison_CreatesComparison()
-        {
-            //Arrange
-            string query = "SELECT * FROM dbo.Footballers";
-            var exercise = await addNewEntity<Exercise>(getValidExercise());
-            var solution = await addNewEntity<Solution>
-                (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });         
-
-            //Act
-            var response = await _client.GetAsync($"api/exercise/{exercise.Id}/solution/compare/{solution.Id}");
-            
-            //Assert
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            bool comparisonExists = await context.Comparisons.AnyAsync();
-
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            comparisonExists.Should().BeTrue();
-        }
+       
 
         
     }

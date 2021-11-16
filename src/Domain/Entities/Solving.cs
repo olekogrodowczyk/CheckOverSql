@@ -16,8 +16,6 @@ namespace Domain.Entities
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
         public string Status { get; set; }
-        public string Dialect { get; set; }
-        public string Answer { get; set; }
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public virtual Checking Checking { get; set; }

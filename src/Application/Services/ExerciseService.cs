@@ -69,6 +69,7 @@ namespace Application.Services
             return exerciseDtos;
         }
 
+
         public async Task<IEnumerable<int>> AssignExerciseToAllUsers(int groupId, int exerciseId, AssignExerciseToUsersDto model)
         {          
             var assignmentsChosenToGetExercise =

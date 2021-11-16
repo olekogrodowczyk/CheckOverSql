@@ -24,6 +24,13 @@ namespace Infrastructure.Repositories
             if (result == null) { throw new NotFoundException($"Result is not found with name:{name}"); }
             return result.Id;
         }      
+
+        public async Task<string> GetDatabaseNameById(int databaseId)
+        {
+            var result = await _context.Databases.FirstOrDefaultAsync(x=>x.Id == databaseId);
+            return result.Name;
+        }
+
         public async Task<string> GetDatabaseConnectionString(string name, bool isAdmin = false)
         {
             var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);

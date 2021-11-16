@@ -18,13 +18,24 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IEnumerable<Solving>> GetSolvingsAssignedToUser(int userId)
+        public async Task<IEnumerable<Solving>> GetAllSolvingsAssignedToUser(int userId)
         {
             var solvings = await _context.Solvings
                 .Include(x => x.Creator)
                 .Include(x => x.Assignment)
                 .ThenInclude(x => x.User)
                 .Where(x => x.Assignment.UserId == userId)
+                .ToListAsync();
+            return solvings;
+        }
+
+        public async Task<IEnumerable<Solving>> GetSolvingsAssignedToUserToDo(int userId)
+        {
+            var solvings = await _context.Solvings
+                .Include(x => x.Creator)
+                .Include(x => x.Assignment)
+                .ThenInclude(x => x.User)
+                .Where(x => x.Assignment.UserId == userId && x.Status == SolvingStatus.ToDo.ToString())
                 .ToListAsync();
             return solvings;
         }

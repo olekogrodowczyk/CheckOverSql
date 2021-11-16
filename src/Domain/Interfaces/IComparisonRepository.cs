@@ -9,5 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IComparisonRepository : IRepository<Comparison>
     {
+        Task<Comparison> GetComparisonWithIncludes(int comparisonId);
     }
 }

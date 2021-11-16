@@ -54,6 +54,15 @@ namespace WebAPI.IntegrationTests.Helpers
             }
         }
 
+        public static async Task SeedPublicExercises(ApplicationDbContext context)
+        {
+            if(!context.Exercises.Any())
+            {
+                var exercises = Seeder.getPublicExercises();
+                await context.Exercises.AddRangeAsync(exercises);
+            }
+        }
+
         public static async Task SeedPermissionWithGroupRoles(ApplicationDbContext context)
         {
             var permissions = Seeder.getPermissions();

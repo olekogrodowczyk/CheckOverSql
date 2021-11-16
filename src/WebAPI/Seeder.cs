@@ -36,8 +36,17 @@ namespace WebAPI
                 {
                     var permissions = getPermissions();
                     _context.Permissions.AddRange(permissions);
-                }             
-                _context.SaveChanges();
+                }        
+                if(!_context.Users.Any())
+                {
+                    var user = getSuperUser();
+                    _context.Users.Add(user);
+                }
+                if(!_context.Exercises.Any())
+                {
+                    var exercises = getPublicExercises();
+                    _context.Exercises.AddRange(exercises);
+                }
                 if (!_context.GroupRolePermissions.Any())
                 {
                     var permissions = _context.Permissions.ToList();
@@ -45,9 +54,22 @@ namespace WebAPI
 
                     var groupRolePermission = GetGroupRolePermissions(permissions, groupRoles);
                     _context.GroupRolePermissions.AddRange(groupRolePermission);
-                    _context.SaveChanges();
                 }
+                _context.SaveChanges();
             }
+        }
+
+        public static User getSuperUser()
+        {
+            return new User
+            {
+                FirstName = "Super",
+                LastName = "User",
+                RoleId = 1,
+                Email = "superuser@gmail.com",
+                PasswordHash = "dsandnsauindasuidnusa",
+                DateOfBirth = DateTime.UtcNow.AddYears(-21)
+            };
         }
 
         public static IEnumerable<Role> getRoles()
@@ -66,6 +88,40 @@ namespace WebAPI
                 {
                     Name = "User"
                 }
+            };
+        }
+
+        public static IEnumerable<Exercise> getPublicExercises()
+        {
+            return new List<Exercise>()
+            {
+                new Exercise()
+                {
+                    DatabaseId = 1,
+                    CreatorId = 1,
+                    ValidAnswer = "SELECT * FROM dbo.Footballers",
+                    IsPrivate = false,
+                    Title = "Get all fields",
+                    Description = "Get all field description"
+                },
+                new Exercise()
+                {
+                    DatabaseId = 1,
+                    CreatorId = 1,
+                    ValidAnswer = "SELECT FirstName FROM dbo.Footballers",
+                    IsPrivate = false,
+                    Title = "Get one field",
+                    Description = "Get one field description"
+                },
+                new Exercise()
+                {
+                    DatabaseId = 1,
+                    CreatorId = 1,
+                    ValidAnswer = "SELECT FirstName, LastName FROM dbo.Footballers",
+                    IsPrivate = false,
+                    Title = "Get two fields",
+                    Description = "Get two fields description"
+                },
             };
         }
 

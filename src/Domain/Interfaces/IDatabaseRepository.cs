@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<string> GetDatabaseConnectionString(string name, bool isAdmin = false);
         Task<int> GetDatabaseIdByName(string name);
+        Task<string> GetDatabaseNameById(int databaseId);
     }
 }

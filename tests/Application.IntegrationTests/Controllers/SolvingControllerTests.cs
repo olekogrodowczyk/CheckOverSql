@@ -39,10 +39,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.ToCheck.ToString(),
-                Answer = "SELECT * FROM dbo.Footballers",
+                Status = SolvingStatus.Done.ToString(),
                 AssignmentId = assignmentSolver.Id,
-                Dialect = "SQL Server",
                 ExerciseId = exercise.Id
             });
 
@@ -74,10 +72,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 99,
-                Status = SolvingStatus.ToCheck.ToString(),
-                Answer = "SELECT * FROM dbo.Footballers",
+                Status = SolvingStatus.Done.ToString(),
                 AssignmentId = assignmentSolver.Id,
-                Dialect = "SQL Server",
                 ExerciseId = exercise.Id
             });
 
@@ -111,10 +107,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.ToCheck.ToString(),
-                Answer = "SELECT * FROM dbo.Footballers",
+                Status = SolvingStatus.Done.ToString(),
                 AssignmentId = assignmentSolver.Id,
-                Dialect = "SQL Server",
                 ExerciseId = exercise.Id
             });
 
@@ -150,10 +144,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.ToCheck.ToString(),
-                Answer = "SELECT * FROM dbo.Footballers",
+                Status = SolvingStatus.Done.ToString(),
                 AssignmentId = assignmentSolver.Id,
-                Dialect = "SQL Server",
                 ExerciseId = exercise.Id
             });
 

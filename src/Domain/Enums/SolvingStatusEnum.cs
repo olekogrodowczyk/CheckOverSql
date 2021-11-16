@@ -10,7 +10,8 @@ namespace Domain.Enums
     {
         ToDo,
         Overdue,
-        ToCheck,
+        Done,
+        DoneButOverdue,
         Checked
     }
 }

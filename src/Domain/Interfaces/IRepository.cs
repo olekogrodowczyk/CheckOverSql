@@ -19,6 +19,5 @@ namespace Domain.Interfaces
         Task<IEnumerable<T>> GetAllIncludeAsync(Expression<Func<T, object>> include);
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
         Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> GetWithInclude(Expression<Func<T, object>> include);
     }
 }

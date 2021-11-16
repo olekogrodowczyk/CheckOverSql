@@ -18,5 +18,8 @@ namespace Domain.Entities
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
         public virtual ICollection<Comparison> Comparisons { get; set; }
+        public bool? Checked { get; set; }
+        public bool? IsValid { get; set; }
+        public bool Outcome { get; set; } = false;
     }
 }

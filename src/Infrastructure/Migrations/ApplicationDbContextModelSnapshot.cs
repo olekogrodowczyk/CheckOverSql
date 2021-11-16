@@ -362,6 +362,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool?>("Checked")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
@@ -374,8 +377,14 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("IsValid")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Outcome")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Query")
                         .HasColumnType("nvarchar(max)");
@@ -403,9 +412,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
@@ -417,9 +423,6 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime?>("DeadLine")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Dialect")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");

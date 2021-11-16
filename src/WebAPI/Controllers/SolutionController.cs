@@ -1,4 +1,5 @@
 ﻿using Application.Dto.CreateSolutionDto;
+using Application.Dto.SendQueryDto;
 using Application.Interfaces;
 using Application.Responses;
 using Application.ViewModels;
@@ -26,32 +27,24 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAll([FromRoute] int exerciseId)
         {
             var result = await _solutionService.GetAllSolutions(exerciseId);
-            return Ok(new Result<IEnumerable<GetSolutionVm>>(result, "Pomyślnie zwrócono wszystkie rozwiązania"));
+            return Ok(new Result<IEnumerable<GetSolutionVm>>(result, "All solution returned successfully"));
         }
         
-        [HttpPost]
+        [HttpPost()]
         public async Task<IActionResult> Create([FromRoute] int exerciseId, [FromBody] CreateSolutionDto model)
         {
-            var result =  await _solutionService.CreateSolution(model, exerciseId);
-            return Ok(new Result<int>(result, "Pomyślnie dodano nowe rozwiązanie"));
+            var result = await _solutionService.CreateSolution(exerciseId, model);
+            return Ok(new Result<GetComparisonVm>(result, "New solution added successfully and returned comparison"));
         }
 
         [HttpGet("getquerydata/{solutionId}")]
         public async Task<IActionResult> GetQueryData([FromRoute] int exerciseId, [FromRoute] int solutionId)
         {
             var result = await _solutionService.SendSolutionQuery(solutionId);
-            return Ok(new Result<List<List<string>>>(result, "Pomyślnie zwrócono wyniki zapytania do bazy"));
+            return Ok(new Result<List<List<string>>>(result, "Query executed successfully"));
         }
 
-        [HttpGet("compare/{solutionId}")]
-        public async Task<IActionResult> Compare([FromRoute] int solutionId, [FromRoute] int exerciseId)
-        {
-            bool result = await _solutionService.Compare(solutionId, exerciseId);
-            await _solutionService.CreateComparison(solutionId, exerciseId, result);
-            return Ok(new Result<bool>(result, "Pomyślnie porównano rozwiązania"));
-        }
-
-        
+            
 
 
     }

@@ -50,7 +50,7 @@ namespace Infrastructure.Repositories
         public async Task<T> GetByIdAsync(int id)
         {
             var result =  await _context.Set<T>().FindAsync(id);
-            if(result == null) { throw new NotFoundException($"Result is not found with id:{id} with given type: {typeof(T)}"); }
+            if(result == null) { throw new NotFoundException($"Result is not found with id:{id} with given type: {typeof(T)}", true); }
             return result;
         }
 
@@ -99,12 +99,6 @@ namespace Infrastructure.Repositories
             if (result == null) { throw new NotFoundException("Entity within single method in repository cannot be found"); }
             return result;
         }
-
-        public async Task<IEnumerable<T>> GetWithInclude(Expression<Func<T,object>> include)
-        {
-            return await _context.Set<T>()
-                .Include(include)
-                .ToListAsync();
-        }
+       
     }
 }

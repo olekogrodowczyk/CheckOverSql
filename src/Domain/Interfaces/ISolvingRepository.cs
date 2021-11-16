@@ -10,7 +10,8 @@ namespace Domain.Interfaces
     public interface ISolvingRepository : IRepository<Solving>
     {
         Task<IEnumerable<Solving>> GetAllSolvingsAvailable(int userId);
-        Task<IEnumerable<Solving>> GetSolvingsAssignedToUser(int userId);
+        Task<IEnumerable<Solving>> GetAllSolvingsAssignedToUser(int userId);
         Task<Solving> GetSolvingWithIncludes(int solvingId);
+        Task<IEnumerable<Solving>> GetSolvingsAssignedToUserToDo(int userId);
     }
 }

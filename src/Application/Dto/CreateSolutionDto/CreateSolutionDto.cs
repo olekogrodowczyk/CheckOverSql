@@ -11,9 +11,7 @@ namespace Application.Dto.CreateSolutionDto
 {
     public class CreateSolutionDto : IMap
     {
-        public string Dialect { get; set; }
         public string Query { get; set; }
-        public int? SolvingId { get; set; }
 
         public void Mapping(Profile profile)
         {

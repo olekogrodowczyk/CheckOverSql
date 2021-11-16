@@ -8,6 +8,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +28,13 @@ namespace Application.Services
         private readonly IGroupRoleRepository _groupRoleRepository;
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IAuthorizationService _authorizationService;
+        private readonly ILogger<InvitationService> _logger;
 
         public InvitationService(IMapper mapper, IGroupRepository groupRepository
             ,IInvitationRepository invitationRepository, IUserRepository userRepository
             ,IUserContextService userContextService, IGroupRoleRepository groupRoleRepository
-            ,IAssignmentRepository assignmentRepository, IAuthorizationService authorizationService)
+            ,IAssignmentRepository assignmentRepository, IAuthorizationService authorizationService
+            ,ILogger<InvitationService> logger)
         {
             _mapper = mapper;
             _groupRepository = groupRepository;
@@ -41,10 +44,13 @@ namespace Application.Services
             _groupRoleRepository = groupRoleRepository;
             _assignmentRepository = assignmentRepository;
             _authorizationService = authorizationService;
+            _logger = logger;
         }
 
         public async Task<int> CreateInvitation(CreateInvitationDto model, int groupId)
         {
+            //_logger.LogInformation($"User with id: {_userContextService.GetUserId} " +
+            //    $"attempts to create an invitation with data: email")
             var receiver = await _userRepository.GetByEmail(model.ReceiverEmail);
             var groupRole = await _groupRoleRepository.GetByName(model.RoleName);
             var group = await _groupRepository.GetByIdAsync(groupId);

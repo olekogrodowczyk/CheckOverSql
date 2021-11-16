@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> SendQuery(SendQueryDto model)
+        public async Task<IActionResult> SendQueryAdmin(SendQueryDto model)
         {
             var result = await _queryService.SendQueryNoData(model.Query, model.Database, true);
             return Ok(new Result<int>(result, "Pomyślnie wykonano zapytanie. Zwrócono ilość zmienionych rzędów."));
