@@ -36,8 +36,16 @@ namespace Application.Services
 
         public async Task<IEnumerable<GetSolvingVm>> GetAllSolvingsAssignedToUser()
         {
-            var userId = _userContextService.GetUserId;
-            var solvings = await _solvingRepository.GetSolvingsAssignedToUserToDo((int)userId);
+            var loggedUserId = _userContextService.GetUserId;
+            var solvings = await _solvingRepository.GetAllSolvingsAssignedToUser((int)loggedUserId);
+            var solvingsVm = _mapper.Map<IEnumerable<GetSolvingVm>>(solvings);
+            return solvingsVm;
+        }
+
+        public async Task<IEnumerable<GetSolvingVm>> GetAllSolvingsAssignedToUserToDo()
+        {
+            var loggedUserId = _userContextService.GetUserId;
+            var solvings = await _solvingRepository.GetSolvingsAssignedToUserToDo((int)loggedUserId);
             var solvingsVm = _mapper.Map<IEnumerable<GetSolvingVm>>(solvings);
             return solvingsVm;
         }

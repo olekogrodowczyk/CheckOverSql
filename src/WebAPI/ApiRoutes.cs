@@ -53,8 +53,10 @@
 
         public static class Solving
         {
-            public const string Base = Root + "/solving/";
-            public const string AssignSolutionToSolving = "/assignsolutiontosolving";
+            public const string Base = Root + "/solving";
+            public const string AssignSolutionToSolving = Base + "/assignsolutiontosolving";
+            public const string GetAllSolvingsAssignedToUser = Base + "/getall";
+            public const string GetAllSolvingsAssignedToUserToDo = Base + "/getalltodo";
         }
         
     }

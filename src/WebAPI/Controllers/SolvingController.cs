@@ -3,6 +3,7 @@ using Application.Responses;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -19,10 +20,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAllSolvingAssignedToUser()
+        public async Task<IActionResult> GetAllSolvingsAssignedToUser()
         {
-            await _solvingService.GetAllSolvingsAssignedToUser();
-            return Ok(new Result("Solution assigned to solving successfully"));
+            var result = await _solvingService.GetAllSolvingsAssignedToUser();
+            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "Solution assigned to solving successfully"));
         }
 
         [HttpGet("getbyid/{solvingId}")]
@@ -30,6 +31,13 @@ namespace WebAPI.Controllers
         {
             var result = await _solvingService.GetSolvingById(solvingId);
             return Ok(new Result<GetSolvingVm>(result, "Solving returned successfully"));
+        }
+
+        [HttpGet("getalltodo")]
+        public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()
+        {
+            var result = await _solvingService.GetAllSolvingsAssignedToUserToDo();
+            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "Solution assigned to solving successfully"));
         }
     }
 }

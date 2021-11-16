@@ -5,6 +5,7 @@ using Domain.Enums;
 using FluentAssertions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -155,5 +156,65 @@ namespace WebAPI.IntegrationTests.Controllers
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
+
+        [Fact]
+        public async Task GetAllSolvingsAssignedToUserToDo_ForGivenData_ReturnsOkWithProperDataAmount()
+        {
+            //Arrange
+            await ClearNotNecesseryData();
+            await SeedUsers();
+
+            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 101 });
+            var assignment = await addNewEntity<Assignment>(new Assignment
+            {
+                UserId = 99,
+                GroupRoleId = 2,
+                GroupId = group.Id
+            });
+            List<Exercise> exercises = new List<Exercise>();
+            for(int i = 0; i < 10; i++) { exercises.Add(await addNewEntity<Exercise>(getValidExercise())); }
+            List<Solving> solvings = new List<Solving>()
+            {
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.Done.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[0].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatus.ToDo.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[1].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.DoneButOverdue.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[2].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatus.ToDo.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[3].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 101, Status = SolvingStatus.Done.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[4].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.ToDo.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[5].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.DoneButOverdue.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[6].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.ToDo.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[7].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatus.ToDo.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[8].Id}),
+                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatus.Done.ToString()
+                , AssignmentId = assignment.Id, ExerciseId = exercises[9].Id}),
+            };
+
+            //Act
+            var responseGetAll = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUser);
+            var responseGetAllString = await responseGetAll.Content.ReadAsStringAsync();
+            var responseGetAllResult = JsonConvert.DeserializeObject<Result<IEnumerable<GetSolvingVm>>>(responseGetAllString);
+
+            var responseGetAllToDo = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUserToDo);
+            var responseGetAllStringToDo = await responseGetAllToDo.Content.ReadAsStringAsync();
+            var responseGetAllResultToDo = JsonConvert.DeserializeObject<Result<IEnumerable<GetSolvingVm>>>(responseGetAllStringToDo);
+
+            //Assert
+            responseGetAll.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            responseGetAllToDo.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+
+            responseGetAllResult.Value.Should().HaveCount(10);
+            responseGetAllResultToDo.Value.Should().HaveCount(5);
+
+        }
+
+        
     }
 }

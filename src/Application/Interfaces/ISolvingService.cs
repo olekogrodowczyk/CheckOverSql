@@ -10,6 +10,7 @@ namespace Application.Interfaces
     public interface ISolvingService
     {
         Task<IEnumerable<GetSolvingVm>> GetAllSolvingsAssignedToUser();
+        Task<IEnumerable<GetSolvingVm>> GetAllSolvingsAssignedToUserToDo();
         Task<GetSolvingVm> GetSolvingById(int solvingId);
     }
 }
