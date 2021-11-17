@@ -66,9 +66,8 @@ namespace Application.Services
         {
             var userAssignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
 
-            string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup);
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
-                , userAssignment, new PermissionRequirement(permission));
+                , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
 
             var group = await _groupRepository.GetByIdAsync(groupId);
             var assignments = await _assignmentRepository.GetWhereAsync(x => x.Group == group);

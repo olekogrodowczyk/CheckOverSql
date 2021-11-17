@@ -19,7 +19,7 @@ namespace Application.Authorization
         private readonly IRepository<Permission> _permissionRepository;
 
         public PermissionRequirementHandler(IUserContextService userContextService, IAssignmentRepository assignmentRepository
-            ,IRepository<Permission> permissionRepository)
+            , IRepository<Permission> permissionRepository)
         {
             _userContextService = userContextService;
             _assignmentRepository = assignmentRepository;
@@ -28,16 +28,16 @@ namespace Application.Authorization
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement, Assignment assignment)
         {
-            int userId = (int)_userContextService.GetUserId;
+            if (assignment == null) { throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true); }
+
             var result = await _assignmentRepository.CheckIfAssignmentHasPermission(assignment.Id, requirement.PermissionTitle);
+
             if (!await _permissionRepository.ExistsAsync(x => x.Title == requirement.PermissionTitle))
             {
                 throw new NotFoundException($"Permission {requirement.PermissionTitle} cannot be found");
             }
-            if (!result)
-            {
-                throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true);
-            }
+            if (!result) { throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true); }
+
             context.Succeed(requirement);
         }
     }

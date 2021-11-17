@@ -56,9 +56,8 @@ namespace Application.Services
             var group = await _groupRepository.GetByIdAsync(groupId);
             var assignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
 
-            string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations);
             var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                ,new PermissionRequirement(permission));
+                ,new PermissionRequirement(PermissionNames.SendingInvitations));
 
             var invitation = new Invitation
             {

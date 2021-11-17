@@ -106,9 +106,8 @@ namespace Application.Services
                 throw new NotFoundException("You don't belong to the specified group or the group doesn't exist");
             }
 
-            string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises);
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                ,new PermissionRequirement(permission));
+                ,new PermissionRequirement(PermissionNames.AssigningExercises));
         }
 
 

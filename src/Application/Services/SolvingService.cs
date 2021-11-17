@@ -63,9 +63,8 @@ namespace Application.Services
                 var loggedUserAssignment =
                 await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment(loggedUserId, solving.AssignmentId);
 
-                string permission = GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises);
                 var authorizationPermissionRequirement = await _authorizationService.AuthorizeAsync
-                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(permission));
+                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(PermissionNames.CheckingExercises));
             }
          
             var solvingDto = _mapper.Map<GetSolvingVm>(solving);

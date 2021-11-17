@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,10 @@ namespace Application.Authorization
     public class PermissionRequirement : IAuthorizationRequirement
     {
 
-        public PermissionRequirement(string permissionTitle)
+        public PermissionRequirement(PermissionNames permissionName)
         {
-            PermissionTitle = permissionTitle;
+            PermissionTitle = GetPermissionByEnum.GetPermissionName(permissionName);
         }
-
         public string PermissionTitle { get; }
     }
 }
