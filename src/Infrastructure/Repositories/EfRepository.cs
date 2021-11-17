@@ -99,6 +99,12 @@ namespace Infrastructure.Repositories
             if (result == null) { throw new NotFoundException("Entity within single method in repository cannot be found"); }
             return result;
         }
+
+        public async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            var result = await _context.Set<T>().SingleOrDefaultAsync(predicate);
+            return result;
+        }
        
     }
 }
