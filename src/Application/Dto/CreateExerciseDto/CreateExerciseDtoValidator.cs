@@ -27,27 +27,27 @@ namespace Application.Dto.CreateExerciseDto
 
 
             RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("Nie podano tytułu zadania")
-                .MinimumLength(5).WithMessage("Minimalna długość tytułu to 5")
-                .MaximumLength(200).WithMessage("Maksymalna długość tytułu to 200");
+                .NotEmpty().WithMessage("Title of the exercise hasn't been defined")
+                .MinimumLength(5).WithMessage("Minimum length of title is 5")
+                .MaximumLength(200).WithMessage("Maximum length of the title is 200");
 
             RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("Nie podano opisu zadania")
-                .MinimumLength(10).WithMessage("Minimalna długość opisu to 10")
-                .MaximumLength(3000).WithMessage("Maksymalna długość opisu to 3000");
+                .NotEmpty().WithMessage("Description of the exercise hasn't been defined")
+                .MinimumLength(10).WithMessage("Minimum length of description is 10")
+                .MaximumLength(3000).WithMessage("Maximum length of description is 3000");
 
             RuleFor(x => x.MaxPoints)
-                .NotEmpty().WithMessage("Nie podano maksymalnej ilości punktów zadania")
-                .GreaterThanOrEqualTo(1).WithMessage("Minimalna liczba maksymalnej ilości punktów zadania to 1")
-                .LessThanOrEqualTo(100).WithMessage("Maksymalna liczba maksymalnej ilości punktów zadania to 100");
+                .NotEmpty().WithMessage("Max points hasn't been specified")
+                .GreaterThanOrEqualTo(1).WithMessage("Minimum value of max points is 1")
+                .LessThanOrEqualTo(100).WithMessage("Maximum value of max points is 100");
 
             RuleFor(x => x.ValidAnswer)
-                .MinimumLength(10).WithMessage("Minimalna długość odpowiedzi do zadania to 5")
-                .MaximumLength(200).WithMessage("Maksymalna długość odpowiedzi do zadania to 500");
+                .MinimumLength(10).WithMessage("Minimum length of valid answer is 5")
+                .MaximumLength(500).WithMessage("Maximum length of valid answer is 500");
 
             RuleFor(x => x.Database)
-                .NotEmpty().WithMessage("Nie wybrano bazy danych")
-                .MaximumLength(25).WithMessage("Wybrana baza danych nie może mieć więcej niż 25 znaków")
+                .NotEmpty().WithMessage("Database hasn't been chosen")
+                .MaximumLength(25).WithMessage("Max length of chosen database is 25")
                 .Custom((value, context) =>
                 {
                     if (!databasesNames.Contains(value.ToLower()))
@@ -56,6 +56,9 @@ namespace Application.Dto.CreateExerciseDto
                             $"[{string.Join(",", databasesNames)}]");
                     }
                 });
+
+            RuleFor(x => x.IsPrivate)
+                .NotEmpty().WithMessage("Exercise visibility hasn't been defined");
         }
     }
 }

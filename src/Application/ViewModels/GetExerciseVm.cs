@@ -22,7 +22,7 @@ namespace Application.ViewModels
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Exercise, GetExerciseVm>()
-                .ForMember(x => x.Creator, y => y.MapFrom(z => z.Creator.FirstName + z.Creator.LastName));
+                .ForMember(x => x.Creator, y => y.MapFrom(z => z.Creator.FirstName + " " + z.Creator.LastName));
         }
     }
 }

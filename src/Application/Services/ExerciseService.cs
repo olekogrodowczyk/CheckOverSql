@@ -51,6 +51,7 @@ namespace Application.Services
             var exercise = _mapper.Map<Exercise>(model);         
             exercise.CreatorId = (int)_userContextService.GetUserId;  
             exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(model.Database);
+            exercise.IsPrivate = model.IsPrivate;
             await _exerciseRepository.AddAsync(exercise);
             return exercise.Id;
         }

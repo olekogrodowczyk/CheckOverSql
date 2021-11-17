@@ -62,7 +62,8 @@ namespace WebAPI.IntegrationTests.Controllers
                 Description = "Opis2dsadsa",
                 MaxPoints = 1,
                 Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers"
+                ValidAnswer = "SELECT * FROM dbo.Footballers",
+                IsPrivate = true,
             }.ToJsonHttpContent();
 
             //Act
@@ -102,7 +103,8 @@ namespace WebAPI.IntegrationTests.Controllers
                 Description = "Opis2dsadsa",
                 MaxPoints = 1,
                 Title = "Zadanie2 title",
-                ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')"
+                ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')",
+                IsPrivate = true,
             }.ToJsonHttpContent();
 
 
