@@ -58,7 +58,7 @@ namespace WebAPI.IntegrationTests.Helpers
         {
             if(!context.Exercises.Any())
             {
-                int creatorId = 1;
+                int creatorId = 99;
                 var exercises = Seeder.getPublicExercises(creatorId);
                 await context.Exercises.AddRangeAsync(exercises);
             }
@@ -112,7 +112,7 @@ namespace WebAPI.IntegrationTests.Helpers
                     Email = "jameskowalski@gmail.com",
                     PasswordHash = "dsandnsauindasuidnusa",
                     DateOfBirth = DateTime.UtcNow.AddYears(-21)
-        },
+                },
                 new User
                 {
                     Id = 102,
@@ -122,7 +122,7 @@ namespace WebAPI.IntegrationTests.Helpers
                     Email = "richardjohnson@gmail.com",
                     PasswordHash = "dsandnsauindasuidnusa",
                     DateOfBirth = DateTime.UtcNow.AddYears(-22)
-        },
+                },
                 new User
                 {
                     Id = 103,
@@ -132,7 +132,7 @@ namespace WebAPI.IntegrationTests.Helpers
                     Email = "michaelbrown@gmail.com",
                     PasswordHash = "dsandnsauindasuidnusa",
                     DateOfBirth = DateTime.UtcNow.AddYears(-23)
-        }
+                }
             };
             await context.AddRangeAsync(users);
             await context.SaveChangesAsync();
