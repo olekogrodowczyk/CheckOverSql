@@ -22,31 +22,24 @@ namespace WebAPI
         {
             if(_context.Database.CanConnect())
             {
-                if(!_context.GroupRoles.Any())
-                {
-                    var groupRoles = getGroupRoles();
-                    _context.GroupRoles.AddRange(groupRoles);
-                }
-                if(!_context.Roles.Any())
+                if (!_context.Roles.Any())
                 {
                     var roles = getRoles();
                     _context.Roles.AddRange(roles);
+                    _context.SaveChanges();
                 }
-                if(!_context.Permissions.Any())
+                if (!_context.Permissions.Any())
                 {
                     var permissions = getPermissions();
                     _context.Permissions.AddRange(permissions);
-                }        
-                if(!_context.Users.Any())
-                {
-                    var user = getSuperUser();
-                    _context.Users.Add(user);
+                    _context.SaveChanges();
                 }
-                if(!_context.Exercises.Any())
+                if (!_context.GroupRoles.Any())
                 {
-                    var exercises = getPublicExercises();
-                    _context.Exercises.AddRange(exercises);
-                }
+                    var groupRoles = getGroupRoles();
+                    _context.GroupRoles.AddRange(groupRoles);
+                    _context.SaveChanges();
+                }                                                              
                 if (!_context.GroupRolePermissions.Any())
                 {
                     var permissions = _context.Permissions.ToList();
@@ -54,18 +47,32 @@ namespace WebAPI
 
                     var groupRolePermission = GetGroupRolePermissions(permissions, groupRoles);
                     _context.GroupRolePermissions.AddRange(groupRolePermission);
+                    _context.SaveChanges();
                 }
-                _context.SaveChanges();
+                if (!_context.Users.Any())
+                {
+                    int adminRoleId = _context.Roles.FirstOrDefault(x => x.Name == "Admin").Id;
+                    var user = getSuperUser(adminRoleId);
+                    _context.Users.Add(user);
+                    _context.SaveChanges();
+                }
+                if (!_context.Exercises.Any())
+                {
+                    int superUserId = _context.Users.FirstOrDefault(x => x.Email == "superuser@gmail.com").Id;
+                    var exercises = getPublicExercises(superUserId);                    
+                    _context.Exercises.AddRange(exercises);
+                    _context.SaveChanges();
+                }               
             }
         }
 
-        public static User getSuperUser()
+        public static User getSuperUser(int adminRoleId)
         {
             return new User
             {
                 FirstName = "Super",
                 LastName = "User",
-                RoleId = 1,
+                RoleId = adminRoleId,
                 Email = "superuser@gmail.com",
                 PasswordHash = "dsandnsauindasuidnusa",
                 DateOfBirth = DateTime.UtcNow.AddYears(-21)
@@ -91,14 +98,14 @@ namespace WebAPI
             };
         }
 
-        public static IEnumerable<Exercise> getPublicExercises()
+        public static IEnumerable<Exercise> getPublicExercises(int superUserId)
         {
             return new List<Exercise>()
             {
                 new Exercise()
                 {
                     DatabaseId = 1,
-                    CreatorId = 1,
+                    CreatorId = superUserId,
                     ValidAnswer = "SELECT * FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get all fields",
@@ -107,7 +114,7 @@ namespace WebAPI
                 new Exercise()
                 {
                     DatabaseId = 1,
-                    CreatorId = 1,
+                    CreatorId = superUserId,
                     ValidAnswer = "SELECT FirstName FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get one field",
@@ -116,7 +123,7 @@ namespace WebAPI
                 new Exercise()
                 {
                     DatabaseId = 1,
-                    CreatorId = 1,
+                    CreatorId = superUserId,
                     ValidAnswer = "SELECT FirstName, LastName FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get two fields",

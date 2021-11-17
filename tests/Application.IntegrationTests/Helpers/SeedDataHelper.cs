@@ -58,7 +58,8 @@ namespace WebAPI.IntegrationTests.Helpers
         {
             if(!context.Exercises.Any())
             {
-                var exercises = Seeder.getPublicExercises();
+                int creatorId = 1;
+                var exercises = Seeder.getPublicExercises(creatorId);
                 await context.Exercises.AddRangeAsync(exercises);
             }
         }
