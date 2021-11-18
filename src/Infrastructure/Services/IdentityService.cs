@@ -50,13 +50,13 @@ namespace Infrastructure.Services
 
             if(user is null)
             {
-                throw new BadRequestException("Podano nieprawidłowe dane");
+                throw new BadRequestException("Invalid user name or password", true);
             }
 
             var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
             if(result == PasswordVerificationResult.Failed)
             {
-                throw new BadRequestException("Podano nieprawidłowe dane");
+                throw new BadRequestException("Invalid user name or passwor", true);
             }
 
             var claims = getClaims(user);

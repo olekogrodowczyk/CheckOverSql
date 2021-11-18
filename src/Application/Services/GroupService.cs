@@ -67,6 +67,7 @@ namespace Application.Services
         {
             Assignment userAssignment = await _assignmentRepository
                 .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
+            if (userAssignment == null) { throw new ForbidException("You're not in the group", true); }
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
