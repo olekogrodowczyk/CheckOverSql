@@ -160,6 +160,61 @@ namespace WebAPI.IntegrationTests.Controllers
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
 
+        [Fact]
+        public async Task GetAllAssignmentsInGroup_ForCreatedAssignments_ReturnsAllTheseAssignments()
+        {
+            //Arrange   
+            await ClearNotNecesseryData();
+
+            await SeedUsers();
+            var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var group2 = await addNewEntity<Group>(new Group { Name = "Grupa2", CreatorId = 100 });
+
+            await addNewEntity<Assignment>(new Assignment { UserId = 99, GroupId = group1.Id, GroupRoleId = 4 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 100, GroupId = group1.Id, GroupRoleId = 1 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 101, GroupId = group1.Id, GroupRoleId = 3 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 100, GroupId = group2.Id, GroupRoleId = 1 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 102, GroupId = group2.Id, GroupRoleId = 4 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 102, GroupId = group1.Id, GroupRoleId = 4 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 103, GroupId = group1.Id, GroupRoleId = 4 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 99, GroupId = group2.Id, GroupRoleId = 4 });
+
+            //Act
+            var response = await _client.GetAsync
+                (ApiRoutes.Group.GetAllAssignmentsInGroup.Replace("{groupId}", group1.Id.ToString()));
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetAssignmentVm>>>(responseString);
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            result.Value.Should().NotBeNull();
+            result.Value.Should().HaveCount(5);
+        }
+
+        [Fact]
+        public async Task GetAllAssignmentsInGroup_ForUserNotBeingInGroup_ReturnsForbidden()
+        {
+            //Arrange
+            await ClearNotNecesseryData();
+
+            await SeedUsers();
+            var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var group2 = await addNewEntity<Group>(new Group { Name = "Grupa2", CreatorId = 101 });
+
+            await addNewEntity<Assignment>(new Assignment { UserId = 100, GroupId = group1.Id, GroupRoleId = 1 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 101, GroupId = group2.Id, GroupRoleId = 1 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 101, GroupId = group1.Id, GroupRoleId = 2 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 102, GroupId = group1.Id, GroupRoleId = 3 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 103, GroupId = group1.Id, GroupRoleId = 4 });
+            await addNewEntity<Assignment>(new Assignment { UserId = 99, GroupId = group2.Id, GroupRoleId = 2 });
+
+            //Act
+            var response = await _client.GetAsync
+                (ApiRoutes.Group.GetAllAssignmentsInGroup.Replace("{groupId}", group1.Id.ToString()));
+
+            //Assert
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+        }
 
 
     }

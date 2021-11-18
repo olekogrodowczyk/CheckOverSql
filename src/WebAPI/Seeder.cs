@@ -20,7 +20,7 @@ namespace WebAPI
         }
         public void Seed()
         {
-            if(_context.Database.CanConnect())
+            if (_context.Database.CanConnect())
             {
                 if (!_context.Roles.Any())
                 {
@@ -39,7 +39,7 @@ namespace WebAPI
                     var groupRoles = getGroupRoles();
                     _context.GroupRoles.AddRange(groupRoles);
                     _context.SaveChanges();
-                }                                                              
+                }
                 if (!_context.GroupRolePermissions.Any())
                 {
                     var permissions = _context.Permissions.ToList();
@@ -59,10 +59,10 @@ namespace WebAPI
                 if (!_context.Exercises.Any())
                 {
                     int superUserId = _context.Users.FirstOrDefault(x => x.Email == "superuser@gmail.com").Id;
-                    var exercises = getPublicExercises(superUserId);                    
+                    var exercises = getPublicExercises(superUserId);
                     _context.Exercises.AddRange(exercises);
                     _context.SaveChanges();
-                }               
+                }
             }
         }
 
@@ -187,12 +187,17 @@ namespace WebAPI
                 {
                     Title = GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises),
                     Description = "This permission lets a user in group to check other exercises"
+                },
+                new Permission()
+                {
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments),
+                    Description = "This permission lets a user to get assignments in group"
                 }
             };
         }
 
         public static IEnumerable<GroupRolePermission> GetGroupRolePermissions(IEnumerable<Permission> permissions, IEnumerable<GroupRole> groupRoles)
-        {         
+        {
             GroupRolePermission getGroupRolePermission(string groupRoleName, string permission)
             {
                 return new GroupRolePermission
@@ -208,13 +213,17 @@ namespace WebAPI
                 getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup)),
                 getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
                 getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
+                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
                 getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations)),
                 getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers)),
                 getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
                 getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
-                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),           
-                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises))                
+                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
+                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
+                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
+                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
+                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments))
             };
-        }     
+        }
     }
 }

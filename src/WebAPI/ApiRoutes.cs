@@ -30,6 +30,7 @@
             public const string Create = Base;
             public const string GetUserGroups = Base + "/getusergroups";
             public const string DeleteGroup = Base + "/deletegroup/{groupId}";
+            public const string GetAllAssignmentsInGroup = Base + "/getallassignments/{groupId}";
         }
         public static class Invitation
         {
@@ -58,6 +59,6 @@
             public const string GetAllSolvingsAssignedToUser = Base + "/getall";
             public const string GetAllSolvingsAssignedToUserToDo = Base + "/getalltodo";
         }
-        
+
     }
 }

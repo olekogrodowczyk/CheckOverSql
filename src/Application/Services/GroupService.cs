@@ -13,6 +13,7 @@ using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
 using Domain.Enums;
+using Application.Exceptions;
 
 namespace Application.Services
 {
@@ -64,7 +65,8 @@ namespace Application.Services
 
         public async Task DeleteGroup(int groupId)
         {
-            var userAssignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
+            Assignment userAssignment = await _assignmentRepository
+                .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
@@ -73,7 +75,22 @@ namespace Application.Services
             var assignments = await _assignmentRepository.GetWhereAsync(x => x.Group == group);
             assignments.ToList().ForEach(async x => await _assignmentRepository.DeleteAsync(x.Id));
             await _groupRepository.DeleteAsync(groupId);
-        }      
+        }
+
+
+        public async Task<IEnumerable<GetAssignmentVm>> GetAllAssignmentsInGroup(int groupId)
+        {
+            Assignment userAssignment = await _assignmentRepository
+                .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
+            if(userAssignment == null) { throw new ForbidException("You're not in the group", true); }
+
+            await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
+                , userAssignment, new PermissionRequirement(PermissionNames.GettingAssignments));
+
+            var assignments = await _groupRepository.GetAllAssignmentsInGroup(groupId);
+            var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentVm>>(assignments);
+            return assignmentDtos;
+        }
 
     }
 }

@@ -44,5 +44,12 @@ namespace WebAPI.Controllers
             await _groupService.DeleteGroup(groupId);
             return Ok(new Result("Group deleted successfully"));
         }
+
+        [HttpGet("getallassignments/{groupId}")]
+        public async Task<IActionResult> GetAllAssignmentsInGroup([FromRoute] int groupId)
+        {
+            var result = await _groupService.GetAllAssignmentsInGroup(groupId);
+            return Ok(new Result<IEnumerable<GetAssignmentVm>>(result, "All assignments returned successfully"));
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace Application.Interfaces
     {
         Task<int> CreateGroup(CreateGroupDto model);
         Task DeleteGroup(int groupId);
+        Task<IEnumerable<GetAssignmentVm>> GetAllAssignmentsInGroup(int groupId);
         Task<IEnumerable<GetGroupVm>> GetUserGroups();
     }
 }

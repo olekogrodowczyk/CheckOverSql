@@ -12,7 +12,8 @@ namespace Domain.Enums
         DeletingUsers,
         DeletingGroup,
         AssigningExercises,
-        CheckingExercises
+        CheckingExercises,
+        GettingAssignments,
     }
 
     public static class GetPermissionByEnum
@@ -26,9 +27,10 @@ namespace Domain.Enums
                 case PermissionNames.DeletingUsers: return "Deleting Users";
                 case PermissionNames.AssigningExercises: return "Assigning Exercises";
                 case PermissionNames.CheckingExercises: return "Checking Exercises";
+                case PermissionNames.GettingAssignments: return "Getting assignments";
                 default: throw new ArgumentException("Error in getPermissionByEnum");
             }
         }
     }
-    
+
 }
