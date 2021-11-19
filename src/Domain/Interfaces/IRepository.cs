@@ -9,16 +9,14 @@ namespace Domain.Interfaces
 {
     public interface IRepository<T> where T : class, new()
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+        Task<T> DeleteAsync(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties);
+        Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+        Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         Task UpdateAsync(T entity);
-        Task<T> DeleteAsync(int id);
-        Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate);
-        Task<IEnumerable<T>> GetWhereIncludeAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>> include);
-        Task<IEnumerable<T>> GetAllIncludeAsync(Expression<Func<T, object>> include);
-        Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
-        Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
-        Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
     }
 }

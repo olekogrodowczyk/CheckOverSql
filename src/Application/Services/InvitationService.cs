@@ -78,7 +78,7 @@ namespace Application.Services
             var groupRole = await _groupRoleRepository.GetByName(role);
 
             bool result = await _invitationRepository
-                .ExistsAsync(x => x.ReceiverId == receiver.Id && x.Status == "Sent"
+                .AnyAsync(x => x.ReceiverId == receiver.Id && x.Status == "Sent"
                 && x.GroupId == groupId && x.GroupRoleId == groupRole.Id);
 
             if(result) { throw new AlreadyExistsException($"Similar invitation already exists"); }
@@ -87,7 +87,7 @@ namespace Application.Services
         public async Task CheckIfUserIsAlreadyInGroup(string email, string role, int groupId)
         {
             var receiver = await _userRepository.GetByEmail(email);
-            bool result = await _assignmentRepository.ExistsAsync(x=>x.UserId==receiver.Id && x.GroupId == groupId);
+            bool result = await _assignmentRepository.AnyAsync(x=>x.UserId==receiver.Id && x.GroupId == groupId);
 
             if(result) { throw new AlreadyExistsException($"User already is in the group"); }
         }
@@ -95,7 +95,7 @@ namespace Application.Services
         public async Task CheckIfSenderIsInTheGroup(int groupId)
         {
             int senderId = (int)_userContextService.GetUserId;
-            var result = await _assignmentRepository.ExistsAsync(x => x.GroupId == groupId && x.UserId == senderId);
+            var result = await _assignmentRepository.AnyAsync(x => x.GroupId == groupId && x.UserId == senderId);
             
             if(!result) { throw new NotFoundException($"Sender is not in the group"); }
         }

@@ -49,7 +49,7 @@ namespace Application.Dto.CreateInvitationDto
 
         public async Task<bool> EmailExists(string email, CancellationToken cancellationToken)
         {
-            return await _userRepository.ExistsAsync(x => x.Email == email);
+            return await _userRepository.AnyAsync(x => x.Email == email);
         }
 
         

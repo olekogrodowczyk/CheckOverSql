@@ -59,7 +59,7 @@ namespace Application.Services
         public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
         {
             int loggedUserId = (int)_userContextService.GetUserId;
-            var exercises = await _exerciseRepository.GetWhereIncludeAsync(x=>x.CreatorId == loggedUserId, x=>x.Creator);
+            var exercises = await _exerciseRepository.GetWhereAsync(x=>x.CreatorId == loggedUserId, x=>x.Creator);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
             return exerciseDtos;
         }
@@ -76,7 +76,7 @@ namespace Application.Services
         {          
             var assignmentsChosenToGetExercise =
                 await _assignmentRepository
-                .GetWhereIncludeAsync(x => x.GroupId == groupId && x.GroupRole.Name == "User", x=>x.GroupRole);
+                .GetWhereAsync(x => x.GroupId == groupId && x.GroupRole.Name == "User", x=>x.GroupRole);
 
             var solvingsIds = new List<int>();
             foreach (Assignment assignment in assignmentsChosenToGetExercise)
@@ -97,7 +97,7 @@ namespace Application.Services
 
         public async Task CheckIfUserCanAssignExerciseToUsers(int groupId)
         {
-            bool groupExists = await _groupRepository.ExistsAsync(x => true);
+            bool groupExists = await _groupRepository.AnyAsync(x => true);
             if(!groupExists) { throw new NotFoundException($"Defined group with id: {groupId} doesn't exist", true); }
 
             var assignment = await _assignmentRepository

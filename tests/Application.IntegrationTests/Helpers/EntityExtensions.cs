@@ -10,7 +10,5 @@ namespace WebAPI.IntegrationTests.Helpers
         {
             dbSet.RemoveRange(dbSet);
         }
-
-       
     }
 }

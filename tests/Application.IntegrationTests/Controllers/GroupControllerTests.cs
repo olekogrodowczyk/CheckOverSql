@@ -80,6 +80,9 @@ namespace WebAPI.IntegrationTests.Controllers
             var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var group2 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 102 });
             var group3 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var assignment1 = await addNewEntity<Assignment>(new Assignment { GroupId = group1.Id, GroupRoleId = 1, UserId = 99 });
+            var assignment2 = await addNewEntity<Assignment>(new Assignment { GroupId = group2.Id, GroupRoleId = 1, UserId = 102 });
+            var assignment3 = await addNewEntity<Assignment>(new Assignment { GroupId = group3.Id, GroupRoleId = 1, UserId = 99 });
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
@@ -121,6 +124,10 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task DeleteGroup_ForValidData_DeletesGroupWithAssignments()
         {
             //Arrange
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
             await ClearNotNecesseryData();
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var assignment1 = await addNewEntity<Assignment>
@@ -128,22 +135,24 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment2 = await addNewEntity<Assignment>
                 (new Assignment { UserId = 100, GroupId = group.Id, GroupRoleId = 2 });
 
+            await context.Groups
+                .Include(x => x.Assignments)
+                .FirstOrDefaultAsync(x => x.Id == group.Id);
+
             //Act
             var response = await _client.DeleteAsync
                 (ApiRoutes.Group.DeleteGroup.Replace("{groupId}", group.Id.ToString()));
 
             bool groupExists = await EntityExists<Group>(x => x.Id == group.Id);
-            bool assignment1Exists = await EntityExists<Assignment>(x => x.Id == assignment1.Id);
-            bool assignment2Exists = await EntityExists<Assignment>(x => x.Id == assignment2.Id);
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+
 
             //Assert
+            
+
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             groupExists.Should().BeFalse();
-            assignment1Exists.Should().BeFalse();
-            assignment2Exists.Should().BeFalse();
+            context.Assignments.Count().Should().Be(0);
         }
 
         [Fact]

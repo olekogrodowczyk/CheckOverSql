@@ -32,7 +32,7 @@ namespace Application.Authorization
 
             var result = await _assignmentRepository.CheckIfAssignmentHasPermission(assignment.Id, requirement.PermissionTitle);
 
-            if (!await _permissionRepository.ExistsAsync(x => x.Title == requirement.PermissionTitle))
+            if (!await _permissionRepository.AnyAsync(x => x.Title == requirement.PermissionTitle))
             {
                 throw new NotFoundException($"Permission {requirement.PermissionTitle} cannot be found");
             }

@@ -17,23 +17,5 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IEnumerable<Assignment>> GetAllAssignmentsInGroup(int groupId)
-        {
-            var result = await _context.Assignments
-                .Include(x => x.User)
-                .Include(x => x.GroupRole)
-                .Where(x => x.GroupId == groupId)
-                .ToListAsync();
-            return result;
-        }
-
-        public async Task<IEnumerable<Group>> GetUserGroups(int userId)
-        {
-            var userGroups = await _context.Assignments
-                .Where(x => x.UserId == userId)
-                .Select(x => x.Group)
-                .ToListAsync();
-            return userGroups;
-        }
     }
 }

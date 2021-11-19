@@ -64,8 +64,8 @@ namespace Application.Services
         public async Task<IEnumerable<GetGroupVm>> GetUserGroups()
         {
             int loggedUserId = (int)_userContextService.GetUserId;
-            var groups = await _groupRepository.GetUserGroups(loggedUserId);
-            var groupsDto = _mapper.Map<IEnumerable<GetGroupVm>>(groups);
+            var userAssignments = await _assignmentRepository.GetWhereAsync(x => x.UserId == loggedUserId, x=>x.Group);
+            var groupsDto = _mapper.Map<IEnumerable<GetGroupVm>>(userAssignments.Select(x=>x.Group));
             return groupsDto;
         }
 
@@ -78,9 +78,9 @@ namespace Application.Services
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
 
-            var group = await _groupRepository.GetByIdAsync(groupId);
-
-            await _groupRepository.DeleteAsync(groupId);
+            //Assignments are needed to be included first
+            await _assignmentRepository.GetAllAsync(x => x.Group);
+            await _groupRepository.DeleteAsync(groupId, x=>x.Assignments);
         }
 
         
@@ -95,8 +95,9 @@ namespace Application.Services
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , userAssignment, new PermissionRequirement(PermissionNames.GettingAssignments));
 
-            var assignments = await _groupRepository.GetAllAssignmentsInGroup(groupId);
-            var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentVm>>(assignments);
+            await _assignmentRepository.GetAllAsync();
+            var group = await _groupRepository.GetWhereAsync(x => x.Id == groupId, x => x.Assignments);
+            var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentVm>>(group.SelectMany(x=>x.Assignments));
             return assignmentDtos;
         }
 
