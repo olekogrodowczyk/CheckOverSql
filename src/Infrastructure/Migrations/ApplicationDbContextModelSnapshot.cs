@@ -279,7 +279,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("GroupRoleId")
@@ -412,7 +412,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<int?>("AssignmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Created")
@@ -494,7 +494,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Assignments")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.GroupRole", "GroupRole")
@@ -608,8 +608,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Invitations")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Domain.Entities.GroupRole", "GroupRole")
                         .WithMany("Invitations")
@@ -655,7 +654,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Solving", "Solving")
                         .WithOne("Solution")
                         .HasForeignKey("Domain.Entities.Solution", "SolvingId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Creator");
 
@@ -669,8 +668,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Assignment", "Assignment")
                         .WithMany("Solvings")
                         .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Domain.Entities.User", "Creator")
                         .WithMany("SolvingsCreated")

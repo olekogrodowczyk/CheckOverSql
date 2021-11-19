@@ -26,5 +26,14 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return result;
         }
+
+        public async Task<IEnumerable<Group>> GetUserGroups(int userId)
+        {
+            var userGroups = await _context.Assignments
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Group)
+                .ToListAsync();
+            return userGroups;
+        }
     }
 }

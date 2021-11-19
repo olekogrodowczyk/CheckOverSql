@@ -9,7 +9,7 @@ namespace Domain.Entities
 {
     public class Invitation : AuditableEntity
     {
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
         public virtual Group Group { get; set; }
         public int SenderId { get; set; }
         public virtual User Sender { get; set; }

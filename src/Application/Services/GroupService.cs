@@ -25,9 +25,12 @@ namespace Application.Services
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IGroupRepository _groupRepository;
         private readonly IAuthorizationService _authorizationService;
+        private readonly ISolvingRepository _solvingRepository;
+        private readonly ISolutionRepository _solutionRepository;
 
         public GroupService(IMapper mapper, IUserContextService userContextService, IGroupRoleRepository groupRoleRepository
-            ,IAssignmentRepository assignmentRepository, IGroupRepository groupRepository, IAuthorizationService authorizationService)
+            ,IAssignmentRepository assignmentRepository, IGroupRepository groupRepository, IAuthorizationService authorizationService
+            ,ISolvingRepository solvingRepository, ISolutionRepository solutionRepository)
         {
             _mapper = mapper;
             _userContextService = userContextService;
@@ -35,6 +38,8 @@ namespace Application.Services
             _assignmentRepository = assignmentRepository;
             _groupRepository = groupRepository;
             _authorizationService = authorizationService;
+            _solvingRepository = solvingRepository;
+            _solutionRepository = solutionRepository;
         }
 
         public async Task<int> CreateGroup(CreateGroupDto model)
@@ -58,7 +63,8 @@ namespace Application.Services
 
         public async Task<IEnumerable<GetGroupVm>> GetUserGroups()
         {
-            var groups = await _groupRepository.GetWhereAsync(x => x.CreatorId == _userContextService.GetUserId);
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var groups = await _groupRepository.GetUserGroups(loggedUserId);
             var groupsDto = _mapper.Map<IEnumerable<GetGroupVm>>(groups);
             return groupsDto;
         }
@@ -73,10 +79,11 @@ namespace Application.Services
                 , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
 
             var group = await _groupRepository.GetByIdAsync(groupId);
-            var assignments = await _assignmentRepository.GetWhereAsync(x => x.Group == group);
-            assignments.ToList().ForEach(async x => await _assignmentRepository.DeleteAsync(x.Id));
+
             await _groupRepository.DeleteAsync(groupId);
         }
+
+        
 
 
         public async Task<IEnumerable<GetAssignmentVm>> GetAllAssignmentsInGroup(int groupId)

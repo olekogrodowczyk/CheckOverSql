@@ -10,5 +10,6 @@ namespace Domain.Interfaces
     public interface IGroupRepository : IRepository<Group>
     {
         Task<IEnumerable<Assignment>> GetAllAssignmentsInGroup(int groupId);
+        Task<IEnumerable<Group>> GetUserGroups(int userId);
     }
 }

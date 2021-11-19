@@ -9,7 +9,7 @@ namespace Domain.Entities
 {
     public class Solving : AuditableEntity
     {
-        public int AssignmentId { get; set; }
+        public int? AssignmentId { get; set; }
         public virtual Assignment Assignment { get; set; }
         public int ExerciseId { get; set; }
         public virtual Exercise Exercise { get; set; }

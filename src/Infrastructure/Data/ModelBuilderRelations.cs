@@ -48,12 +48,15 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Invitation>()
                 .HasOne<Group>(x => x.Group)
                 .WithMany(x => x.Invitations)
-                .HasForeignKey(x => x.GroupId);
+                .HasForeignKey(x => x.GroupId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Assignment>()
                 .HasOne<Group>(x => x.Group)
                 .WithMany(x => x.Assignments)
-                .HasForeignKey(x => x.GroupId);
+                .HasForeignKey(x => x.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Assignment>()
                 .HasOne<GroupRole>(x => x.GroupRole)
@@ -70,10 +73,12 @@ namespace Infrastructure.Data
                 .WithMany(x => x.Solvings)
                 .HasForeignKey(x => x.ExerciseId);
 
+
             modelBuilder.Entity<Solving>()
                 .HasOne<Assignment>(x => x.Assignment)
                 .WithMany(x => x.Solvings)
-                .HasForeignKey(x => x.AssignmentId);
+                .HasForeignKey(x => x.AssignmentId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<GroupRolePermission>()
                 .HasOne<GroupRole>(x => x.GroupRole)
