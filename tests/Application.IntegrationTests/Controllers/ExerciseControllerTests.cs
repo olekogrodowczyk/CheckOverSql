@@ -1,25 +1,12 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
-using Application.Dto.SendQueryDto;
-using Application.IntegrationTests.FakeAuthentication;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
 using FluentAssertions;
-using Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using WebAPI;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
@@ -29,7 +16,7 @@ namespace WebAPI.IntegrationTests.Controllers
     {
         public ExerciseControllerTests(CustomWebApplicationFactory<Startup> factory) : base(factory) { }
 
-        
+
 
         [Fact]
         public async Task GetAll_ForCreatedSampleData_ReturnsOkWithThisData()
@@ -44,8 +31,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Exercise.GetAllPublic);
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetExerciseVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetExerciseVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -68,7 +54,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync(ApiRoutes.Exercise.Create, httpContent);
-            
+
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
@@ -129,8 +115,8 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange 
             await ClearNotNecesseryData();
             await SeedUsers();
-            var group1 = await addNewEntity<Group>( new Group { Name = "Grupa1", CreatorId = 99 });
-            var group2 = await addNewEntity<Group>( new Group { Name = "Grupa1", CreatorId = 100 });
+            var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
+            var group2 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
             List<Assignment> assignments = new List<Assignment>()
             {
                 await addNewEntity<Assignment>
@@ -150,10 +136,10 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new AssignExerciseToUsersDto { DeadLine = DateTime.UtcNow.AddMinutes(deadLineMinutesAhead) }.ToJsonHttpContent();
 
             //Act
-            var request = ApiRoutes.Exercise.AssignExercise + $"?groupId={group1.Id}&exerciseId={exercise.Id}";
-            var response = await _client.PostAsync(request, httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<int>>>(responseString);
+            var query = ApiRoutes.Exercise.AssignExercise + $"?groupId={group1.Id}&exerciseId={exercise.Id}";
+            var response = await _client.PostAsync(query, httpContent);
+            var result = await response.ToResultAsync<Result<IEnumerable<int>>>();
+
 
             //Assert
             response.StatusCode.Should().Be(expectedStatusCode);

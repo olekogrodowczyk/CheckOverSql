@@ -1,19 +1,13 @@
 ﻿using Application.Dto.CreateGroupVm;
-using Application.Dto.CreateSolutionDto;
-using Application.IntegrationTests.FakeAuthentication;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
@@ -60,12 +54,11 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetUserGroups_ForNoCreatedGroups_ReturnsCountZero()
         {
             //Arrange
-            await ClearTableInContext<Group>();
+            await ClearNotNecesseryData();
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
-            string responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetGroupVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -76,7 +69,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetUserGroups_ForCreatedGroupsByUser_ReturnsAllTheseGroups()
         {
             //Arrange
-            await ClearTableInContext<Group>();
+            await ClearNotNecesseryData();
             var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var group2 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 102 });
             var group3 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -86,8 +79,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
-            string responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetGroupVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -102,7 +94,7 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 Name = "Group1"
             }.ToJsonHttpContent();
-          
+
             //Act
             var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
 
@@ -148,7 +140,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
 
             //Assert
-            
+
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             groupExists.Should().BeFalse();
@@ -194,8 +186,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Act
             var response = await _client.GetAsync
                 (ApiRoutes.Group.GetAllAssignmentsInGroup.Replace("{groupId}", group1.Id.ToString()));
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetAssignmentVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetAssignmentVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

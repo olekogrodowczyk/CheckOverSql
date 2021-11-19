@@ -52,8 +52,8 @@ namespace WebAPI
                 if (!_context.Users.Any())
                 {
                     int adminRoleId = _context.Roles.FirstOrDefault(x => x.Name == "Admin").Id;
-                    var user = getSuperUser(adminRoleId);
-                    _context.Users.Add(user);
+                    var superUser = getSuperUser(adminRoleId);
+                    _context.Users.Add(superUser);
                     _context.SaveChanges();
                 }
                 if (!_context.Exercises.Any())

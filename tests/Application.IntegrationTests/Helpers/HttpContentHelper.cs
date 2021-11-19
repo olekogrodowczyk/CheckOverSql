@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebAPI.IntegrationTests.Helpers
 {
@@ -15,6 +16,13 @@ namespace WebAPI.IntegrationTests.Helpers
             return httpContent;
         }
 
-        
+        public static async Task<T> ToResultAsync<T>(this HttpResponseMessage message)
+        {
+            string responseString = await message.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<T>(responseString);
+            return result;
+        }
+
+
     }
 }

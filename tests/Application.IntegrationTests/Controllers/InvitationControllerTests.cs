@@ -1,5 +1,4 @@
 ﻿using Application.Dto.CreateInvitationDto;
-using Application.Dto.RegisterUserVm;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
@@ -9,17 +8,15 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
-    
+
 
     public class InvitationControllerTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -29,7 +26,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForValidModel_ReturnsOkWithValidProperties()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -63,7 +60,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForSenderIsNotInTheGroup_ReturnsBadRequest()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -89,7 +86,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationDto createInvitationDto)
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -110,7 +107,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForTwoSameInvitations_ReturnsBadRequest()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -138,7 +135,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForUserAlreadyInGroup_ReturnsBadRequest()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -154,7 +151,6 @@ namespace WebAPI.IntegrationTests.Controllers
             //Act
             var response = await _client.PostAsync
                 (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -171,28 +167,48 @@ namespace WebAPI.IntegrationTests.Controllers
             (int senderId, int receiverId, int expectedCount, string queryType)
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
 
             var invitation1 = await addNewEntity<Invitation>
-                (new Invitation { SenderId = senderId, ReceiverId = receiverId, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatusEnum.Sent.ToString() });
+                (new Invitation
+                {
+                    SenderId = senderId,
+                    ReceiverId = receiverId,
+                    GroupId = group.Id,
+                    GroupRoleId = 2
+                    ,
+                    Status = InvitationStatusEnum.Sent.ToString()
+                });
 
             var invitation2 = await addNewEntity<Invitation>
-                (new Invitation { SenderId = 101, ReceiverId = 99, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatusEnum.Accepted.ToString() });
+                (new Invitation
+                {
+                    SenderId = 101,
+                    ReceiverId = 99,
+                    GroupId = group.Id,
+                    GroupRoleId = 2
+                    ,
+                    Status = InvitationStatusEnum.Accepted.ToString()
+                });
 
             var invitation3 = await addNewEntity<Invitation>
-                (new Invitation { SenderId = 99, ReceiverId = 102, GroupId = group.Id, GroupRoleId = 2
-                    , Status = InvitationStatusEnum.Sent.ToString() });
+                (new Invitation
+                {
+                    SenderId = 99,
+                    ReceiverId = 102,
+                    GroupId = group.Id,
+                    GroupRoleId = 2
+                    ,
+                    Status = InvitationStatusEnum.Sent.ToString()
+                });
 
             //Act
             var response = await _client.GetAsync
                 (ApiRoutes.Invitation.Base.Replace("{groupId}", group.Id.ToString()) + $"/{queryType}");
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetInvitationVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetInvitationVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -203,7 +219,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidGroupRoleInAssignment_ReturnsForbidden()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
@@ -229,7 +245,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task AcceptAndReject_ForValidInvitation_ReturnsOk(string queryType)
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
 
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
@@ -248,8 +264,7 @@ namespace WebAPI.IntegrationTests.Controllers
             string route = routeBase.Replace("{invitationId}", invitation.Id.ToString());
 
             var response = await _client.PatchAsync(route, null);
-            var responseString = await response.Content.ReadAsStringAsync();
-  
+
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
             using var scope = scopeFactory.CreateScope();
@@ -264,7 +279,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForSendingInvitationForYourself_ReturnsBadRequest()
         {
             //Arrange
-            await ClearInvitationContext();
+            await ClearNotNecesseryData();
             await SeedUsers();
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var assignment = await addNewEntity<Assignment>(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 3 });
@@ -277,7 +292,6 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync(ApiRoutes.Invitation.Create, httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -306,18 +320,5 @@ namespace WebAPI.IntegrationTests.Controllers
             return list.Select(x => new object[] { x });
         }
 
-        private async Task ClearInvitationContext()
-        {
-            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
-            using var scope = scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-            context.Groups.Clear();
-            context.Assignments.Clear();
-            context.Users.Clear();
-            context.Invitations.Clear();
-
-            await context.SaveChangesAsync();
-        }
     }
 }

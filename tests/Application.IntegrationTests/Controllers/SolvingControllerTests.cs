@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
 namespace WebAPI.IntegrationTests.Controllers
@@ -47,8 +48,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync($"/api/solving/getbyid/{solving.Id}");
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<GetSolvingVm>>(responseString);
+            var result = await response.ToResultAsync<Result<GetSolvingVm>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -80,8 +80,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync($"/api/solving/getbyid/{solving.Id}");
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<GetSolvingVm>>(responseString);
+            var result = await response.ToResultAsync<Result<GetSolvingVm>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -199,19 +198,17 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var responseGetAll = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUser);
-            var responseGetAllString = await responseGetAll.Content.ReadAsStringAsync();
-            var responseGetAllResult = JsonConvert.DeserializeObject<Result<IEnumerable<GetSolvingVm>>>(responseGetAllString);
+            var responseGetAllResult = await responseGetAll.ToResultAsync<Result<IEnumerable<GetSolvingVm>>>();
 
             var responseGetAllToDo = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUserToDo);
-            var responseGetAllStringToDo = await responseGetAllToDo.Content.ReadAsStringAsync();
-            var responseGetAllResultToDo = JsonConvert.DeserializeObject<Result<IEnumerable<GetSolvingVm>>>(responseGetAllStringToDo);
+            var responseGetAllToDoResult = await responseGetAllToDo.ToResultAsync<Result<IEnumerable<GetSolvingVm>>>();
 
             //Assert
             responseGetAll.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             responseGetAllToDo.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
             responseGetAllResult.Value.Should().HaveCount(10);
-            responseGetAllResultToDo.Value.Should().HaveCount(5);
+            responseGetAllToDoResult.Value.Should().HaveCount(5);
 
         }
 

@@ -44,19 +44,19 @@ namespace WebAPI.IntegrationTests.Helpers
             }
         }
 
-        public static async Task SeedRoles(ApplicationDbContext context)
-        {
-            if (!context.Roles.Any())
-            {
-                await context.Roles.AddAsync(new Role { Id = 1, Name = "Admin" });
-                await context.Roles.AddAsync(new Role { Id = 2, Name = "User" });
-                await context.SaveChangesAsync();
-            }
-        }
+        //public static async Task SeedRoles(ApplicationDbContext context)
+        //{
+        //    if (!context.Roles.Any())
+        //    {
+        //        await context.Roles.AddAsync(new Role { Id = 1, Name = "Admin" });
+        //        await context.Roles.AddAsync(new Role { Id = 2, Name = "User" });
+        //        await context.SaveChangesAsync();
+        //    }
+        //}
 
         public static async Task SeedPublicExercises(ApplicationDbContext context)
         {
-            if(!context.Exercises.Any())
+            if (!context.Exercises.Any())
             {
                 int creatorId = 99;
                 var exercises = Seeder.getPublicExercises(creatorId);
@@ -64,29 +64,29 @@ namespace WebAPI.IntegrationTests.Helpers
             }
         }
 
-        public static async Task SeedPermissionWithGroupRoles(ApplicationDbContext context)
-        {
-            var permissions = Seeder.getPermissions();
-            var groupRoles = Seeder.getGroupRoles();
-            if (!await context.Permissions.AnyAsync())
-            {
-                await context.Permissions.AddRangeAsync(permissions);
-            }
-            if (!await context.GroupRoles.AnyAsync())
-            {
-                await context.GroupRoles.AddRangeAsync(groupRoles);
-            }
-            await context.SaveChangesAsync();
+        //public static async Task SeedPermissionWithGroupRoles(ApplicationDbContext context)
+        //{
+        //    var permissions = Seeder.getPermissions();
+        //    var groupRoles = Seeder.getGroupRoles();
+        //    if (!await context.Permissions.AnyAsync())
+        //    {
+        //        await context.Permissions.AddRangeAsync(permissions);
+        //    }
+        //    if (!await context.GroupRoles.AnyAsync())
+        //    {
+        //        await context.GroupRoles.AddRangeAsync(groupRoles);
+        //    }
+        //    await context.SaveChangesAsync();
 
-            var groupRolesPermissions = Seeder.GetGroupRolePermissions(permissions, groupRoles);
-         
-            if (!await context.GroupRolePermissions.AnyAsync())
-            {
-                await context.GroupRolePermissions.AddRangeAsync(groupRolesPermissions);
-                await context.SaveChangesAsync();
-            }
-            
-        }
+        //    var groupRolesPermissions = Seeder.GetGroupRolePermissions(permissions, groupRoles);
+
+        //    if (!await context.GroupRolePermissions.AnyAsync())
+        //    {
+        //        await context.GroupRolePermissions.AddRangeAsync(groupRolesPermissions);
+        //        await context.SaveChangesAsync();
+        //    }
+
+        //}
 
         public static async Task SeedUsers(ApplicationDbContext context)
         {
@@ -132,6 +132,15 @@ namespace WebAPI.IntegrationTests.Helpers
                     Email = "michaelbrown@gmail.com",
                     PasswordHash = "dsandnsauindasuidnusa",
                     DateOfBirth = DateTime.UtcNow.AddYears(-23)
+                },
+                new User
+                {
+                    FirstName = "Super",
+                    LastName = "User",
+                    RoleId = 1,
+                    Email = "superuser@gmail.com",
+                    PasswordHash = "dsandnsauindasuidnusa",
+                    DateOfBirth = DateTime.UtcNow.AddYears(-21)
                 }
             };
             await context.AddRangeAsync(users);

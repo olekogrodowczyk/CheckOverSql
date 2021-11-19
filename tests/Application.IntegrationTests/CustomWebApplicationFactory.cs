@@ -51,9 +51,7 @@ namespace WebAPI.IntegrationTests
                     var context = scopedServices.GetRequiredService<ApplicationDbContext>();
 
                     context.Database.EnsureCreated();
-                    SeedDataHelper.SeedRoles(context).Wait();
                     SeedDataHelper.SeedDatabases(context,"FootballLeague").Wait();
-                    SeedDataHelper.SeedPermissionWithGroupRoles(context).Wait();
                 }
             });
         }

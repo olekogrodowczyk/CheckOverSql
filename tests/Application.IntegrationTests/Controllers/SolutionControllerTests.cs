@@ -192,8 +192,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 .Replace("{solutionId}", solution.Id.ToString());
 
             var response = await _client.GetAsync(route);
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<List<List<string>>>>(responseString);
+            var result = await response.ToResultAsync<Result<List<List<string>>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -234,8 +233,7 @@ namespace WebAPI.IntegrationTests.Controllers
             
             //Act
             var response = await _client.GetAsync(ApiRoutes.Solution.GetAll.Replace("{exerciseId}", exercise.Id.ToString()));
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<IEnumerable<GetSolutionVm>>>(responseString);
+            var result = await response.ToResultAsync<Result<IEnumerable<GetSolutionVm>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
