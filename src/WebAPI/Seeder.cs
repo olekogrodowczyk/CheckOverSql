@@ -109,7 +109,8 @@ namespace WebAPI
                     ValidAnswer = "SELECT * FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get all fields",
-                    Description = "Get all field description"
+                    Description = "Get all field description",
+                    MaxPoints=1,
                 },
                 new Exercise()
                 {
@@ -118,7 +119,8 @@ namespace WebAPI
                     ValidAnswer = "SELECT FirstName FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get one field",
-                    Description = "Get one field description"
+                    Description = "Get one field description",
+                    MaxPoints = 1,
                 },
                 new Exercise()
                 {
@@ -127,7 +129,8 @@ namespace WebAPI
                     ValidAnswer = "SELECT FirstName, LastName FROM dbo.Footballers",
                     IsPrivate = false,
                     Title = "Get two fields",
-                    Description = "Get two fields description"
+                    Description = "Get two fields description",
+                    MaxPoints = 1
                 },
             };
         }

@@ -61,7 +61,7 @@ namespace Application.Services
             {
                 //Solving exists and now we should check the permission
                 var loggedUserAssignment =
-                await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment(loggedUserId, solving.AssignmentId);
+                await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment(loggedUserId, (int)solving.AssignmentId);
 
                 var authorizationPermissionRequirement = await _authorizationService.AuthorizeAsync
                 (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(PermissionNames.CheckingExercises));

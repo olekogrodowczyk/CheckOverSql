@@ -58,7 +58,8 @@ namespace Application.Services
 
         public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
         {
-            var exercises = await _exerciseRepository.GetAllIncludeAsync(x=>x.Creator);
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var exercises = await _exerciseRepository.GetWhereIncludeAsync(x=>x.CreatorId == loggedUserId, x=>x.Creator);
             var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
             return exerciseDtos;
         }

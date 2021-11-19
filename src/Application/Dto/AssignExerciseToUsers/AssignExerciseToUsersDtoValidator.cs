@@ -14,7 +14,7 @@ namespace Application.Dto.AssignExerciseToUsers
         {
             RuleFor(x => x.DeadLine)
                 .GreaterThanOrEqualTo(DateTime.UtcNow.AddHours(1))
-                .WithMessage("Defined date isn't valid, deadline can be only set one hour later from now");
+                .WithMessage("Defined date is invalid, deadline can be only set one hour later from now");
         }
     }
 }

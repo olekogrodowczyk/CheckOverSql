@@ -24,7 +24,8 @@ namespace Application.ViewModels
             profile.CreateMap<Solving, GetSolvingVm>()
                 .ForMember(x => x.Solver, y => y.MapFrom(z => z.Assignment.User.FirstName + " " + z.Assignment.User.LastName))
                 .ForMember(x => x.AssignedBy, y => y.MapFrom(z => z.Creator.FirstName + z.Creator.LastName))
-                .ForMember(x => x.AssignedAt, y => y.MapFrom(z => z.Created));
+                .ForMember(x => x.AssignedAt, y => y.MapFrom(z => z.Created))
+                .ForMember(x => x.Exercise, y => y.MapFrom(z => z.Exercise));
         }
     }
 }

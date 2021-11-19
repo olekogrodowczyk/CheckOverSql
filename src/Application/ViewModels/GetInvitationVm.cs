@@ -11,6 +11,7 @@ namespace Application.ViewModels
 {
     public class GetInvitationVm : IMap
     {
+        public int Id { get; set; }
         public string GroupName { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }

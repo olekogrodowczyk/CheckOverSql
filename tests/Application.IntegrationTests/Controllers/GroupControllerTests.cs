@@ -126,7 +126,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment1 = await addNewEntity<Assignment>
                 (new Assignment { UserId = 99, GroupId = group.Id, GroupRoleId = 1 });
             var assignment2 = await addNewEntity<Assignment>
-                (new Assignment { UserId = 100, GroupId = group.Id, GroupRoleId = 1 });
+                (new Assignment { UserId = 100, GroupId = group.Id, GroupRoleId = 2 });
 
             //Act
             var response = await _client.DeleteAsync
@@ -135,6 +135,9 @@ namespace WebAPI.IntegrationTests.Controllers
             bool groupExists = await EntityExists<Group>(x => x.Id == group.Id);
             bool assignment1Exists = await EntityExists<Assignment>(x => x.Id == assignment1.Id);
             bool assignment2Exists = await EntityExists<Assignment>(x => x.Id == assignment2.Id);
+            var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

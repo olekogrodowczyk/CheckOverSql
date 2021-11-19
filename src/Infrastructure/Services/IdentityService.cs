@@ -47,7 +47,6 @@ namespace Infrastructure.Services
             var user = await _context.Users
                 .Include(x=>x.Role)
                 .FirstOrDefaultAsync(x => x.Email == model.Email);
-
             if(user is null)
             {
                 throw new BadRequestException("Invalid user name or password", true);

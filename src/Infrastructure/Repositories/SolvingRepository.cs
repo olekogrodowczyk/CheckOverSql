@@ -33,6 +33,8 @@ namespace Infrastructure.Repositories
         {
             var solvings = await _context.Solvings
                 .Include(x => x.Creator)
+                .Include(x=>x.Exercise)
+                .ThenInclude(x=>x.Creator)
                 .Include(x => x.Assignment)
                 .ThenInclude(x => x.User)
                 .Where(x => x.Assignment.UserId == userId && x.Status == SolvingStatus.ToDo.ToString())

@@ -136,7 +136,7 @@ namespace Application.Services
 
             await _assignmentRepository.AddAsync(new Assignment
             {
-                GroupId = invitation.GroupId,
+                GroupId = (int)invitation.GroupId,
                 GroupRoleId = invitation.GroupRoleId,
                 UserId = invitation.ReceiverId,               
             });

@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllSolvingsAssignedToUser()
         {
             var result = await _solvingService.GetAllSolvingsAssignedToUser();
-            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "Solution assigned to solving successfully"));
+            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "All solvings returned successfully"));
         }
 
         [HttpGet("getbyid/{solvingId}")]
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()
         {
             var result = await _solvingService.GetAllSolvingsAssignedToUserToDo();
-            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "Solution assigned to solving successfully"));
+            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "All solvings to do returned successfully"));
         }
     }
 }

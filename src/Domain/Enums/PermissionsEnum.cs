@@ -27,7 +27,7 @@ namespace Domain.Enums
                 case PermissionNames.DeletingUsers: return "Deleting Users";
                 case PermissionNames.AssigningExercises: return "Assigning Exercises";
                 case PermissionNames.CheckingExercises: return "Checking Exercises";
-                case PermissionNames.GettingAssignments: return "Getting assignments";
+                case PermissionNames.GettingAssignments: return "Getting Assignments";
                 default: throw new ArgumentException("Error in getPermissionByEnum");
             }
         }
