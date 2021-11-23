@@ -1,4 +1,5 @@
 ﻿using Application.Dto.SendQueryDto;
+using Application.Exercises.Commands.CreateExercise;
 using Domain.Interfaces;
 using FluentValidation;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dto.CreateExerciseDto
 {
-    public class CreateExerciseDtoValidator : AbstractValidator<CreateExerciseDto>
+    public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCommand>
     {
         private readonly IDatabaseRepository _databaseRepository;
 
@@ -20,7 +21,7 @@ namespace Application.Dto.CreateExerciseDto
             
         }
 
-        public CreateExerciseDtoValidator(IDatabaseRepository databaseRepository)
+        public CreateExerciseCommandValidator(IDatabaseRepository databaseRepository)
         {
             _databaseRepository = databaseRepository;
             string[] databasesNames = getDatabasesNames();

@@ -13,6 +13,7 @@ using Domain.Interfaces;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
+using MediatR;
 
 namespace Application
 {
@@ -22,7 +23,8 @@ namespace Application
         {
             services.AddAuthorization();
             services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
-            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();        
+            services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();

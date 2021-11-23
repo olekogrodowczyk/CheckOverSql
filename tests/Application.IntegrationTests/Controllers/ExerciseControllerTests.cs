@@ -1,5 +1,6 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
+using Application.Exercises.Commands.CreateExercise;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
@@ -42,7 +43,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForValidDto_ReturnsOk()
         {
             //Arrange
-            var httpContent = new CreateExerciseDto
+            var httpContent = new CreateExerciseCommand
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",
@@ -63,7 +64,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidDto_ReturnsBadRequest()
         {
             //Arrange
-            var httpContent = new CreateExerciseDto
+            var httpContent = new CreateExerciseCommand
             {
                 Database = "dsadwqdwq",
                 Description = "Opis2dsadsa",
@@ -83,7 +84,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidQuery_ReturnsForbidden()
         {
             //Arrange
-            var httpContent = new CreateExerciseDto
+            var httpContent = new CreateExerciseCommand
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",

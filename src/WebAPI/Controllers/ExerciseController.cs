@@ -1,9 +1,11 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Exceptions;
+using Application.Exercises.Commands.CreateExercise;
 using Application.Interfaces;
 using Application.Responses;
 using Application.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +18,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExerciseController : ControllerBase
+    public class ExerciseController : ApiControllerBase
     {
         private readonly IExerciseService _exerciseService;
 
@@ -27,9 +29,9 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateExerciseDto model)
+        public async Task<IActionResult> Create([FromBody] CreateExerciseCommand command)
         {
-            var result = await _exerciseService.CreateExercise(model);
+            var result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "New exercises created succesfully"));
         }
 

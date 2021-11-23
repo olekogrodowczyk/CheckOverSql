@@ -43,18 +43,7 @@ namespace Application.Services
             _authorizationService = authorizationService;
             _solvingRepository = solvingRepository;
             _groupRepository = groupRepository;
-        }
-     
-        public async Task<int> CreateExercise(CreateExerciseDto model)
-        {
-            await _databaseService.SendQueryNoData(model.ValidAnswer, model.Database);
-            var exercise = _mapper.Map<Exercise>(model);         
-            exercise.CreatorId = (int)_userContextService.GetUserId;  
-            exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(model.Database);
-            exercise.IsPrivate = model.IsPrivate;
-            await _exerciseRepository.AddAsync(exercise);
-            return exercise.Id;
-        }
+        }   
 
         public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
         {
