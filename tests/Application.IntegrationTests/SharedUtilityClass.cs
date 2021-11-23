@@ -54,6 +54,7 @@ namespace WebAPI.IntegrationTests
             context.Solutions.Clear();
             context.Exercises.Clear();
             context.Comparisons.Clear();
+            context.Solvings.Clear();
             await context.SaveChangesAsync();
         }
 

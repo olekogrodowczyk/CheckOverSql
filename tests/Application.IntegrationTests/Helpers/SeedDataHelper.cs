@@ -90,8 +90,10 @@ namespace WebAPI.IntegrationTests.Helpers
 
         public static async Task SeedUsers(ApplicationDbContext context)
         {
-            await SeedFakeUser(context);
-            var users = new List<User>
+            if (!await context.Users.AnyAsync())
+            {
+                await SeedFakeUser(context);
+                var users = new List<User>
             {
                 new User
                 {
@@ -135,6 +137,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 },
                 new User
                 {
+                    Id = 1,
                     FirstName = "Super",
                     LastName = "User",
                     RoleId = 1,
@@ -143,8 +146,9 @@ namespace WebAPI.IntegrationTests.Helpers
                     DateOfBirth = DateTime.UtcNow.AddYears(-21)
                 }
             };
-            await context.AddRangeAsync(users);
-            await context.SaveChangesAsync();
+                await context.AddRangeAsync(users);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

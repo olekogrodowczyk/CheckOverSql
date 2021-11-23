@@ -32,23 +32,45 @@ namespace WebAPI.IntegrationTests.Controllers
             await SeedUsers();
 
             var exercise = await addNewEntity<Exercise>(getValidExercise());
-            var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
-            var assignment = await addNewEntity<Assignment>(new Assignment
+            var group1 = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var group2 = await addNewEntity<Group>(new Group { Name = "Grupa2", CreatorId = 102 });
+            var assignment1 = await addNewEntity<Assignment>(new Assignment
+            {
+                UserId = 100,
+                GroupId = group1.Id,
+                GroupRoleId = 1
+            });
+            var assignment2 = await addNewEntity<Assignment>(new Assignment
             {
                 UserId = 99,
-                GroupId = group.Id,
+                GroupId = group1.Id,
                 GroupRoleId = 4
             });
-            var solving = await addNewEntity<Solving>(new Solving
+            var assignment3 = await addNewEntity<Assignment>(new Assignment
             {
-                AssignmentId = assignment.Id,
+                UserId = 99,
+                GroupId = group2.Id,
+                GroupRoleId = 4
+            });
+            var solving1 = await addNewEntity<Solving>(new Solving
+            {
+                AssignmentId = assignment2.Id,
                 ExerciseId = exercise.Id,
                 CreatorId = 100,
                 Status = SolvingStatus.ToDo.ToString(),
                 DeadLine = deadline,
                 SentAt = DateTime.UtcNow
             });
-            return (exercise.Id, solving.Id);
+            var solving2 = await addNewEntity<Solving>(new Solving
+            {
+                AssignmentId = assignment3.Id,
+                ExerciseId = exercise.Id,
+                CreatorId = 100,
+                Status = SolvingStatus.ToDo.ToString(),
+                DeadLine = deadline,
+                SentAt = DateTime.UtcNow
+            });
+            return (exercise.Id, solving1.Id);
         }
 
         [Theory]
@@ -119,9 +141,13 @@ namespace WebAPI.IntegrationTests.Controllers
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             context.Comparisons.Count().Should().Be(1);
 
-            var solvingResult = await context.Solvings.Include(x=>x.Solution).FirstOrDefaultAsync(x=>x.Id == initResult.Item2);
-            solvingResult.Status.Should().Be(SolvingStatus.Done.ToString());
-            solvingResult.Solution.Outcome.Should().BeTrue();
+            var solvings = await context.Solvings.Include(x=>x.Solution).ToListAsync();
+            solvings.ForEach(solving =>
+            {
+                solving.Status.Should().Be(SolvingStatus.Done.ToString());
+                solving.Solution.Outcome.Should().BeTrue();
+            });
+            context.Assignments.Include(x=>x.Solvings).SelectMany(x=>x.Solvings).Count().Should().Be(2);
         }
 
         [Fact]

@@ -31,15 +31,13 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Solving>> GetSolvingsAssignedToUserToDo(int userId)
         {
-            var solvings = await _context.Solvings
-                .Include(x => x.Creator)
-                .Include(x=>x.Exercise)
-                .ThenInclude(x=>x.Creator)
-                .Include(x => x.Assignment)
-                .ThenInclude(x => x.User)
-                .Where(x => x.Assignment.UserId == userId && x.Status == SolvingStatus.ToDo.ToString())
-                .ToListAsync();
-            return solvings;
+            List<Solving> userSolvings = new List<Solving>();
+            await _context.Assignments.Include(x => x.Solvings).ForEachAsync(assignments =>
+              {
+                  userSolvings.AddRange(assignments.Solvings);
+              });
+
+            return userSolvings;
         }
 
         public async Task<Solving> GetSolvingWithIncludes(int solvingId)
