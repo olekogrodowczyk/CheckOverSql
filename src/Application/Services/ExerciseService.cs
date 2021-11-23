@@ -45,45 +45,6 @@ namespace Application.Services
             _groupRepository = groupRepository;
         }   
 
-        public async Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser()
-        {
-            int loggedUserId = (int)_userContextService.GetUserId;
-            var exercises = await _exerciseRepository.GetWhereAsync(x=>x.CreatorId == loggedUserId, x=>x.Creator);
-            var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
-            return exerciseDtos;
-        }
-
-        public async Task<IEnumerable<GetExerciseVm>> GetAllPublicExercises()
-        {
-            var exercises = await _exerciseRepository.GetWhereAsync(x => !x.IsPrivate);
-            var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseVm>>(exercises);
-            return exerciseDtos;
-        }
-
-
-        public async Task<IEnumerable<int>> AssignExerciseToAllUsers(int groupId, int exerciseId, AssignExerciseToUsersDto model)
-        {          
-            var assignmentsChosenToGetExercise =
-                await _assignmentRepository
-                .GetWhereAsync(x => x.GroupId == groupId && x.GroupRole.Name == "User", x=>x.GroupRole);
-
-            var solvingsIds = new List<int>();
-            foreach (Assignment assignment in assignmentsChosenToGetExercise)
-            {
-                var solving = new Solving
-                {
-                    ExerciseId = exerciseId,
-                    Status = SolvingStatus.ToDo.ToString(),
-                    DeadLine = model.DeadLine,
-                    AssignmentId = assignment.Id,
-                    CreatorId = (int)_userContextService.GetUserId
-                };
-                await _solvingRepository.AddAsync(solving);
-                solvingsIds.Add(solving.Id);
-            }
-            return solvingsIds;
-        }
-
         public async Task CheckIfUserCanAssignExerciseToUsers(int groupId)
         {
             bool groupExists = await _groupRepository.AnyAsync(x => true);

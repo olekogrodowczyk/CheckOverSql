@@ -2,6 +2,8 @@
 using Application.Dto.CreateExerciseDto;
 using Application.Exceptions;
 using Application.Exercises.Commands.CreateExercise;
+using Application.Exercises.Queries.GetAllCreated;
+using Application.Exercises.Queries.GetAllPublicExercises;
 using Application.Interfaces;
 using Application.Responses;
 using Application.ViewModels;
@@ -21,10 +23,12 @@ namespace WebAPI.Controllers
     public class ExerciseController : ApiControllerBase
     {
         private readonly IExerciseService _exerciseService;
+        private readonly IUserContextService _userContextService;
 
-        public ExerciseController(IExerciseService exerciseService)
+        public ExerciseController(IExerciseService exerciseService, IUserContextService userContextService)
         {
             _exerciseService = exerciseService;
+            _userContextService = userContextService;
         }
 
         [Authorize]
@@ -36,26 +40,27 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getallcreated")]
-        public async Task<IActionResult> GetAllCreated()
+        public async Task<IActionResult> GetAllCreatedByLoggedUser()
         {
-            var result = await _exerciseService.GetAllExercisesCreatedByLoggedUser();
-            return Ok(new Result<IEnumerable<GetExerciseVm>>
+            var result = await Mediator.Send(new GetAllCreatedExercisesQuery());
+            return Ok(new Result<IEnumerable<GetExerciseDto>>
                 (result,"All exercises created by logged user returned successfully"));
         }
 
         [HttpGet("getallpublic")]
         public async Task<IActionResult> GetAllPublic()
         {
-            var result = await _exerciseService.GetAllPublicExercises();
-            return Ok(new Result<IEnumerable<GetExerciseVm>>(result, "All public exercises returned successfully"));
+            var result = await Mediator.Send(new GetAllPublicExercisesQuery());
+            return Ok(new Result<IEnumerable<GetExerciseDto>>(result, "All public exercises returned successfully"));
         }
 
-        [HttpPost("assignexercise")]
+        [HttpPost("assignexercise/{id}")]
         public async Task<IActionResult> AssignExerciseToUsersInGroup
-            ([FromQuery] int groupId, [FromQuery] int exerciseId, [FromBody] AssignExerciseToUsersDto model)
+            ([FromRoute] int id, [FromBody] AssignExerciseToUsersCommand command)
         {
-            await _exerciseService.CheckIfUserCanAssignExerciseToUsers(groupId);
-            var result = await _exerciseService.AssignExerciseToAllUsers(groupId, exerciseId, model);
+            if(id != command.Id) { return BadRequest(); }
+            await _exerciseService.CheckIfUserCanAssignExerciseToUsers(command.GroupId);
+            var result = await Mediator.Send(command);   
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
         }
     }

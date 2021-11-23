@@ -17,7 +17,7 @@ namespace Application.ViewModels
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public string Status { get; set; }
-        public GetExerciseVm Exercise { get; set; }
+        public GetExerciseDto Exercise { get; set; }
 
         public void Mapping(Profile profile)
         {

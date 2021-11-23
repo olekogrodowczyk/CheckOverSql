@@ -15,7 +15,7 @@ namespace Application.ViewModels
         public string Dialect { get; set; }
         public string Query { get; set; }
         public string Creator { get; set; }
-        public GetExerciseVm Exercise { get; set; }
+        public GetExerciseDto Exercise { get; set; }
 
         public void Mapping(Profile profile)
         {

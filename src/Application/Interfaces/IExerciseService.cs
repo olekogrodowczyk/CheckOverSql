@@ -11,9 +11,6 @@ namespace Application.Interfaces
 {
     public interface IExerciseService
     {
-        Task<IEnumerable<GetExerciseVm>> GetAllPublicExercises();
-        Task<IEnumerable<GetExerciseVm>> GetAllExercisesCreatedByLoggedUser();
-        Task<IEnumerable<int>> AssignExerciseToAllUsers(int groupId, int exerciseId, AssignExerciseToUsersDto model);
         Task CheckIfUserCanAssignExerciseToUsers(int groupId);
     }
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Dto.AssignExerciseToUsers
 {
-    public class AssignExerciseToUsersDtoValidator : AbstractValidator<AssignExerciseToUsersDto>
+    public class AssignExerciseToUsersCommandValidator : AbstractValidator<AssignExerciseToUsersCommand>
     {
-        public AssignExerciseToUsersDtoValidator()
+        public AssignExerciseToUsersCommandValidator()
         {
             RuleFor(x => x.DeadLine)
                 .GreaterThanOrEqualTo(DateTime.UtcNow.AddHours(1))

@@ -1,6 +1,7 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Exercises.Commands.CreateExercise;
+using Application.Exercises.Queries.GetAllCreated;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
@@ -31,8 +32,9 @@ namespace WebAPI.IntegrationTests.Controllers
             var exercise3 = await addNewEntity<Exercise>(getValidExercise(false));
 
             //Act
+
             var response = await _client.GetAsync(ApiRoutes.Exercise.GetAllPublic);
-            var result = await response.ToResultAsync<Result<IEnumerable<GetExerciseVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetExerciseDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -134,10 +136,15 @@ namespace WebAPI.IntegrationTests.Controllers
                 (new Assignment { GroupId = group2.Id, GroupRoleId = 4, UserId = 100 }),
             };
             var exercise = await addNewEntity<Exercise>(getValidExercise(false));
-            var httpContent = new AssignExerciseToUsersDto { DeadLine = DateTime.UtcNow.AddMinutes(deadLineMinutesAhead) }.ToJsonHttpContent();
+            var httpContent = new AssignExerciseToUsersCommand 
+            {
+                DeadLine = DateTime.UtcNow.AddMinutes(deadLineMinutesAhead),
+                GroupId = group1.Id,
+                Id = exercise.Id,
+            }.ToJsonHttpContent();
 
             //Act
-            var query = ApiRoutes.Exercise.AssignExercise + $"?groupId={group1.Id}&exerciseId={exercise.Id}";
+            var query = ApiRoutes.Exercise.AssignExercise + "/" + exercise.Id;
             var response = await _client.PostAsync(query, httpContent);
             var result = await response.ToResultAsync<Result<IEnumerable<int>>>();
 

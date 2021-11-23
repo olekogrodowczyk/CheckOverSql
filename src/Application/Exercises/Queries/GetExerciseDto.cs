@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels
 {
-    public class GetExerciseVm : IMap
+    public class GetExerciseDto : IMap
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -21,7 +21,7 @@ namespace Application.ViewModels
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Exercise, GetExerciseVm>()
+            profile.CreateMap<Exercise, GetExerciseDto>()
                 .ForMember(x => x.Creator, y => y.MapFrom(z => z.Creator.FirstName + " " + z.Creator.LastName));
         }
     }
