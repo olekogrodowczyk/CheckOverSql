@@ -1,6 +1,5 @@
 ﻿using Application.Dto.CreateSolutionDto;
 using Application.Dto.SendQueryDto;
-using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;

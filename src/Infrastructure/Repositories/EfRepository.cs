@@ -1,4 +1,4 @@
-﻿using Application.Exceptions;
+﻿using Application.Common.Exceptions;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

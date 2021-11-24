@@ -9,7 +9,7 @@ namespace Application.Responses
     public class ErrorResult
     {
         public string Message { get; set; }
-        public string[] Errors { get; set; }
+        public IDictionary<string,string[]> Errors { get; set; }
         public bool Success { get; set; }
 
         public ErrorResult()
@@ -23,7 +23,7 @@ namespace Application.Responses
             Success = false;
         }
 
-        public ErrorResult(string message, string[] errors)
+        public ErrorResult(string message, IDictionary<string, string[]> errors)
         {
             Success = false;
             Message = message;

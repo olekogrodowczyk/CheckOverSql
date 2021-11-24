@@ -1,6 +1,5 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
-using Application.Exceptions;
 using Application.Exercises.Commands.CreateExercise;
 using Application.Exercises.Queries.GetAllCreated;
 using Application.Exercises.Queries.GetAllPublicExercises;

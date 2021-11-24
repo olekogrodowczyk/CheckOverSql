@@ -1,4 +1,4 @@
-﻿using Application.Exceptions;
+﻿using Application.Common.Exceptions;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;

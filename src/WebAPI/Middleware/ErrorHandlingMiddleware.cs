@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿
+using Application.Common.Exceptions;
 using Application.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -36,6 +37,10 @@ namespace WebAPI.Middleware
                 context.Response.StatusCode = 500;
                 switch (e)
                 {
+                    case ValidationException validationException:
+                        code = HttpStatusCode.BadRequest;
+                        result = new ErrorResult(validationException.Message, validationException.Errors);
+                        break;
                     case AlreadyExistsException alreadyExistsException:
                         code = HttpStatusCode.BadRequest;
                         result = alreadyExistsException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);

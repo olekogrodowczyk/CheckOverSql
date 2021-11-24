@@ -1,5 +1,4 @@
-﻿using Application.Exceptions;
-using Domain.Enums;
+﻿using Domain.Enums;
 using Domain.Interfaces;
 using FluentValidation;
 using System;

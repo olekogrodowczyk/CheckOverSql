@@ -37,7 +37,7 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Result>());
+                .AddFluentValidation(configuration => configuration.AutomaticValidationEnabled = false);
             services.AddApplication();
             services.AddInfrastructure(Configuration);
             services.AddScoped<Seeder>();

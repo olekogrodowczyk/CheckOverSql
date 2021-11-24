@@ -1,5 +1,4 @@
-﻿using Application.Exceptions;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Responses;
 using Application.Dto.LoginUserVm;
 using Application.Dto.RegisterUserVm;
@@ -16,6 +15,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Authentication;
 using System.IdentityModel.Tokens.Jwt;
+using Application.Common.Exceptions;
 
 namespace Infrastructure.Services
 {

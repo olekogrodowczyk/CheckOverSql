@@ -1,6 +1,6 @@
 ﻿using Application.Authorization;
+using Application.Common.Exceptions;
 using Application.Dto.CreateInvitationDto;
-using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;

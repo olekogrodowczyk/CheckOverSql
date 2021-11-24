@@ -1,5 +1,4 @@
-﻿using Application.Exceptions;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;

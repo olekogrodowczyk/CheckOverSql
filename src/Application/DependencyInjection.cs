@@ -14,6 +14,8 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
 using MediatR;
+using Application.Common.Behaviours;
+using FluentValidation;
 
 namespace Application
 {
@@ -22,6 +24,8 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddAuthorization();
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddMediatR(Assembly.GetExecutingAssembly());

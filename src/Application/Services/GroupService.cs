@@ -13,7 +13,7 @@ using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
 using Domain.Enums;
-using Application.Exceptions;
+using Application.Common.Exceptions;
 
 namespace Application.Services
 {

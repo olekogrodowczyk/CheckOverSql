@@ -1,7 +1,7 @@
 ﻿using Application.Authorization;
+using Application.Common.Exceptions;
 using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
-using Application.Exceptions;
 using Application.Interfaces;
 using Application.ViewModels;
 using AutoMapper;
