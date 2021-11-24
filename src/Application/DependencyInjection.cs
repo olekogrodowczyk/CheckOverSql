@@ -36,7 +36,6 @@ namespace Application
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
             services.AddScoped<IInvitationService, InvitationService>();
-            services.AddScoped<ISolvingService, SolvingService>();
 
             return services;
         }

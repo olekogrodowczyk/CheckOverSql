@@ -6,7 +6,7 @@ using Application.Exercises.Queries.GetAllCreated;
 using Application.Exercises.Queries.GetAllPublicExercises;
 using Application.Interfaces;
 using Application.Responses;
-using Application.ViewModels;
+using Application.Solvings;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

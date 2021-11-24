@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Mappings;
-using Application.ViewModels;
+using Application.Solvings;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;

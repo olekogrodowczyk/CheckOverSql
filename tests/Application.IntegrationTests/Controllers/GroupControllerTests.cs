@@ -1,6 +1,6 @@
 ﻿using Application.Dto.CreateGroupVm;
 using Application.Responses;
-using Application.ViewModels;
+using Application.Solvings;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;

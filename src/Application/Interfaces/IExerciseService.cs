@@ -1,6 +1,6 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
-using Application.ViewModels;
+using Application.Solvings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

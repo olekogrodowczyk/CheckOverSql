@@ -6,7 +6,7 @@ using Application.Solutions.Commands.CreateSolution;
 using Application.Solutions.Commands.SendSolutionQuery;
 using Application.Solutions.Queries;
 using Application.Solutions.Queries.GetAllSolutionsCreatedByUser;
-using Application.ViewModels;
+using Application.Solvings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

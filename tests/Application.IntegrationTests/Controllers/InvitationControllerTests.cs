@@ -1,7 +1,7 @@
 ﻿using Application.Dto.CreateInvitationDto;
 using Application.Invitations.Commands.CreateInvitation;
 using Application.Responses;
-using Application.ViewModels;
+using Application.Solvings;
 using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;

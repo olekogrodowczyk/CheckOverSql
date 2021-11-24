@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.ViewModels;
+using Application.Solvings;
 using Microsoft.AspNetCore.Authorization;
 using Application.Authorization;
 using Domain.Enums;

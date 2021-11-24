@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Dto\AssignExerciseToUsers\" />
+    <Folder Include="Solvings\Commands\" />
   </ItemGroup>
 
 </Project>

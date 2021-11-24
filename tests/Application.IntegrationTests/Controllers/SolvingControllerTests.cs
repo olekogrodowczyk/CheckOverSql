@@ -1,5 +1,6 @@
 ﻿using Application.Responses;
-using Application.ViewModels;
+using Application.Solvings;
+using Application.Solvings.Queries;
 using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;
@@ -48,7 +49,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync($"/api/solving/getbyid/{solving.Id}");
-            var result = await response.ToResultAsync<Result<GetSolvingVm>>();
+            var result = await response.ToResultAsync<Result<GetSolvingDto>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -80,7 +81,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync($"/api/solving/getbyid/{solving.Id}");
-            var result = await response.ToResultAsync<Result<GetSolvingVm>>();
+            var result = await response.ToResultAsync<Result<GetSolvingDto>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -198,10 +199,10 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var responseGetAll = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUser);
-            var responseGetAllResult = await responseGetAll.ToResultAsync<Result<IEnumerable<GetSolvingVm>>>();
+            var responseGetAllResult = await responseGetAll.ToResultAsync<Result<IEnumerable<GetSolvingDto>>>();
 
             var responseGetAllToDo = await _client.GetAsync(ApiRoutes.Solving.GetAllSolvingsAssignedToUserToDo);
-            var responseGetAllToDoResult = await responseGetAllToDo.ToResultAsync<Result<IEnumerable<GetSolvingVm>>>();
+            var responseGetAllToDoResult = await responseGetAllToDo.ToResultAsync<Result<IEnumerable<GetSolvingDto>>>();
 
             //Assert
             responseGetAll.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

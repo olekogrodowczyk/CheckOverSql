@@ -1,5 +1,5 @@
 ﻿using Application.Common.Exceptions;
-using Application.ViewModels;
+using Application.Solvings;
 using AutoMapper;
 using Domain.Interfaces;
 using MediatR;

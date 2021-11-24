@@ -1,4 +1,5 @@
-﻿using Application.Mappings;
+﻿using Application.Exercises.Queries;
+using Application.Mappings;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -7,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.ViewModels
+namespace Application.Solvings.Queries
 {
-    public class GetSolvingVm : IMap
+    public class GetSolvingDto : IMap
     {
         public string AssignedBy { get; set; }
         public string Solver { get; set; }
@@ -21,7 +22,7 @@ namespace Application.ViewModels
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Solving, GetSolvingVm>()
+            profile.CreateMap<Solving, GetSolvingDto>()
                 .ForMember(x => x.Solver, y => y.MapFrom(z => z.Assignment.User.FirstName + " " + z.Assignment.User.LastName))
                 .ForMember(x => x.AssignedBy, y => y.MapFrom(z => z.Creator.FirstName + z.Creator.LastName))
                 .ForMember(x => x.AssignedAt, y => y.MapFrom(z => z.Created))

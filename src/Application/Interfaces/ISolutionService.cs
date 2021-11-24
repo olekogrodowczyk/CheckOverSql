@@ -1,4 +1,4 @@
-﻿using Application.ViewModels;
+﻿using Application.Solvings;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;

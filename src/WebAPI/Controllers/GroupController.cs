@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Responses;
 using System.Collections;
 using System.Collections.Generic;
-using Application.ViewModels;
+using Application.Solvings;
 
 namespace WebAPI.Controllers
 {

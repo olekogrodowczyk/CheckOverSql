@@ -1,6 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.Responses;
-using Application.ViewModels;
+using Application.Solvings;
+using Application.Solvings.Queries;
+using Application.Solvings.Queries.GetAllSolvingsAssignedToUser;
+using Application.Solvings.Queries.GetAllSolvingsAssignedToUserToDo;
+using Application.Solvings.Queries.GetUserSolvingById;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,34 +14,36 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SolvingController : ControllerBase
+    public class SolvingController : ApiControllerBase
     {
-        private readonly ISolvingService _solvingService;
+        private readonly IUserContextService _userContextService;
 
-        public SolvingController(ISolvingService solvingService)
+        public SolvingController(IUserContextService userContextService)
         {
-            _solvingService = solvingService;
+            _userContextService = userContextService;
         }
 
         [HttpGet("getall")]
         public async Task<IActionResult> GetAllSolvingsAssignedToUser()
         {
-            var result = await _solvingService.GetAllSolvingsAssignedToUser();
-            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "All solvings returned successfully"));
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var result = await Mediator.Send(new GetAllSolvingsAssignedToUserQuery { UserId = loggedUserId });
+            return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings returned successfully"));
         }
 
         [HttpGet("getbyid/{solvingId}")]
         public async Task<IActionResult> GetUserSolvingById([FromRoute] int solvingId)
         {
-            var result = await _solvingService.GetSolvingById(solvingId);
-            return Ok(new Result<GetSolvingVm>(result, "Solving returned successfully"));
+            var result = await Mediator.Send(new GetUserSolvingByIdQuery { SolvingId = solvingId });
+            return Ok(new Result<GetSolvingDto>(result, "Solving returned successfully"));
         }
 
         [HttpGet("getalltodo")]
         public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()
         {
-            var result = await _solvingService.GetAllSolvingsAssignedToUserToDo();
-            return Ok(new Result<IEnumerable<GetSolvingVm>>(result, "All solvings to do returned successfully"));
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var result = await Mediator.Send(new GetAllSolvingsAssignedToUserToDoQuery { UserId = loggedUserId });
+            return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings to do returned successfully"));
         }
     }
 }
