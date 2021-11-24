@@ -5,7 +5,7 @@ using Application.Invitations.Commands.CreateInvitation;
 using Application.Invitations.Commands.RejectInvitation;
 using Application.Invitations.Queries.GetAllInvitationReceived;
 using Application.Responses;
-using Application.Solvings;
+using Application.Groups;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

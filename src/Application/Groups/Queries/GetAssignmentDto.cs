@@ -7,16 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Solvings
+namespace Application.Groups
 {
-    public class GetAssignmentVm : IMap
+    public class GetAssignmentDto : IMap
     {
-        public GetUserVm User { get; set; }
+        public GetUserDto User { get; set; }
         public string Role { get; set; }
         public DateTime? Joined { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Assignment, GetAssignmentVm>()
+            profile.CreateMap<Assignment, GetAssignmentDto>()
                 .ForMember(x => x.Role, y => y.MapFrom(z => z.GroupRole.Name))
                 .ForMember(x => x.Joined, y => y.MapFrom(z => z.Created));
         }

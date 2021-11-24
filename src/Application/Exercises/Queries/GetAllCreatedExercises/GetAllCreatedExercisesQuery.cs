@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-using Application.Solvings;
+using Application.Groups;
 using AutoMapper;
 using Domain.Interfaces;
 using MediatR;

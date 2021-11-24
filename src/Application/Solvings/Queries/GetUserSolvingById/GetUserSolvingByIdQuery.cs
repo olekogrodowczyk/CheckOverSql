@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Solvings.Queries.GetUserSolvingById
+namespace Application.Groups.Queries.GetUserSolvingById
 {
     public class GetUserSolvingByIdQuery : IRequest<GetSolvingDto>
     {

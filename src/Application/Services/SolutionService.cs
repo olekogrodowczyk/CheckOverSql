@@ -1,7 +1,7 @@
 ﻿using Application.Dto.SendQueryDto;
 using Application.Interfaces;
 using Application.Solutions.Queries;
-using Application.Solvings;
+using Application.Groups;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;

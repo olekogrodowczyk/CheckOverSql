@@ -4,7 +4,7 @@ using Application.Exercises.Commands.CreateExercise;
 using Application.Exercises.Queries;
 using Application.Exercises.Queries.GetAllCreated;
 using Application.Responses;
-using Application.Solvings;
+using Application.Groups;
 using Domain.Entities;
 using FluentAssertions;
 using System;

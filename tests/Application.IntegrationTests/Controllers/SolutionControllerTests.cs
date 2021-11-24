@@ -2,7 +2,7 @@
 using Application.Responses;
 using Application.Solutions.Commands.CreateSolution;
 using Application.Solutions.Queries;
-using Application.Solvings;
+using Application.Groups;
 using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;

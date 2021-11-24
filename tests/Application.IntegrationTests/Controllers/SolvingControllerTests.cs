@@ -1,6 +1,6 @@
 ﻿using Application.Responses;
-using Application.Solvings;
-using Application.Solvings.Queries;
+using Application.Groups;
+using Application.Groups.Queries;
 using Domain.Entities;
 using Domain.Enums;
 using FluentAssertions;

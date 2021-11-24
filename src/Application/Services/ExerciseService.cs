@@ -3,7 +3,7 @@ using Application.Common.Exceptions;
 using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Interfaces;
-using Application.Solvings;
+using Application.Groups;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;

@@ -3,7 +3,7 @@ using Application.Dto.SendQueryDto;
 using Application.IntegrationTests.FakeAuthentication;
 using Application.Interfaces;
 using Application.Responses;
-using Application.Solvings;
+using Application.Groups;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Solvings.Queries
+namespace Application.Groups.Queries
 {
     public class GetSolvingDto : IMap
     {

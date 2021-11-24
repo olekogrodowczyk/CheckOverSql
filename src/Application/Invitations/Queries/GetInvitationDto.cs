@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Solvings
+namespace Application.Groups
 {
     public class GetInvitationDto : IMap
     {

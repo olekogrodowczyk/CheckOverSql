@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Groups.Commands.CreateGroup;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Dto.CreateGroupVm
 {
-    public class CreateGroupDtoValidator : AbstractValidator<CreateGroupDto>
+    public class CreateGroupCommandValidator : AbstractValidator<CreateGroupCommand>
     {
-        public CreateGroupDtoValidator()
+        public CreateGroupCommandValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Wymagane jest podanie nazwy grupy")

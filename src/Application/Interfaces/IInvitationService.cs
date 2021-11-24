@@ -1,5 +1,5 @@
 ﻿using Application.Dto.CreateInvitationDto;
-using Application.Solvings;
+using Application.Groups;
 using AutoMapper;
 using Domain.Enums;
 using System;

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Solvings.Queries.GetAllSolvingsAssignedToUserToDo
+namespace Application.Groups.Queries.GetAllSolvingsAssignedToUserToDo
 {
     public class GetAllSolvingsAssignedToUserToDoQuery : IRequest<IEnumerable<GetSolvingDto>>
     {

@@ -2,7 +2,7 @@
 using Application.Common.Exceptions;
 using Application.Dto.CreateInvitationDto;
 using Application.Interfaces;
-using Application.Solvings;
+using Application.Groups;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;

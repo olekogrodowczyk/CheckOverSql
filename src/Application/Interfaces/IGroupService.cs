@@ -5,15 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Solvings;
+using Application.Groups;
 
 namespace Application.Interfaces
 {
     public interface IGroupService
     {
-        Task<int> CreateGroup(CreateGroupDto model);
-        Task DeleteGroup(int groupId);
-        Task<IEnumerable<GetAssignmentVm>> GetAllAssignmentsInGroup(int groupId);
-        Task<IEnumerable<GetGroupVm>> GetUserGroups();
     }
 }

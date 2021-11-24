@@ -7,15 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dto.CreateGroupVm
+namespace Application.Groups.Queries
 {
-    public class CreateGroupDto : IMap
+    public class GetGroupDto : IMap
     {
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateGroupDto, Group>();           
+            profile.CreateMap<GetGroupDto, Group>()
+                .ReverseMap();
         }
     }
 }

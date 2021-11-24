@@ -1,10 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.Responses;
-using Application.Solvings;
-using Application.Solvings.Queries;
-using Application.Solvings.Queries.GetAllSolvingsAssignedToUser;
-using Application.Solvings.Queries.GetAllSolvingsAssignedToUserToDo;
-using Application.Solvings.Queries.GetUserSolvingById;
+using Application.Groups;
+using Application.Groups.Queries;
+using Application.Groups.Queries.GetAllSolvingsAssignedToUser;
+using Application.Groups.Queries.GetAllSolvingsAssignedToUserToDo;
+using Application.Groups.Queries.GetUserSolvingById;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

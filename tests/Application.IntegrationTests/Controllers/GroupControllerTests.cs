@@ -1,6 +1,7 @@
 ﻿using Application.Dto.CreateGroupVm;
+using Application.Groups.Commands.CreateGroup;
 using Application.Responses;
-using Application.Solvings;
+using Application.Groups;
 using Domain.Entities;
 using FluentAssertions;
 using Infrastructure.Data;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
+using Application.Groups.Queries;
 
 namespace WebAPI.IntegrationTests.Controllers
 {
@@ -22,7 +24,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForValidModel_ReturnsOk()
         {
             //Arrange
-            var httpContent = new CreateGroupDto
+            var httpContent = new CreateGroupCommand
             {
                 Name = "Group 1 - C# programming"
             }.ToJsonHttpContent();
@@ -38,7 +40,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForInvalidModel_ReturnsBadRequest()
         {
             //Arrange
-            var httpContent = new CreateGroupDto
+            var httpContent = new CreateGroupCommand
             {
                 Name = "Gr"
             }.ToJsonHttpContent();
@@ -58,7 +60,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
-            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -79,7 +81,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.GetAsync(ApiRoutes.Group.GetUserGroups);
-            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetGroupDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -90,7 +92,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task Create_ForCreatedGroup_CreatesAssignmentWithOwnerGroupRole()
         {
             //Arrange
-            var httpContent = new CreateGroupDto
+            var httpContent = new CreateGroupCommand
             {
                 Name = "Group1"
             }.ToJsonHttpContent();
@@ -186,7 +188,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Act
             var response = await _client.GetAsync
                 (ApiRoutes.Group.GetAllAssignmentsInGroup.Replace("{groupId}", group1.Id.ToString()));
-            var result = await response.ToResultAsync<Result<IEnumerable<GetAssignmentVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetAssignmentDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
