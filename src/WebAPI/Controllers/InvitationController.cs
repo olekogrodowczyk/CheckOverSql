@@ -1,5 +1,9 @@
 ﻿using Application.Dto.CreateInvitationDto;
 using Application.Interfaces;
+using Application.Invitations.Commands.AcceptInvitation;
+using Application.Invitations.Commands.CreateInvitation;
+using Application.Invitations.Commands.RejectInvitation;
+using Application.Invitations.Queries.GetAllInvitationReceived;
 using Application.Responses;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,57 +17,47 @@ namespace WebAPI.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class InvitationController : ControllerBase
+    public class InvitationController : ApiControllerBase
     {
         private readonly IInvitationService _invitationService;
+        private readonly IUserContextService _userContextService;
 
-        public InvitationController(IInvitationService invitationService)
+        public InvitationController(IInvitationService invitationService, IUserContextService userContextService)
         {
             _invitationService = invitationService;
+            _userContextService = userContextService;
         }
 
-        [HttpPost("{groupId}")]
-        public async Task<IActionResult> Create([FromBody] CreateInvitationDto model, [FromRoute] int groupId)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateInvitationCommand command)
         {
-            await _invitationService.CheckIfSenderIsInTheGroup(groupId);
-            await _invitationService.CheckIfInvitationAlreadyExists(model.ReceiverEmail, model.RoleName, groupId);
-            await _invitationService.CheckIfUserIsAlreadyInGroup(model.ReceiverEmail, model.RoleName, groupId);        
-            int result = await _invitationService.CreateInvitation(model, groupId);
+            await _invitationService.CheckIfSenderIsInTheGroup(command.GroupId);
+            await _invitationService.CheckIfInvitationAlreadyExists(command.ReceiverEmail, command.RoleName, command.GroupId);
+            await _invitationService.CheckIfUserIsAlreadyInGroup(command.ReceiverEmail, command.RoleName, command.GroupId);
+            int result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Invitation sent successfully"));
         }
 
-        [HttpGet("getallreceived")]
-        public async Task<IActionResult> GetAllReceived()
-        {
-            var result = await _invitationService.GetAllUserReceivedInvitations();
-            return Ok(new Result<IEnumerable<GetInvitationVm>>(result, "Received invitations returned successfully"));
-        }
-
-        [HttpGet("getallsent")]
-        public async Task<IActionResult> GetAllSent()
-        {
-            var result = await _invitationService.GetAllUserSentInvitations();
-            return Ok(new Result<IEnumerable<GetInvitationVm>>(result, "Sent invitations returned successfully"));
-        }
-
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string TypeOfGetInvitationsQuery)
         {
-            var result = await _invitationService.GetAllUserInvitations();
-            return Ok(new Result<IEnumerable<GetInvitationVm>>(result, "All Invitations returned successfully"));
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var command = new GetAllInvitationsQuery { TypeOfGetInvitationsQuery = TypeOfGetInvitationsQuery, UserId = loggedUserId };
+            var result = await Mediator.Send(command);
+            return Ok(new Result<IEnumerable<GetInvitationDto>>(result, "All Invitations returned successfully"));
         }
 
         [HttpPatch("accept/{invitationId}")]
         public async Task<IActionResult> Accept([FromRoute] int invitationId)
         {
-            await _invitationService.AcceptInvitation(invitationId);
+            await Mediator.Send(new AcceptInvitationQuery { InvitationId = invitationId });
             return Ok(new Result("Invitation accepted successfully"));
         }
 
         [HttpPatch("reject/{invitationId}")]
         public async Task<IActionResult> Reject([FromRoute] int invitationId)
         {
-            await _invitationService.RejectInvitation(invitationId);
+            await Mediator.Send(new RejectInvitationQuery { InvitationId = invitationId });
             return Ok(new Result("Invitation accepted successfully"));
         }
 

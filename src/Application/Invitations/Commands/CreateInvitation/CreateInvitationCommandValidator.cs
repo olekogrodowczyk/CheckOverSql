@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Invitations.Commands.CreateInvitation;
 using Domain.Interfaces;
 using FluentValidation;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dto.CreateInvitationDto
 {
-    public class CreateInvitationDtoValidator : AbstractValidator<CreateInvitationDto>
+    public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitationCommand>
     {
         private readonly IUserRepository _userRepository;
         private readonly IGroupRoleRepository _groupRoleRepository;
@@ -18,7 +19,7 @@ namespace Application.Dto.CreateInvitationDto
         private readonly IUserContextService _userContextService;
         private IEnumerable<string> groupRoleNames;
 
-        public CreateInvitationDtoValidator(IUserRepository userRepository, IGroupRoleRepository groupRoleRepository
+        public CreateInvitationCommandValidator(IUserRepository userRepository, IGroupRoleRepository groupRoleRepository
             ,IInvitationRepository invitationRepository, IUserContextService userContextService)
         {
             _userRepository = userRepository;

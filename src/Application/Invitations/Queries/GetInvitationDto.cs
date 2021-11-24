@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.ViewModels
 {
-    public class GetInvitationVm : IMap
+    public class GetInvitationDto : IMap
     {
         public int Id { get; set; }
         public string GroupName { get; set; }
@@ -22,7 +22,7 @@ namespace Application.ViewModels
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Invitation, GetInvitationVm>()
+            profile.CreateMap<Invitation, GetInvitationDto>()
                 .ForMember(x => x.GroupName, y => y.MapFrom(z => z.Group.Name))
                 .ForMember(x => x.Sender, y => y.MapFrom(z => z.Sender.FirstName + " " + z.Sender.LastName))
                 .ForMember(x => x.Receiver, y => y.MapFrom(z => z.Receiver.FirstName + " " + z.Receiver.LastName))

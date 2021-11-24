@@ -1,4 +1,5 @@
 ﻿using Application.Dto.CreateInvitationDto;
+using Application.Invitations.Commands.CreateInvitation;
 using Application.Responses;
 using Application.ViewModels;
 using Domain.Entities;
@@ -32,7 +33,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var assignment = await addNewEntity<Assignment>(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
@@ -67,7 +68,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment = await addNewEntity<Assignment>
                 (new Assignment { GroupId = group.Id, UserId = 102, GroupRoleId = 2 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
@@ -83,7 +84,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
         [Theory]
         [MemberData(nameof(GetSampleInvalidCreateModels))]
-        public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationDto createInvitationDto)
+        public async Task Create_ForInvalidModels_ReturnsBadRequest(CreateInvitationCommand createInvitationDto)
         {
             //Arrange
             await ClearNotNecesseryData();
@@ -114,7 +115,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment = await addNewEntity<Assignment>
                 (new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 2 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
@@ -142,7 +143,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment = await addNewEntity<Assignment>
                 (new Assignment { GroupId = group.Id, UserId = 100, GroupRoleId = 2 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "testinvitation@gmail.com",
                 RoleName = "Moderator"
@@ -208,7 +209,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Act
             var response = await _client.GetAsync
                 (ApiRoutes.Invitation.Base.Replace("{groupId}", group.Id.ToString()) + $"/{queryType}");
-            var result = await response.ToResultAsync<Result<IEnumerable<GetInvitationVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetInvitationDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -226,7 +227,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var assignment = await addNewEntity<Assignment>
                 (new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 3 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
                 RoleName = "Moderator"
@@ -284,7 +285,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var group = await addNewEntity<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
             var assignment = await addNewEntity<Assignment>(new Assignment { GroupId = group.Id, UserId = 99, GroupRoleId = 3 });
 
-            var httpContent = new CreateInvitationDto
+            var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "testfakeuser@gmail.com",
                 RoleName = "Moderator"
@@ -299,19 +300,19 @@ namespace WebAPI.IntegrationTests.Controllers
 
         public static IEnumerable<object[]> GetSampleInvalidCreateModels()
         {
-            var list = new List<CreateInvitationDto>()
+            var list = new List<CreateInvitationCommand>()
             {
-                new CreateInvitationDto
+                new CreateInvitationCommand
                 {
                     ReceiverEmail = "testinvitation@gmail.com",
                     RoleName = "ndsjas"
                 },
-                new CreateInvitationDto
+                new CreateInvitationCommand
                 {
                     ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
                     RoleName = "Moderator"
                 },
-                new CreateInvitationDto
+                new CreateInvitationCommand
                 {
                     ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
                     RoleName = "ndsjas"

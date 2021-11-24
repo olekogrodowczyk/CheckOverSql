@@ -47,30 +47,7 @@ namespace Application.Services
             _logger = logger;
         }
 
-        public async Task<int> CreateInvitation(CreateInvitationDto model, int groupId)
-        {
-            //_logger.LogInformation($"User with id: {_userContextService.GetUserId} " +
-            //    $"attempts to create an invitation with data: email")
-            var receiver = await _userRepository.GetByEmail(model.ReceiverEmail);
-            var groupRole = await _groupRoleRepository.GetByName(model.RoleName);
-            var group = await _groupRepository.GetByIdAsync(groupId);
-            var assignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                ,new PermissionRequirement(PermissionNames.SendingInvitations));
-
-            var invitation = new Invitation
-            {
-                SenderId = (int)_userContextService.GetUserId,
-                Receiver = receiver,
-                Status = InvitationStatusEnum.Sent.ToString(),
-                GroupRole = groupRole,
-                Group = group
-            };
-
-            await _invitationRepository.AddAsync(invitation);
-            return invitation.Id;
-        }
+        
 
         public async Task CheckIfInvitationAlreadyExists(string email, string role, int groupId)
         {
@@ -100,63 +77,7 @@ namespace Application.Services
             if(!result) { throw new NotFoundException($"Sender is not in the group"); }
         }
 
-        public async Task<IEnumerable<GetInvitationVm>> GetAllUserReceivedInvitations()
-        {
-            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
-            invitations = invitations.Where(x=>x.ReceiverId == _userContextService.GetUserId);
-            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
-            return invitationsVm;
-        }
-
-        public async Task<IEnumerable<GetInvitationVm>> GetAllUserSentInvitations()
-        {
-            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
-            invitations = invitations.Where(x => x.SenderId == _userContextService.GetUserId);
-            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
-            return invitationsVm;
-        }
-
-        public async Task<IEnumerable<GetInvitationVm>> GetAllUserInvitations()
-        {
-            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
-            invitations = invitations.Where
-                (x => x.ReceiverId == _userContextService.GetUserId
-                || x.SenderId == _userContextService.GetUserId);
-            var invitationsVm = _mapper.Map<IEnumerable<GetInvitationVm>>(invitations);
-            return invitationsVm;
-        }
-
-        public async Task AcceptInvitation(int invitationId)
-        {
-            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if(invitation.Status != InvitationStatusEnum.Sent.ToString())
-            {
-                throw new BadRequestException("The invitation isn't pending", true);
-            }
-
-            await _assignmentRepository.AddAsync(new Assignment
-            {
-                GroupId = (int)invitation.GroupId,
-                GroupRoleId = invitation.GroupRoleId,
-                UserId = invitation.ReceiverId,               
-            });
-
-            invitation.Status = InvitationStatusEnum.Accepted.ToString();
-            await _invitationRepository.UpdateAsync(invitation);
-        }
-        
-        public async Task RejectInvitation(int invitationId)
-        {
-            var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if(invitation.Status != InvitationStatusEnum.Sent.ToString())
-            {
-                throw new BadRequestException("The invitation isn't pending", true);
-            }
-
-            invitation.Status = InvitationStatusEnum.Rejected.ToString();
-            await _invitationRepository.UpdateAsync(invitation);
-        }
-
+      
 
     }
 }
