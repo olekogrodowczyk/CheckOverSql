@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.ViewModels
+namespace Application.Exercises.Queries
 {
     public class GetExerciseDto : IMap
     {

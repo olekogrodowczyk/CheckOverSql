@@ -1,6 +1,7 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Exercises.Commands.CreateExercise;
+using Application.Exercises.Queries;
 using Application.Exercises.Queries.GetAllCreated;
 using Application.Responses;
 using Application.ViewModels;
@@ -140,7 +141,7 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 DeadLine = DateTime.UtcNow.AddMinutes(deadLineMinutesAhead),
                 GroupId = group1.Id,
-                Id = exercise.Id,
+                ExerciseId = exercise.Id,
             }.ToJsonHttpContent();
 
             //Act

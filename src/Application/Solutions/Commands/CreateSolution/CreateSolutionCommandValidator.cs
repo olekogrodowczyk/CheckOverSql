@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Dto.CreateSolutionDto
+namespace Application.Solutions.Commands.CreateSolution
 {
-    public class CreateSolutionDtoValidator : AbstractValidator<CreateSolutionDto>
+    public class CreateSolutionCommandValidator : AbstractValidator<CreateSolutionCommand>
     {
         private readonly ISolvingRepository _solvingRepository;
 
-        public CreateSolutionDtoValidator(ISolvingRepository solvingRepository)
+        public CreateSolutionCommandValidator(ISolvingRepository solvingRepository)
         {
             _solvingRepository = solvingRepository;
 

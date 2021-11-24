@@ -1,5 +1,4 @@
-﻿using Application.Dto.CreateSolutionDto;
-using Application.ViewModels;
+﻿using Application.ViewModels;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,9 +12,7 @@ namespace Application.Interfaces
     {
         Task<bool> Compare(int solutionId, string query);
         Task<Comparison> CreateComparison(int solutionId, int exerciseId);
-        Task<GetComparisonVm> CreateSolution(int exerciseId, CreateSolutionDto model);
-        Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId);
         Task<int> GetComparisonResult(int exerciseId, int solutionId);
-        Task<List<List<string>>> SendSolutionQuery(int solutionId);
+        Task HandlePossibleSolvingToDo(int exerciseId, Solution solution);
     }
 }

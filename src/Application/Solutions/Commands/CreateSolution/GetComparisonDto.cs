@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.ViewModels
+namespace Application.Solutions.Commands.CreateSolution
 {
-    public class GetComparisonVm : IMap
+    public class GetComparisonDto : IMap
     {
         public int SolutionId { get; set; }
         public string SolutionSolver { get; set; }
@@ -20,7 +20,7 @@ namespace Application.ViewModels
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Comparison, GetComparisonVm>()
+            profile.CreateMap<Comparison, GetComparisonDto>()
                 .ForMember(x => x.SolutionSolver, y => y.MapFrom
                    (z => z.Solution.Creator.FirstName + " " + z.Solution.Creator.LastName))
                 .ForMember(x => x.ExerciseTitle, y => y.MapFrom(z => z.Exercise.Title));

@@ -1,6 +1,6 @@
-﻿using Application.Dto.CreateSolutionDto;
-using Application.Dto.SendQueryDto;
+﻿using Application.Dto.SendQueryDto;
 using Application.Interfaces;
+using Application.Solutions.Queries;
 using Application.ViewModels;
 using AutoMapper;
 using Domain.Entities;
@@ -44,31 +44,10 @@ namespace Application.Services
             _databaseRepository = databaseRepository;
         }
 
-        public async Task<GetComparisonVm> CreateSolution(int exerciseId, CreateSolutionDto model)
-        {
-            var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
-
-            Solution solution = _mapper.Map<Solution>(model);
-            solution.Creator = _userContextService.User;
-            solution.ExerciseId = exerciseId;
-            await _solutionRepository.AddAsync(solution);
-
-            string databaseName = await _databaseRepository.GetDatabaseNameById(exercise.DatabaseId);
-            solution.Checked = true; solution.IsValid = false;
-            await _databaseService.SendQueryNoData(model.Query, databaseName);
-            solution.IsValid = true;
-
-            Comparison comparison = await CreateComparison(solution.Id, exerciseId);
-            if (comparison.Result) { await HandlePossibleSolvingToDo(exerciseId, solution); }
-
-            comparison = await _comparisonRepository.GetComparisonWithIncludes(comparison.Id);
-            var comparisonVm = _mapper.Map<GetComparisonVm>(comparison);
-                      
-            return comparisonVm;
-        }
+        
 
 
-        private async Task HandlePossibleSolvingToDo(int exerciseId, Solution solution)
+        public async Task HandlePossibleSolvingToDo(int exerciseId, Solution solution)
         {
             int loggedUserId = (int)_userContextService.GetUserId;
             var solvingsAssignedToUser = await _solvingRepository.GetSolvingsAssignedToUserToDo(loggedUserId);
@@ -85,13 +64,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<List<List<string>>> SendSolutionQuery(int solutionId)
-        {
-            var solution = await _solutionRepository.GetByIdAsync(solutionId);
-            string databaseName = await _solutionRepository.GetDatabaseName(solutionId);
-            var result = await _databaseService.SendQueryWithData(solution.Query, databaseName);
-            return result;
-        }
+        
     
         public async Task<bool> Compare(int exerciseId, string query)
         {
@@ -119,13 +92,6 @@ namespace Application.Services
             };
             await _comparisonRepository.AddAsync(comparison);
             return comparison;
-        }
-
-        public async Task<IEnumerable<GetSolutionVm>> GetAllSolutions(int exerciseId)
-        {
-            var solutions = await _solutionRepository.GetAllCreatedByUser(exerciseId);
-            var solutionsVm = _mapper.Map<IEnumerable<GetSolutionVm>>(solutions);
-            return solutionsVm;
         }
 
         public async Task<int> GetComparisonResult(int exerciseId, int solutionId)

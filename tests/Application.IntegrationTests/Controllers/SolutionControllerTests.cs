@@ -1,6 +1,7 @@
-﻿using Application.Dto.CreateSolutionDto;
-using Application.IntegrationTests.FakeAuthentication;
+﻿using Application.IntegrationTests.FakeAuthentication;
 using Application.Responses;
+using Application.Solutions.Commands.CreateSolution;
+using Application.Solutions.Queries;
 using Application.ViewModels;
 using Domain.Entities;
 using Domain.Enums;
@@ -83,13 +84,13 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
 
-            var httpContent = new CreateSolutionDto { Query = query }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = query }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
                 (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<Result<GetComparisonVm>>(responseString);
+            var result = JsonConvert.DeserializeObject<Result<GetComparisonDto>>(responseString);
 
 
             //Assert
@@ -106,7 +107,7 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
-            var httpContent = new CreateSolutionDto { Query = query }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = query }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
@@ -127,7 +128,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
 
-            var httpContent = new CreateSolutionDto { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
@@ -155,7 +156,7 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddHours(-1));
-            var httpContent = new CreateSolutionDto { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
 
 
             //Act
@@ -231,7 +232,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var exercise = await addNewEntity<Exercise>(getValidExercise());
 
-            var httpContent = new CreateSolutionDto
+            var httpContent = new CreateSolutionCommand
             {
                 Query = "",
             }.ToJsonHttpContent();
@@ -259,7 +260,7 @@ namespace WebAPI.IntegrationTests.Controllers
             
             //Act
             var response = await _client.GetAsync(ApiRoutes.Solution.GetAll.Replace("{exerciseId}", exercise.Id.ToString()));
-            var result = await response.ToResultAsync<Result<IEnumerable<GetSolutionVm>>>();
+            var result = await response.ToResultAsync<Result<IEnumerable<GetSolutionDto>>>();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

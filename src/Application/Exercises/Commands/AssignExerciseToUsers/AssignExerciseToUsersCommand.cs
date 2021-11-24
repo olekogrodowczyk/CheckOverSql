@@ -14,7 +14,7 @@ namespace Application.Dto.AssignExerciseToUsersTo
 {
     public class AssignExerciseToUsersCommand : IRequest<IEnumerable<int>>
     {
-        public int Id { get; set; }
+        public int ExerciseId { get; set; }
         public int GroupId { get; set; }
         public DateTime DeadLine { get; set; }    
     }
@@ -44,7 +44,7 @@ namespace Application.Dto.AssignExerciseToUsersTo
             {
                 var solving = new Solving
                 {
-                    ExerciseId = request.Id,
+                    ExerciseId = request.ExerciseId,
                     Status = SolvingStatus.ToDo.ToString(),
                     DeadLine = request.DeadLine,
                     AssignmentId = assignment.Id,

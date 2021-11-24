@@ -1,7 +1,11 @@
-﻿using Application.Dto.CreateSolutionDto;
-using Application.Dto.SendQueryDto;
+﻿using Application.Dto.SendQueryDto;
 using Application.Interfaces;
 using Application.Responses;
+using Application.Solutions;
+using Application.Solutions.Commands.CreateSolution;
+using Application.Solutions.Commands.SendSolutionQuery;
+using Application.Solutions.Queries;
+using Application.Solutions.Queries.GetAllSolutionsCreatedByUser;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,36 +16,41 @@ using System.Threading.Tasks;
 namespace WebAPI.Controllers
 {
     [Authorize]
-    [Route("api/exercise/{exerciseId}/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class SolutionController : ControllerBase
+    public class SolutionController : ApiControllerBase
     {
         private readonly ISolutionService _solutionService;
+        private readonly IUserContextService _userContextService;
 
-        public SolutionController(ISolutionService solutionService)
+        public SolutionController(ISolutionService solutionService, IUserContextService userContextService)
         {
             _solutionService = solutionService;
+            _userContextService = userContextService;
         }
 
+        [Authorize]
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAll([FromRoute] int exerciseId)
+        public async Task<IActionResult> GetAllCreatedByUser()
         {
-            var result = await _solutionService.GetAllSolutions(exerciseId);
-            return Ok(new Result<IEnumerable<GetSolutionVm>>(result, "All solution returned successfully"));
+            int userId = (int)_userContextService.GetUserId;
+            var result = await Mediator.Send(new GetAllSolutionsCreatedByUserQuery { UserId = userId });
+            return Ok(new Result<IEnumerable<GetSolutionDto>>(result, "All solution returned successfully"));
         }
         
         [HttpPost()]
-        public async Task<IActionResult> Create([FromRoute] int exerciseId, [FromBody] CreateSolutionDto model)
+        public async Task<IActionResult> Create([FromBody] CreateSolutionCommand command)
         {
-            var result = await _solutionService.CreateSolution(exerciseId, model);
-            return Ok(new Result<GetComparisonVm>(result, "New solution added successfully and returned comparison"));
+            var result = await Mediator.Send(command);
+            return Ok(new Result<GetComparisonDto>(result, "New solution added successfully and returned comparison"));
         }
 
         [HttpGet("getquerydata/{solutionId}")]
-        public async Task<IActionResult> GetQueryData([FromRoute] int exerciseId, [FromRoute] int solutionId)
+        public async Task<IActionResult> GetQueryData([FromQuery] int exerciseId, [FromQuery] int solutionId)
         {
-            var result = await _solutionService.SendSolutionQuery(solutionId);
-            return Ok(new Result<List<List<string>>>(result, "Query executed successfully"));
+            var command = new SendSolutionQueryCommand { ExerciseId = exerciseId, SolutionId = solutionId };
+            var result = await Mediator.Send(command);
+            return Ok(new Result<IEnumerable<IEnumerable<string>>>(result, "Query executed successfully"));
         }
 
             

@@ -1,6 +1,7 @@
 ﻿using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Exercises.Commands.CreateExercise;
+using Application.Exercises.Queries;
 using Application.Exercises.Queries.GetAllCreated;
 using Application.Exercises.Queries.GetAllPublicExercises;
 using Application.Interfaces;
@@ -57,7 +58,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AssignExerciseToUsersInGroup
             ([FromRoute] int id, [FromBody] AssignExerciseToUsersCommand command)
         {
-            if(id != command.Id) { return BadRequest(); }
+            if(id != command.ExerciseId) { return BadRequest(); }
             await _exerciseService.CheckIfUserCanAssignExerciseToUsers(command.GroupId);
             var result = await Mediator.Send(command);   
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
