@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Authorization;
+using Application.Common.Exceptions;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Authorization
+namespace Infrastructure.Authorization
 {
     public class PermissionRequirementHandler : AuthorizationHandler<PermissionRequirement, Assignment>
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Authorization
+namespace Infrastructure.Authorization
 {
     public class GetSolvingByIdRequirementHandler : AuthorizationHandler<GetSolvingByIdRequirement, Solving>
     {

@@ -21,11 +21,9 @@ namespace WebAPI.Controllers
     [ApiController]
     public class GroupController : ApiControllerBase
     {
-        private readonly IGroupService _groupService;
 
-        public GroupController(IGroupService groupService)
+        public GroupController()
         {
-            _groupService = groupService;
         }
 
         [HttpPost] 

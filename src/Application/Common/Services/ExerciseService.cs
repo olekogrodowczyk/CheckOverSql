@@ -1,5 +1,4 @@
-﻿using Application.Authorization;
-using Application.Common.Exceptions;
+﻿using Application.Common.Exceptions;
 using Application.Dto.AssignExerciseToUsersTo;
 using Application.Dto.CreateExerciseDto;
 using Application.Interfaces;
@@ -15,8 +14,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Authorization;
 
-namespace Application.Services
+namespace Application.Common.Services
 {
     public class ExerciseService : IExerciseService
     {

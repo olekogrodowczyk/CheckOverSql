@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces;
-using Application.Mappings;
 using Application.Groups;
 using AutoMapper;
 using Domain.Entities;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Mappings;
 
 namespace Application.Solutions.Commands.CreateSolution
 {

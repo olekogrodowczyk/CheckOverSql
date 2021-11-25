@@ -1,4 +1,5 @@
 ﻿using Application.Authorization;
+using Application.Common.Authorization;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Enums;

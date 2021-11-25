@@ -16,6 +16,8 @@ using Application.Authorization;
 using MediatR;
 using Application.Common.Behaviours;
 using FluentValidation;
+using Infrastructure.Authorization;
+using Application.Common.Services;
 
 namespace Application
 {
@@ -30,7 +32,6 @@ namespace Application
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
