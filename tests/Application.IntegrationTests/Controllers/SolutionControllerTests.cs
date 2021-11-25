@@ -250,6 +250,8 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task GetAll_ForSolutionsCreatedByUser_ReturnsAllTheseSolutions()
         {
             //Arrange
+            await ClearNotNecesseryData();
+
             string query = "SELECT * FROM dbo.Footballers";
             var exercise = await addNewEntity<Exercise>(getValidExercise());
             await addNewEntity<Solution>

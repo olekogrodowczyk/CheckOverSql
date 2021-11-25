@@ -1,4 +1,5 @@
-﻿using Application.Dto.SendQueryDto;
+﻿using Application.Databases.Commands.SendQueryAdmin;
+using Application.Dto.SendQueryDto;
 using Application.Interfaces;
 using Application.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +22,10 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> SendQueryAdmin(SendQueryDto model)
+        public async Task<IActionResult> SendQueryAdmin(SendQueryAdminCommand command)
         {
-            var result = await _queryService.SendQueryNoData(model.Query, model.Database, true);
-            return Ok(new Result<int>(result, "Pomyślnie wykonano zapytanie. Zwrócono ilość zmienionych rzędów."));
+            var result = await Mediator.Send(command);
+            return Ok(new Result<int>(result, "Query executed successfully, number of rows affected returned."));
         }
     }
 }

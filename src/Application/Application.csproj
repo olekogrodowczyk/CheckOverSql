@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Databases\Queries\" />
     <Folder Include="Solvings\Commands\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

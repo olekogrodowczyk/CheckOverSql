@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dto.SendQueryDto
+namespace Application.Databases.Commands.SendQueryAdmin
 {
-    public class SendQueryDtoValidator : AbstractValidator<SendQueryDto>
+    public class SendQueryAdminCommandValidator : AbstractValidator<SendQueryAdminCommand>
     {
         private readonly IDatabaseRepository _databaseRepository;
 
@@ -17,7 +17,7 @@ namespace Application.Dto.SendQueryDto
             var databases = _databaseRepository.GetAllAsync().Result;
             return databases.Select(x => x.Name.ToLower()).ToArray();
         }
-        public SendQueryDtoValidator(IDatabaseRepository databaseRepository)
+        public SendQueryAdminCommandValidator(IDatabaseRepository databaseRepository)
         {
             _databaseRepository = databaseRepository;
             string[] databasesNames = getDatabasesNames();
