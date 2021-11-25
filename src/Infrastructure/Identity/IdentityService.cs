@@ -1,7 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Responses;
-using Application.Dto.LoginUserVm;
-using Application.Dto.RegisterUserVm;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using Infrastructure.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using Application.Common.Exceptions;
+using Infrastructure.Identity.Authentication;
+using Application.Identities.Commands.LoginUser;
+using Application.Identities.Commands.RegisterUser;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Identity.Services
 {
     public class IdentityService : IIdentityService
     {
@@ -42,7 +42,7 @@ namespace Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<string> Login(LoginUserDto model)
+        public async Task<string> Login(LoginUserCommand model)
         {
             var user = await _context.Users
                 .Include(x=>x.Role)
@@ -101,7 +101,7 @@ namespace Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<int> Register(RegisterUserDto model)
+        public async Task<int> Register(RegisterUserCommand model)
         {
             if (_context.Users.Any(x => x.Email == model.Email))
             {

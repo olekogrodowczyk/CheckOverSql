@@ -1,5 +1,4 @@
 ﻿using Application.Dto.CreateExerciseDto;
-using Application.Dto.SendQueryDto;
 using Application.IntegrationTests.FakeAuthentication;
 using Application.Interfaces;
 using Application.Responses;

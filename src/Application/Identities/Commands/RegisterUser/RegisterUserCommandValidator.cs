@@ -1,15 +1,16 @@
-﻿using FluentValidation;
+﻿using Application.Identities.Commands.RegisterUser;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dto.RegisterUserVm
+namespace Application.Identities.Commands.LoginUser
 {
-    public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
+    public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
     {
-        public RegisterUserDtoValidator()
+        public RegisterUserCommandValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First name has not been defined");

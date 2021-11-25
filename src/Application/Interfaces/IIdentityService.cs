@@ -1,6 +1,6 @@
-﻿using Application.Responses;
-using Application.Dto.LoginUserVm;
-using Application.Dto.RegisterUserVm;
+﻿using Application.Identities.Commands.LoginUser;
+using Application.Identities.Commands.RegisterUser;
+using Application.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace Application.Interfaces
     {
         Task<bool> Authorize(int userId, string policyName);
         Task<string> GetUserName(int userId);
-        Task<int> Register(RegisterUserDto model);
+        Task<int> Register(RegisterUserCommand model);
         Task<bool> IsInRole(int userId, string role);            
         Task DeleteUser(int userId);
-        Task<string> Login(LoginUserDto model);
+        Task<string> Login(LoginUserCommand model);
     }
 }

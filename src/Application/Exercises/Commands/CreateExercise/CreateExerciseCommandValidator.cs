@@ -1,5 +1,4 @@
-﻿using Application.Dto.SendQueryDto;
-using Application.Exercises.Commands.CreateExercise;
+﻿using Application.Exercises.Commands.CreateExercise;
 using Domain.Interfaces;
 using FluentValidation;
 using System;

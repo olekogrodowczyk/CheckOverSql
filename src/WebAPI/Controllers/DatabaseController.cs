@@ -1,5 +1,4 @@
 ﻿using Application.Databases.Commands.SendQueryAdmin;
-using Application.Dto.SendQueryDto;
 using Application.Interfaces;
 using Application.Responses;
 using Microsoft.AspNetCore.Authorization;

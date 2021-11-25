@@ -1,5 +1,4 @@
-﻿using Application.Dto.SendQueryDto;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Solutions.Queries;
 using Application.Groups;
 using AutoMapper;

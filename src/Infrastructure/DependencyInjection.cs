@@ -1,10 +1,10 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
-using Infrastructure.Authentication;
 using Infrastructure.Data;
+using Infrastructure.Identity.Authentication;
+using Infrastructure.Identity.Services;
 using Infrastructure.Repositories;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

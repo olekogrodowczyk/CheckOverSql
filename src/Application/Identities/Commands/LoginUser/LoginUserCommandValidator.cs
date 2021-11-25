@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dto.LoginUserVm
+namespace Application.Identities.Commands.LoginUser
 {
-    public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
+    public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
     {
-        public LoginUserDtoValidator()
+        public LoginUserCommandValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Podany email jest pusty");

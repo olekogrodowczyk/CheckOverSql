@@ -1,5 +1,4 @@
-﻿using Application.Dto.LoginUserVm;
-using Application.Dto.RegisterUserVm;
+﻿using Application.Identities.Commands.RegisterUser;
 using Application.Interfaces;
 using Domain.Entities;
 using FluentAssertions;
@@ -25,7 +24,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForValidModel_ReturnsOk()
         {
             // Arrange
-            var httpContent = new RegisterUserDto()
+            var httpContent = new RegisterUserCommand()
             {
                 Email = "test@test.com",
                 Password = "password123",
@@ -46,7 +45,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForInvalidModel_ReturnsBadRequest()
         {
             // Arrange
-            var httpContent = new RegisterUserDto()
+            var httpContent = new RegisterUserCommand()
             {
                 Email = "test@test.com",
                 Password = "password123",
@@ -67,7 +66,7 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForTwoSameEmails_ReturnsBadRequest()
         {
             // Arrange
-            var httpContent = new RegisterUserDto()
+            var httpContent = new RegisterUserCommand()
             {
                 Email = "testsameemail@test.com",
                 Password = "password123",

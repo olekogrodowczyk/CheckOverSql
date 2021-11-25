@@ -1,5 +1,4 @@
-﻿using Application.Dto.SendQueryDto;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Responses;
 using Application.Solutions;
 using Application.Solutions.Commands.CreateSolution;

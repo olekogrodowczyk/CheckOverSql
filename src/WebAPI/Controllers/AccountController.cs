@@ -1,10 +1,10 @@
 ﻿using Application.Interfaces;
-using Application.Dto.LoginUserVm;
-using Application.Dto.RegisterUserVm;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Application.Responses;
+using Application.Identities.Commands.RegisterUser;
+using Application.Identities.Commands.LoginUser;
 
 namespace WebAPI.Controllers
 {
@@ -20,17 +20,17 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto model)
+        public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
-            var result = await _identityService.Register(model);
+            var result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Pomyślnie zarejestrowano użytkownika"));
 
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDto model)
+        public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
-            var result = await _identityService.Login(model);
+            var result = await Mediator.Send(command);
             return Ok(new Result<string>(result, "Pomyślnie zalogowano"));
         }
     }
