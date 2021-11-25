@@ -31,6 +31,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync(ApiRoutes.Group.Create, httpContent);
+            var responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);

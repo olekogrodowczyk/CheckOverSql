@@ -35,9 +35,7 @@
         public static class Invitation
         {
             public const string Base = Root + "/invitation";
-            public const string Create = Base + "/{groupId}";
-            public const string GetAllReceived = Base + "/getallreceived";
-            public const string GetAllSent = Base + "/getallsent";
+            public const string Create = Base;
             public const string GetAll = Base + "/getall";
             public const string Accept = Base + "/accept/{invitationId}";
             public const string Reject = Base + "/reject/{invitationId}";
@@ -45,7 +43,7 @@
 
         public static class Solution
         {
-            public const string Base = Root + "/exercise/{exerciseId}/solution";
+            public const string Base = Root + "/solution";
             public const string Create = Base;
             public const string GetAll = Base + "/getall";
             public const string GetQueryData = Base + "/getquerydata/{solutionId}";

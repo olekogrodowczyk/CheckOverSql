@@ -84,11 +84,11 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
 
-            var httpContent = new CreateSolutionCommand { Query = query }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = query, ExerciseId = initResult.Item1 }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+                (ApiRoutes.Solution.Create, httpContent);
             var responseString = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<Result<GetComparisonDto>>(responseString);
 
@@ -107,11 +107,11 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
-            var httpContent = new CreateSolutionCommand { Query = query }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = query, ExerciseId = initResult.Item1 }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+                (ApiRoutes.Solution.Create, httpContent);
 
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
@@ -128,11 +128,11 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
 
-            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers", ExerciseId = initResult.Item1 }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Solution.Create.Replace("{exerciseId}", initResult.Item1.ToString()), httpContent);
+                (ApiRoutes.Solution.Create, httpContent);
 
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
@@ -156,7 +156,7 @@ namespace WebAPI.IntegrationTests.Controllers
         {
             //Arrange
             var initResult = await InitForCreate(DateTime.UtcNow.AddHours(-1));
-            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers" }.ToJsonHttpContent();
+            var httpContent = new CreateSolutionCommand { Query = "SELECT * FROM dbo.Footballers", ExerciseId = initResult.Item1 }.ToJsonHttpContent();
 
 
             //Act
@@ -193,7 +193,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var route = ApiRoutes.Solution.GetQueryData.Replace("{exerciseId}", exercise.Id.ToString())
-                .Replace("{solutionId}", solution.Id.ToString());
+                .Replace("{solutionId}", solution.Id.ToString() + "?exerciseid=" + exercise.Id);
             var response = await _client.GetAsync(route);
 
             //Assert
@@ -235,6 +235,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateSolutionCommand
             {
                 Query = "",
+                ExerciseId = exercise.Id
             }.ToJsonHttpContent();
 
             //Act
@@ -259,7 +260,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 (new Solution { Dialect = "SQL Server", ExerciseId = exercise.Id, CreatorId = 99, Query = query });
             
             //Act
-            var response = await _client.GetAsync(ApiRoutes.Solution.GetAll.Replace("{exerciseId}", exercise.Id.ToString()));
+            var response = await _client.GetAsync(ApiRoutes.Solution.GetAll);
             var result = await response.ToResultAsync<Result<IEnumerable<GetSolutionDto>>>();
 
             //Assert

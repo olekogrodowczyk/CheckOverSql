@@ -36,13 +36,13 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
-                RoleName = "Moderator"
+                RoleName = "Moderator",
+                GroupId = group.Id,
             }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
-            var responseString = await response.Content.ReadAsStringAsync();
+                (ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             var scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
@@ -71,12 +71,13 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
-                RoleName = "Moderator"
+                RoleName = "Moderator",
+                GroupId = group.Id,
             }.ToJsonHttpContent();
 
             //Act
             var response = await _client.
-                PostAsync(ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+                PostAsync(ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -98,7 +99,7 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+                (ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -118,14 +119,15 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
-                RoleName = "Moderator"
+                RoleName = "Moderator",
+                GroupId = group.Id,
             }.ToJsonHttpContent();
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+                (ApiRoutes.Invitation.Create, httpContent);
             var response2 = await _client.PostAsync
-                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+                (ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
@@ -151,19 +153,19 @@ namespace WebAPI.IntegrationTests.Controllers
 
             //Act
             var response = await _client.PostAsync
-                (ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+                (ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Theory]
-        [InlineData(99, 100, 2, "getallsent")]
-        [InlineData(100, 99, 1, "getallsent")]
-        [InlineData(99, 101, 2, "getallsent")]
-        [InlineData(99, 100, 1, "getallreceived")]
-        [InlineData(100, 99, 2, "getallreceived")]
-        [InlineData(100, 99, 3, "getall")]
+        [InlineData(99, 100, 2, "sent")]
+        [InlineData(100, 99, 1, "sent")]
+        [InlineData(99, 101, 2, "sent")]
+        [InlineData(99, 100, 1, "received")]
+        [InlineData(100, 99, 2, "received")]
+        [InlineData(100, 99, 3, "all")]
         public async Task GetAllWithCondition_ForValidModel_ReturnsOkWithValidCount
             (int senderId, int receiverId, int expectedCount, string queryType)
         {
@@ -179,8 +181,7 @@ namespace WebAPI.IntegrationTests.Controllers
                     SenderId = senderId,
                     ReceiverId = receiverId,
                     GroupId = group.Id,
-                    GroupRoleId = 2
-                    ,
+                    GroupRoleId = 2,
                     Status = InvitationStatusEnum.Sent.ToString()
                 });
 
@@ -201,14 +202,13 @@ namespace WebAPI.IntegrationTests.Controllers
                     SenderId = 99,
                     ReceiverId = 102,
                     GroupId = group.Id,
-                    GroupRoleId = 2
-                    ,
+                    GroupRoleId = 2,                    
                     Status = InvitationStatusEnum.Sent.ToString()
                 });
 
             //Act
             var response = await _client.GetAsync
-                (ApiRoutes.Invitation.Base.Replace("{groupId}", group.Id.ToString()) + $"/{queryType}");
+                (ApiRoutes.Invitation.GetAll + $"?querytype={queryType}");
             var result = await response.ToResultAsync<Result<IEnumerable<GetInvitationDto>>>();
 
             //Assert
@@ -230,11 +230,12 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "johnsmith@gmail.com",
-                RoleName = "Moderator"
+                RoleName = "Moderator",
+                GroupId = group.Id
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync(ApiRoutes.Invitation.Create.Replace("{groupId}", group.Id.ToString()), httpContent);
+            var response = await _client.PostAsync(ApiRoutes.Invitation.Create, httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
@@ -288,7 +289,8 @@ namespace WebAPI.IntegrationTests.Controllers
             var httpContent = new CreateInvitationCommand
             {
                 ReceiverEmail = "testfakeuser@gmail.com",
-                RoleName = "Moderator"
+                RoleName = "Moderator",
+                GroupId = group.Id,
             }.ToJsonHttpContent();
 
             //Act
@@ -305,17 +307,20 @@ namespace WebAPI.IntegrationTests.Controllers
                 new CreateInvitationCommand
                 {
                     ReceiverEmail = "testinvitation@gmail.com",
-                    RoleName = "ndsjas"
+                    RoleName = "ndsjas",
+                    GroupId = 1
                 },
                 new CreateInvitationCommand
                 {
                     ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
-                    RoleName = "Moderator"
+                    RoleName = "Moderator",
+                    GroupId = 1
                 },
                 new CreateInvitationCommand
                 {
                     ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
-                    RoleName = "ndsjas"
+                    RoleName = "ndsjas",
+                    GroupId = 1
                 }
             };
             return list.Select(x => new object[] { x });

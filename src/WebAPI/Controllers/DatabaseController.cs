@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DatabaseController : ControllerBase
+    public class DatabaseController : ApiControllerBase
     {
         private readonly IDatabaseService _queryService;
 

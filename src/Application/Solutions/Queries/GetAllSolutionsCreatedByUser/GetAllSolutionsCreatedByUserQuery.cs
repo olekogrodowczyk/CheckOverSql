@@ -28,7 +28,7 @@ namespace Application.Solutions.Queries.GetAllSolutionsCreatedByUser
         }
         public async Task<IEnumerable<GetSolutionDto>> Handle(GetAllSolutionsCreatedByUserQuery request, CancellationToken cancellationToken)
         {
-            var solutions = await _solutionRepository.GetWhereAsync(x => x.CreatorId == request.UserId, x => x.Exercise);
+            var solutions = await _solutionRepository.GetWhereAsync(x => x.CreatorId == request.UserId, x => x.Exercise, x=>x.Creator);
             var solutionDtos = _mapper.Map<IEnumerable<GetSolutionDto>>(solutions);
             return solutionDtos;
         }

@@ -25,13 +25,13 @@ namespace Infrastructure.Repositories
             _userContextService = userContextService;
         }
 
-        public async Task<string> GetDatabaseName(int id)
+        public async Task<string> GetDatabaseName(int solutionId)
         {
             var result = await _context.Solutions
                 .Include(x => x.Exercise)
                 .ThenInclude(x=>x.Database)
-                .FirstOrDefaultAsync(x=>x.Id == id);
-            if (result == null) { throw new NotFoundException($"Result is not found with id:{id}"); }
+                .FirstOrDefaultAsync(x=>x.Id == solutionId);
+            if (result == null) { throw new NotFoundException($"Result is not found with id:{solutionId}"); }
             return result.Exercise.Database.Name;
         }
 

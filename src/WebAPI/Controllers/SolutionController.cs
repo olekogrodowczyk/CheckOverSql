@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getquerydata/{solutionId}")]
-        public async Task<IActionResult> GetQueryData([FromQuery] int exerciseId, [FromQuery] int solutionId)
+        public async Task<IActionResult> GetQueryData([FromQuery] int exerciseId, [FromRoute] int solutionId)
         {
             var command = new SendSolutionQueryCommand { ExerciseId = exerciseId, SolutionId = solutionId };
             var result = await Mediator.Send(command);

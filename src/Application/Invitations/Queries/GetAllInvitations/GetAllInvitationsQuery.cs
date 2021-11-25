@@ -15,7 +15,7 @@ namespace Application.Invitations.Queries.GetAllInvitationReceived
     public class GetAllInvitationsQuery : IRequest<IEnumerable<GetInvitationDto>>
     {
         public int UserId { get; set; }
-        public string TypeOfGetInvitationsQuery { get; set; }
+        public string QueryType { get; set; }
     }
 
     public class GetAllInvitationsReceivedQueryHandler : IRequestHandler<GetAllInvitationsQuery, IEnumerable<GetInvitationDto>>
@@ -32,7 +32,7 @@ namespace Application.Invitations.Queries.GetAllInvitationReceived
         public async Task<IEnumerable<GetInvitationDto>> Handle(GetAllInvitationsQuery command, CancellationToken cancellationToken)
         {
             var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
-            switch(command.TypeOfGetInvitationsQuery.ToLower())
+            switch(command.QueryType.ToLower())
             {
                 case "received":
                     invitations = invitations.Where(x => x.ReceiverId == command.UserId);

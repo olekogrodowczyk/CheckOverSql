@@ -19,7 +19,7 @@ namespace Application.Groups.Commands.CreateGroup
 
         public void Mapping(Profile profile)
         {
-            throw new NotImplementedException();
+            profile.CreateMap<CreateGroupCommand, Group>();
         }
     }
 
@@ -45,7 +45,7 @@ namespace Application.Groups.Commands.CreateGroup
         public async Task<int> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
         {
             var group = _mapper.Map<Group>(request);
-            group.Creator = _userContextService.User;
+            group.CreatorId = (int)_userContextService.GetUserId;
 
             var newRole = await _groupRoleRepository.GetByName("Owner");
 

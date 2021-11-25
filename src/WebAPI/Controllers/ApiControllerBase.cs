@@ -7,7 +7,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class ApiControllerBase : ControllerBase
+    public class ApiControllerBase : ControllerBase
     {
         private ISender _mediator = null!;
 

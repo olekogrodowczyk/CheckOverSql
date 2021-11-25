@@ -30,7 +30,7 @@ namespace Application.Solutions.Commands.SendSolutionQuery
         public async Task<IEnumerable<IEnumerable<string>>> Handle(SendSolutionQueryCommand command, CancellationToken cancellationToken)
         {
             var solution = await _solutionRepository.GetByIdAsync(command.SolutionId);
-            string databaseName = await _solutionRepository.GetDatabaseName(command.ExerciseId);
+            string databaseName = await _solutionRepository.GetDatabaseName(command.SolutionId);
             var result = await _databaseService.SendQueryWithData(solution.Query, databaseName);
             return result;
         }
