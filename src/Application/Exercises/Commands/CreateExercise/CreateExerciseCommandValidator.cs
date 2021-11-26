@@ -1,10 +1,12 @@
 ﻿using Application.Exercises.Commands.CreateExercise;
+using Application.Interfaces;
 using Domain.Interfaces;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Dto.CreateExerciseDto
@@ -12,18 +14,22 @@ namespace Application.Dto.CreateExerciseDto
     public class CreateExerciseCommandValidator : AbstractValidator<CreateExerciseCommand>
     {
         private readonly IDatabaseRepository _databaseRepository;
+        private readonly IUserContextService _userContextService;
+        private string[] databaseNames; 
 
-        private string[] getDatabasesNames()
+        private async Task<bool> containsDatabaseName(string value, CancellationToken cancellationToken)
         {
-            var databases = _databaseRepository.GetAllAsync().Result;
-            return databases.Select(x => x.Name.ToLower()).ToArray();
-            
+            var databases = await _databaseRepository.GetAllAsync();
+            databaseNames = databases.Select(x => x.Name.ToLower()).ToArray();
+            return databaseNames.Contains(value);
         }
 
-        public CreateExerciseCommandValidator(IDatabaseRepository databaseRepository)
+        public CreateExerciseCommandValidator(IDatabaseRepository databaseRepository, IUserContextService userContextService)
         {
             _databaseRepository = databaseRepository;
-            string[] databasesNames = getDatabasesNames();
+            _userContextService = userContextService;
+            
+            int userId = _userContextService.GetUserId ?? 0;
 
 
             RuleFor(x => x.Title)
@@ -48,14 +54,8 @@ namespace Application.Dto.CreateExerciseDto
             RuleFor(x => x.Database)
                 .NotEmpty().WithMessage("Database hasn't been chosen")
                 .MaximumLength(25).WithMessage("Max length of chosen database is 25")
-                .Custom((value, context) =>
-                {
-                    if (!databasesNames.Contains(value.ToLower()))
-                    {
-                        context.AddFailure("Database", $"Podana baza danych nie istnieje, dostępne bazy danych to " +
-                            $"[{string.Join(",", databasesNames)}]");
-                    }
-                });
+                .MustAsync(containsDatabaseName)
+                .WithMessage($"Defined database doesn't exist, available databases: [{string.Join(',', databaseNames)}]");
 
             RuleFor(x => x.IsPrivate)
                 .NotEmpty().WithMessage("Exercise visibility hasn't been defined");

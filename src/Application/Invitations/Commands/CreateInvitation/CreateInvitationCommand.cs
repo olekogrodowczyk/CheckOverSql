@@ -47,8 +47,6 @@ namespace Application.Invitations.Commands.CreateInvitation
 
         public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
         {
-            //_logger.LogInformation($"User with id: {_userContextService.GetUserId} " +
-            //    $"attempts to create an invitation with data: email")
             var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
             var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
             var group = await _groupRepository.GetByIdAsync(command.GroupId);

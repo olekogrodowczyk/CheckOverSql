@@ -18,20 +18,18 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ExerciseController : ApiControllerBase
     {
-        private readonly IExerciseService _exerciseService;
         private readonly IUserContextService _userContextService;
 
-        public ExerciseController(IExerciseService exerciseService, IUserContextService userContextService)
+        public ExerciseController(IUserContextService userContextService)
         {
-            _exerciseService = exerciseService;
             _userContextService = userContextService;
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateExerciseCommand command)
         {
@@ -47,6 +45,7 @@ namespace WebAPI.Controllers
                 (result,"All exercises created by logged user returned successfully"));
         }
 
+        [AllowAnonymous]
         [HttpGet("getallpublic")]
         public async Task<IActionResult> GetAllPublic()
         {
@@ -59,7 +58,6 @@ namespace WebAPI.Controllers
             ([FromRoute] int id, [FromBody] AssignExerciseToUsersCommand command)
         {
             if(id != command.ExerciseId) { return BadRequest(); }
-            await _exerciseService.CheckIfUserCanAssignExerciseToUsers(command.GroupId);
             var result = await Mediator.Send(command);   
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
         }

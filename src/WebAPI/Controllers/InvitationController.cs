@@ -19,21 +19,16 @@ namespace WebAPI.Controllers
     [ApiController]
     public class InvitationController : ApiControllerBase
     {
-        private readonly IInvitationService _invitationService;
         private readonly IUserContextService _userContextService;
 
-        public InvitationController(IInvitationService invitationService, IUserContextService userContextService)
+        public InvitationController(IUserContextService userContextService)
         {
-            _invitationService = invitationService;
             _userContextService = userContextService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateInvitationCommand command)
         {
-            await _invitationService.CheckIfSenderIsInTheGroup(command.GroupId);
-            await _invitationService.CheckIfInvitationAlreadyExists(command.ReceiverEmail, command.RoleName, command.GroupId);
-            await _invitationService.CheckIfUserIsAlreadyInGroup(command.ReceiverEmail, command.RoleName, command.GroupId);
             int result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Invitation sent successfully"));
         }

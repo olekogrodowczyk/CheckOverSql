@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         public GroupController()
         {
         }
-
+        
         [HttpPost] 
         public async Task<IActionResult> Create([FromBody] CreateGroupCommand command)
         {
@@ -33,7 +33,6 @@ namespace WebAPI.Controllers
             return Ok(new Result<int>(result, "Group created successfully"));
         }
 
-        
         [HttpGet("getusergroups")]
         public async Task<IActionResult> GetUserGroups()
         {

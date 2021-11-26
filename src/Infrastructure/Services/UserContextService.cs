@@ -23,7 +23,7 @@ namespace Application.Interfaces
         }
 
         public ClaimsPrincipal UserClaimPrincipal => _httpContextAccessor.HttpContext?.User;
-        public int? GetUserId => UserClaimPrincipal is null ? null : (int?)int.Parse(UserClaimPrincipal.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
+        public int? GetUserId => UserClaimPrincipal.Claims.Count() == 0 ? null : int.Parse(UserClaimPrincipal.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
         public User User => _context.Users.FirstOrDefault(x => x.Id == GetUserId);
         public bool isUserLoggedIn => _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
 

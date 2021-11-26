@@ -17,7 +17,6 @@ using MediatR;
 using Application.Common.Behaviours;
 using FluentValidation;
 using Infrastructure.Authorization;
-using Application.Common.Services;
 
 namespace Application
 {
@@ -28,15 +27,14 @@ namespace Application
             services.AddAuthorization();
             services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<>));
             services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
-            services.AddScoped<IInvitationService, InvitationService>();
 
             return services;
         }

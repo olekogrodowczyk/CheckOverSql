@@ -28,7 +28,6 @@ namespace WebAPI.Controllers
             _userContextService = userContextService;
         }
 
-        [Authorize]
         [HttpGet("getall")]
         public async Task<IActionResult> GetAllCreatedByUser()
         {

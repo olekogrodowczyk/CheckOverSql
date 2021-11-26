@@ -100,6 +100,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Act
             var response = await _client.PostAsync
                 (ApiRoutes.Invitation.Create, httpContent);
+            string responseString = await response.Content.ReadAsStringAsync();
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -306,22 +307,22 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 new CreateInvitationCommand
                 {
-                    ReceiverEmail = "testinvitation@gmail.com",
-                    RoleName = "ndsjas",
-                    GroupId = 1
-                },
-                new CreateInvitationCommand
-                {
                     ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
                     RoleName = "Moderator",
                     GroupId = 1
                 },
-                new CreateInvitationCommand
-                {
-                    ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
-                    RoleName = "ndsjas",
-                    GroupId = 1
-                }
+                //new CreateInvitationCommand
+                //{
+                //    ReceiverEmail = "testinvitation@gmail.com",
+                //    RoleName = "ndsjas",
+                //    GroupId = 1
+                //},            
+                //new CreateInvitationCommand
+                //{
+                //    ReceiverEmail = "dsnaudnas@dsnmaiod.ssa",
+                //    RoleName = "ndsjas",
+                //    GroupId = 1
+                //}
             };
             return list.Select(x => new object[] { x });
         }
