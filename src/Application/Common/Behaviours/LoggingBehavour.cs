@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Application.Common.Behaviours
 {
-    public class LoggingBehavior<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
+    public class LoggingBehavour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
     {
         private readonly ILogger<TRequest> _logger;
         private readonly IUserContextService _userContextService;
 
-        public LoggingBehavior(ILogger<TRequest> logger, IUserContextService userContextService)
+        public LoggingBehavour(ILogger<TRequest> logger, IUserContextService userContextService)
         {
             _logger = logger;
             _userContextService = userContextService;
