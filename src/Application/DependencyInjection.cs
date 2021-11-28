@@ -25,9 +25,7 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddAuthorization();
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);         
             services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -35,6 +33,8 @@ namespace Application
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
             return services;

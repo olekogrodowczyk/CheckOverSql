@@ -19,6 +19,7 @@ namespace Application.Common.Behaviours
 
         public PerformanceBehaviour(IUserContextService userContextService, ILogger<TRequest> logger)
         {
+            _stopwatch = new Stopwatch();
             _userContextService = userContextService;
             _logger = logger;
         }
