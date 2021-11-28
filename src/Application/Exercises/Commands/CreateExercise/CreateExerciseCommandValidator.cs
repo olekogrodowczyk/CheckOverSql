@@ -17,18 +17,17 @@ namespace Application.Dto.CreateExerciseDto
         private readonly IUserContextService _userContextService;
         private string[] databaseNames; 
 
-        private async Task<bool> containsDatabaseName(string value, CancellationToken cancellationToken)
+        private Task<bool> containsDatabaseName(string value, CancellationToken cancellationToken)
         {
-            var databases = await _databaseRepository.GetAllAsync();
-            databaseNames = databases.Select(x => x.Name.ToLower()).ToArray();
-            return databaseNames.Contains(value);
+            return Task.FromResult(databaseNames.Contains(value));
         }
 
         public CreateExerciseCommandValidator(IDatabaseRepository databaseRepository, IUserContextService userContextService)
         {
             _databaseRepository = databaseRepository;
             _userContextService = userContextService;
-            
+            databaseNames = databaseRepository.GetAllAsync().Result.Select(x => x.Name).ToArray();
+
             int userId = _userContextService.GetUserId ?? 0;
 
 
