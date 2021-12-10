@@ -11,7 +11,7 @@ namespace Domain.Interfaces
     {
         Task<T> AddAsync(T entity);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
-        Task<T> DeleteAsync(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<T> DeleteAsync(int id);
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties);
         Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);

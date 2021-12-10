@@ -47,7 +47,7 @@ namespace Application.Groups.Commands.DeleteGroup
 
             //Assignments are needed to be included first
             await _assignmentRepository.GetAllAsync(x => x.Group);
-            await _groupRepository.DeleteAsync(command.GroupId, x => x.Assignments);
+            await _groupRepository.DeleteAsync(command.GroupId);
             return Unit.Value;
         }
     }

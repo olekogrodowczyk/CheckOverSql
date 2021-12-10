@@ -38,11 +38,9 @@ namespace Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<T> DeleteAsync(int id, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T> DeleteAsync(int id)
         {
             var query = _context.Set<T>();
-            includeProperties?.ToList().ForEach(property => query.Include(property));
-
             var entity = await query.FindAsync(id);
             if (entity == null) { throw new NotFoundException($"Result is not found with id: {id}"); }
             query.Remove(entity);
@@ -83,6 +81,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
+            includeProperties?.ToList().ForEach(property => _context.Set<T>().Include(property));
             return await _context.Set<T>().AnyAsync(predicate);
         }
 
