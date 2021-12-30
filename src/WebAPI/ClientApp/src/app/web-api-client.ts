@@ -1974,7 +1974,7 @@ export interface ISendQueryAdminCommand {
 }
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any };
