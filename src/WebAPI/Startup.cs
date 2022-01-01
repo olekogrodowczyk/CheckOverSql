@@ -37,9 +37,14 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddControllers()
-                .AddFluentValidation(configuration => configuration.AutomaticValidationEnabled = false);
+                .AddFluentValidation(configuration => configuration.AutomaticValidationEnabled = false)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
+
             services.AddApplication();
             services.AddInfrastructure(Configuration);
             

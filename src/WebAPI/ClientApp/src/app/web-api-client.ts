@@ -38,7 +38,7 @@ export class AccountClient {
     @Optional() @Inject(API_BASE_URL) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+    this.baseUrl = 'https://localhost:5001';
   }
 
   /**
@@ -258,7 +258,7 @@ export class ApiClient {
     @Optional() @Inject(API_BASE_URL) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+    this.baseUrl = 'https://localhost:5001';
   }
 
   /**
@@ -2340,10 +2340,10 @@ export class AssignExerciseToUsersCommand
 
   init(_data?: any) {
     if (_data) {
-      this.exerciseId = _data['exerciseId'];
-      this.groupId = _data['groupId'];
-      this.deadLine = _data['deadLine']
-        ? new Date(_data['deadLine'].toString())
+      this.exerciseId = _data['ExerciseId'];
+      this.groupId = _data['GroupId'];
+      this.deadLine = _data['DeadLine']
+        ? new Date(_data['DeadLine'].toString())
         : <any>undefined;
     }
   }
@@ -2357,9 +2357,9 @@ export class AssignExerciseToUsersCommand
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['exerciseId'] = this.exerciseId;
-    data['groupId'] = this.groupId;
-    data['deadLine'] = this.deadLine
+    data['ExerciseId'] = this.exerciseId;
+    data['GroupId'] = this.groupId;
+    data['DeadLine'] = this.deadLine
       ? this.deadLine.toISOString()
       : <any>undefined;
     return data;
@@ -2391,12 +2391,12 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.title = _data['title'];
-      this.description = _data['description'];
-      this.maxPoints = _data['maxPoints'];
-      this.database = _data['database'];
-      this.validAnswer = _data['validAnswer'];
-      this.isPrivate = _data['isPrivate'];
+      this.title = _data['Title'];
+      this.description = _data['Description'];
+      this.maxPoints = _data['MaxPoints'];
+      this.database = _data['Database'];
+      this.validAnswer = _data['ValidAnswer'];
+      this.isPrivate = _data['IsPrivate'];
     }
   }
 
@@ -2409,12 +2409,12 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['maxPoints'] = this.maxPoints;
-    data['database'] = this.database;
-    data['validAnswer'] = this.validAnswer;
-    data['isPrivate'] = this.isPrivate;
+    data['Title'] = this.title;
+    data['Description'] = this.description;
+    data['MaxPoints'] = this.maxPoints;
+    data['Database'] = this.database;
+    data['ValidAnswer'] = this.validAnswer;
+    data['IsPrivate'] = this.isPrivate;
     return data;
   }
 }
@@ -2442,7 +2442,7 @@ export class CreateGroupCommand implements ICreateGroupCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.name = _data['name'];
+      this.name = _data['Name'];
     }
   }
 
@@ -2455,7 +2455,7 @@ export class CreateGroupCommand implements ICreateGroupCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['name'] = this.name;
+    data['Name'] = this.name;
     return data;
   }
 }
@@ -2480,9 +2480,9 @@ export class CreateInvitationCommand implements ICreateInvitationCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.receiverEmail = _data['receiverEmail'];
-      this.roleName = _data['roleName'];
-      this.groupId = _data['groupId'];
+      this.receiverEmail = _data['ReceiverEmail'];
+      this.roleName = _data['RoleName'];
+      this.groupId = _data['GroupId'];
     }
   }
 
@@ -2495,9 +2495,9 @@ export class CreateInvitationCommand implements ICreateInvitationCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['receiverEmail'] = this.receiverEmail;
-    data['roleName'] = this.roleName;
-    data['groupId'] = this.groupId;
+    data['ReceiverEmail'] = this.receiverEmail;
+    data['RoleName'] = this.roleName;
+    data['GroupId'] = this.groupId;
     return data;
   }
 }
@@ -2523,8 +2523,8 @@ export class CreateSolutionCommand implements ICreateSolutionCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.query = _data['query'];
-      this.exerciseId = _data['exerciseId'];
+      this.query = _data['Query'];
+      this.exerciseId = _data['ExerciseId'];
     }
   }
 
@@ -2537,8 +2537,8 @@ export class CreateSolutionCommand implements ICreateSolutionCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['query'] = this.query;
-    data['exerciseId'] = this.exerciseId;
+    data['Query'] = this.query;
+    data['ExerciseId'] = this.exerciseId;
     return data;
   }
 }
@@ -2564,16 +2564,16 @@ export class ErrorResult implements IErrorResult {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      if (_data['errors']) {
+      this.message = _data['Message'];
+      if (_data['Errors']) {
         this.errors = {} as any;
-        for (let key in _data['errors']) {
-          if (_data['errors'].hasOwnProperty(key))
+        for (let key in _data['Errors']) {
+          if (_data['Errors'].hasOwnProperty(key))
             (<any>this.errors)![key] =
-              _data['errors'][key] !== undefined ? _data['errors'][key] : [];
+              _data['Errors'][key] !== undefined ? _data['Errors'][key] : [];
         }
       }
-      this.success = _data['success'];
+      this.success = _data['Success'];
     }
   }
 
@@ -2586,15 +2586,15 @@ export class ErrorResult implements IErrorResult {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
+    data['Message'] = this.message;
     if (this.errors) {
-      data['errors'] = {};
+      data['Errors'] = {};
       for (let key in this.errors) {
         if (this.errors.hasOwnProperty(key))
-          (<any>data['errors'])[key] = this.errors[key];
+          (<any>data['Errors'])[key] = this.errors[key];
       }
     }
-    data['success'] = this.success;
+    data['Success'] = this.success;
     return data;
   }
 }
@@ -2621,12 +2621,12 @@ export class GetAssignmentDto implements IGetAssignmentDto {
 
   init(_data?: any) {
     if (_data) {
-      this.user = _data['user']
-        ? GetUserDto.fromJS(_data['user'])
+      this.user = _data['User']
+        ? GetUserDto.fromJS(_data['User'])
         : <any>undefined;
-      this.role = _data['role'];
-      this.joined = _data['joined']
-        ? new Date(_data['joined'].toString())
+      this.role = _data['Role'];
+      this.joined = _data['Joined']
+        ? new Date(_data['Joined'].toString())
         : <any>undefined;
     }
   }
@@ -2640,9 +2640,9 @@ export class GetAssignmentDto implements IGetAssignmentDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['user'] = this.user ? this.user.toJSON() : <any>undefined;
-    data['role'] = this.role;
-    data['joined'] = this.joined ? this.joined.toISOString() : <any>undefined;
+    data['User'] = this.user ? this.user.toJSON() : <any>undefined;
+    data['Role'] = this.role;
+    data['Joined'] = this.joined ? this.joined.toISOString() : <any>undefined;
     return data;
   }
 }
@@ -2671,11 +2671,11 @@ export class GetAssignmentDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetAssignmentDto.fromJS(item));
       }
     }
@@ -2690,11 +2690,11 @@ export class GetAssignmentDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -2725,14 +2725,14 @@ export class GetComparisonDto implements IGetComparisonDto {
 
   init(_data?: any) {
     if (_data) {
-      this.solutionId = _data['solutionId'];
-      this.solutionSolver = _data['solutionSolver'];
-      this.exerciseId = _data['exerciseId'];
-      this.exerciseTitle = _data['exerciseTitle'];
-      this.createdAt = _data['createdAt']
-        ? new Date(_data['createdAt'].toString())
+      this.solutionId = _data['SolutionId'];
+      this.solutionSolver = _data['SolutionSolver'];
+      this.exerciseId = _data['ExerciseId'];
+      this.exerciseTitle = _data['ExerciseTitle'];
+      this.createdAt = _data['CreatedAt']
+        ? new Date(_data['CreatedAt'].toString())
         : <any>undefined;
-      this.result = _data['result'];
+      this.result = _data['Result'];
     }
   }
 
@@ -2745,14 +2745,14 @@ export class GetComparisonDto implements IGetComparisonDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['solutionId'] = this.solutionId;
-    data['solutionSolver'] = this.solutionSolver;
-    data['exerciseId'] = this.exerciseId;
-    data['exerciseTitle'] = this.exerciseTitle;
-    data['createdAt'] = this.createdAt
+    data['SolutionId'] = this.solutionId;
+    data['SolutionSolver'] = this.solutionSolver;
+    data['ExerciseId'] = this.exerciseId;
+    data['ExerciseTitle'] = this.exerciseTitle;
+    data['CreatedAt'] = this.createdAt
       ? this.createdAt.toISOString()
       : <any>undefined;
-    data['result'] = this.result;
+    data['Result'] = this.result;
     return data;
   }
 }
@@ -2782,10 +2782,10 @@ export class GetComparisonDtoResult implements IGetComparisonDtoResult {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      this.value = _data['value']
-        ? GetComparisonDto.fromJS(_data['value'])
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value']
+        ? GetComparisonDto.fromJS(_data['Value'])
         : <any>undefined;
     }
   }
@@ -2799,9 +2799,9 @@ export class GetComparisonDtoResult implements IGetComparisonDtoResult {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
-    data['value'] = this.value ? this.value.toJSON() : <any>undefined;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
     return data;
   }
 }
@@ -2832,13 +2832,13 @@ export class GetExerciseDto implements IGetExerciseDto {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data['id'];
-      this.title = _data['title'];
-      this.description = _data['description'];
-      this.maxPoints = _data['maxPoints'];
-      this.creator = _data['creator'];
-      this.databaseId = _data['databaseId'];
-      this.validAnswer = _data['validAnswer'];
+      this.id = _data['Id'];
+      this.title = _data['Title'];
+      this.description = _data['Description'];
+      this.maxPoints = _data['MaxPoints'];
+      this.creator = _data['Creator'];
+      this.databaseId = _data['DatabaseId'];
+      this.validAnswer = _data['ValidAnswer'];
     }
   }
 
@@ -2851,13 +2851,13 @@ export class GetExerciseDto implements IGetExerciseDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['maxPoints'] = this.maxPoints;
-    data['creator'] = this.creator;
-    data['databaseId'] = this.databaseId;
-    data['validAnswer'] = this.validAnswer;
+    data['Id'] = this.id;
+    data['Title'] = this.title;
+    data['Description'] = this.description;
+    data['MaxPoints'] = this.maxPoints;
+    data['Creator'] = this.creator;
+    data['DatabaseId'] = this.databaseId;
+    data['ValidAnswer'] = this.validAnswer;
     return data;
   }
 }
@@ -2890,11 +2890,11 @@ export class GetExerciseDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetExerciseDto.fromJS(item));
       }
     }
@@ -2909,11 +2909,11 @@ export class GetExerciseDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -2940,8 +2940,8 @@ export class GetGroupDto implements IGetGroupDto {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data['id'];
-      this.name = _data['name'];
+      this.id = _data['Id'];
+      this.name = _data['Name'];
     }
   }
 
@@ -2954,8 +2954,8 @@ export class GetGroupDto implements IGetGroupDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['id'] = this.id;
-    data['name'] = this.name;
+    data['Id'] = this.id;
+    data['Name'] = this.name;
     return data;
   }
 }
@@ -2983,11 +2983,11 @@ export class GetGroupDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetGroupDto.fromJS(item));
       }
     }
@@ -3002,11 +3002,11 @@ export class GetGroupDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -3039,17 +3039,17 @@ export class GetInvitationDto implements IGetInvitationDto {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data['id'];
-      this.groupName = _data['groupName'];
-      this.sender = _data['sender'];
-      this.receiver = _data['receiver'];
-      this.status = _data['status'];
-      this.roleName = _data['roleName'];
-      this.sentAt = _data['sentAt']
-        ? new Date(_data['sentAt'].toString())
+      this.id = _data['Id'];
+      this.groupName = _data['GroupName'];
+      this.sender = _data['Sender'];
+      this.receiver = _data['Receiver'];
+      this.status = _data['Status'];
+      this.roleName = _data['RoleName'];
+      this.sentAt = _data['SentAt']
+        ? new Date(_data['SentAt'].toString())
         : <any>undefined;
-      this.answeredAt = _data['answeredAt']
-        ? new Date(_data['answeredAt'].toString())
+      this.answeredAt = _data['AnsweredAt']
+        ? new Date(_data['AnsweredAt'].toString())
         : <any>undefined;
     }
   }
@@ -3063,14 +3063,14 @@ export class GetInvitationDto implements IGetInvitationDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['id'] = this.id;
-    data['groupName'] = this.groupName;
-    data['sender'] = this.sender;
-    data['receiver'] = this.receiver;
-    data['status'] = this.status;
-    data['roleName'] = this.roleName;
-    data['sentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
-    data['answeredAt'] = this.answeredAt
+    data['Id'] = this.id;
+    data['GroupName'] = this.groupName;
+    data['Sender'] = this.sender;
+    data['Receiver'] = this.receiver;
+    data['Status'] = this.status;
+    data['RoleName'] = this.roleName;
+    data['SentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
+    data['AnsweredAt'] = this.answeredAt
       ? this.answeredAt.toISOString()
       : <any>undefined;
     return data;
@@ -3106,11 +3106,11 @@ export class GetInvitationDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetInvitationDto.fromJS(item));
       }
     }
@@ -3125,11 +3125,11 @@ export class GetInvitationDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -3159,12 +3159,12 @@ export class GetSolutionDto implements IGetSolutionDto {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data['id'];
-      this.dialect = _data['dialect'];
-      this.query = _data['query'];
-      this.creator = _data['creator'];
-      this.exercise = _data['exercise']
-        ? GetExerciseDto.fromJS(_data['exercise'])
+      this.id = _data['Id'];
+      this.dialect = _data['Dialect'];
+      this.query = _data['Query'];
+      this.creator = _data['Creator'];
+      this.exercise = _data['Exercise']
+        ? GetExerciseDto.fromJS(_data['Exercise'])
         : <any>undefined;
     }
   }
@@ -3178,11 +3178,11 @@ export class GetSolutionDto implements IGetSolutionDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['id'] = this.id;
-    data['dialect'] = this.dialect;
-    data['query'] = this.query;
-    data['creator'] = this.creator;
-    data['exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
+    data['Id'] = this.id;
+    data['Dialect'] = this.dialect;
+    data['Query'] = this.query;
+    data['Creator'] = this.creator;
+    data['Exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
     return data;
   }
 }
@@ -3213,11 +3213,11 @@ export class GetSolutionDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetSolutionDto.fromJS(item));
       }
     }
@@ -3232,11 +3232,11 @@ export class GetSolutionDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -3268,20 +3268,20 @@ export class GetSolvingDto implements IGetSolvingDto {
 
   init(_data?: any) {
     if (_data) {
-      this.assignedBy = _data['assignedBy'];
-      this.solver = _data['solver'];
-      this.assignedAt = _data['assignedAt']
-        ? new Date(_data['assignedAt'].toString())
+      this.assignedBy = _data['AssignedBy'];
+      this.solver = _data['Solver'];
+      this.assignedAt = _data['AssignedAt']
+        ? new Date(_data['AssignedAt'].toString())
         : <any>undefined;
-      this.sentAt = _data['sentAt']
-        ? new Date(_data['sentAt'].toString())
+      this.sentAt = _data['SentAt']
+        ? new Date(_data['SentAt'].toString())
         : <any>undefined;
-      this.deadLine = _data['deadLine']
-        ? new Date(_data['deadLine'].toString())
+      this.deadLine = _data['DeadLine']
+        ? new Date(_data['DeadLine'].toString())
         : <any>undefined;
-      this.status = _data['status'];
-      this.exercise = _data['exercise']
-        ? GetExerciseDto.fromJS(_data['exercise'])
+      this.status = _data['Status'];
+      this.exercise = _data['Exercise']
+        ? GetExerciseDto.fromJS(_data['Exercise'])
         : <any>undefined;
     }
   }
@@ -3295,17 +3295,17 @@ export class GetSolvingDto implements IGetSolvingDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['assignedBy'] = this.assignedBy;
-    data['solver'] = this.solver;
-    data['assignedAt'] = this.assignedAt
+    data['AssignedBy'] = this.assignedBy;
+    data['Solver'] = this.solver;
+    data['AssignedAt'] = this.assignedAt
       ? this.assignedAt.toISOString()
       : <any>undefined;
-    data['sentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
-    data['deadLine'] = this.deadLine
+    data['SentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
+    data['DeadLine'] = this.deadLine
       ? this.deadLine.toISOString()
       : <any>undefined;
-    data['status'] = this.status;
-    data['exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
+    data['Status'] = this.status;
+    data['Exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
     return data;
   }
 }
@@ -3338,11 +3338,11 @@ export class GetSolvingDtoIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value'])
+        for (let item of _data['Value'])
           this.value!.push(GetSolvingDto.fromJS(item));
       }
     }
@@ -3357,11 +3357,11 @@ export class GetSolvingDtoIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item.toJSON());
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
     }
     return data;
   }
@@ -3389,10 +3389,10 @@ export class GetSolvingDtoResult implements IGetSolvingDtoResult {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      this.value = _data['value']
-        ? GetSolvingDto.fromJS(_data['value'])
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value']
+        ? GetSolvingDto.fromJS(_data['Value'])
         : <any>undefined;
     }
   }
@@ -3406,9 +3406,9 @@ export class GetSolvingDtoResult implements IGetSolvingDtoResult {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
-    data['value'] = this.value ? this.value.toJSON() : <any>undefined;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
     return data;
   }
 }
@@ -3434,8 +3434,8 @@ export class GetUserDto implements IGetUserDto {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data['id'];
-      this.name = _data['name'];
+      this.id = _data['Id'];
+      this.name = _data['Name'];
     }
   }
 
@@ -3448,8 +3448,8 @@ export class GetUserDto implements IGetUserDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['id'] = this.id;
-    data['name'] = this.name;
+    data['Id'] = this.id;
+    data['Name'] = this.name;
     return data;
   }
 }
@@ -3475,11 +3475,11 @@ export class Int32IEnumerableResult implements IInt32IEnumerableResult {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value']) this.value!.push(item);
+        for (let item of _data['Value']) this.value!.push(item);
       }
     }
   }
@@ -3493,11 +3493,11 @@ export class Int32IEnumerableResult implements IInt32IEnumerableResult {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item);
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item);
     }
     return data;
   }
@@ -3525,9 +3525,9 @@ export class Int32Result implements IInt32Result {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      this.value = _data['value'];
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value'];
     }
   }
 
@@ -3540,9 +3540,9 @@ export class Int32Result implements IInt32Result {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
-    data['value'] = this.value;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value;
     return data;
   }
 }
@@ -3568,8 +3568,8 @@ export class LoginUserCommand implements ILoginUserCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.email = _data['email'];
-      this.password = _data['password'];
+      this.email = _data['Email'];
+      this.password = _data['Password'];
     }
   }
 
@@ -3582,8 +3582,8 @@ export class LoginUserCommand implements ILoginUserCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['email'] = this.email;
-    data['password'] = this.password;
+    data['Email'] = this.email;
+    data['Password'] = this.password;
     return data;
   }
 }
@@ -3612,13 +3612,13 @@ export class RegisterUserCommand implements IRegisterUserCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.firstName = _data['firstName'];
-      this.lastName = _data['lastName'];
-      this.email = _data['email'];
-      this.password = _data['password'];
-      this.confirmPassword = _data['confirmPassword'];
-      this.dateOfBirth = _data['dateOfBirth']
-        ? new Date(_data['dateOfBirth'].toString())
+      this.firstName = _data['FirstName'];
+      this.lastName = _data['LastName'];
+      this.email = _data['Email'];
+      this.password = _data['Password'];
+      this.confirmPassword = _data['ConfirmPassword'];
+      this.dateOfBirth = _data['DateOfBirth']
+        ? new Date(_data['DateOfBirth'].toString())
         : <any>undefined;
     }
   }
@@ -3632,12 +3632,12 @@ export class RegisterUserCommand implements IRegisterUserCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['email'] = this.email;
-    data['password'] = this.password;
-    data['confirmPassword'] = this.confirmPassword;
-    data['dateOfBirth'] = this.dateOfBirth
+    data['FirstName'] = this.firstName;
+    data['LastName'] = this.lastName;
+    data['Email'] = this.email;
+    data['Password'] = this.password;
+    data['ConfirmPassword'] = this.confirmPassword;
+    data['DateOfBirth'] = this.dateOfBirth
       ? this.dateOfBirth.toISOString()
       : <any>undefined;
     return data;
@@ -3668,8 +3668,8 @@ export class Result implements IResult {
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
+      this.message = _data['Message'];
+      this.success = _data['Success'];
     }
   }
 
@@ -3682,8 +3682,8 @@ export class Result implements IResult {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     return data;
   }
 }
@@ -3708,8 +3708,8 @@ export class SendQueryAdminCommand implements ISendQueryAdminCommand {
 
   init(_data?: any) {
     if (_data) {
-      this.query = _data['query'];
-      this.database = _data['database'];
+      this.query = _data['Query'];
+      this.database = _data['Database'];
     }
   }
 
@@ -3722,8 +3722,8 @@ export class SendQueryAdminCommand implements ISendQueryAdminCommand {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['query'] = this.query;
-    data['database'] = this.database;
+    data['Query'] = this.query;
+    data['Database'] = this.database;
     return data;
   }
 }
@@ -3751,11 +3751,11 @@ export class StringIEnumerableIEnumerableResult
 
   init(_data?: any) {
     if (_data) {
-      this.message = _data['message'];
-      this.success = _data['success'];
-      if (Array.isArray(_data['value'])) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
         this.value = [] as any;
-        for (let item of _data['value']) this.value!.push(item);
+        for (let item of _data['Value']) this.value!.push(item);
       }
     }
   }
@@ -3769,11 +3769,11 @@ export class StringIEnumerableIEnumerableResult
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data['message'] = this.message;
-    data['success'] = this.success;
+    data['Message'] = this.message;
+    data['Success'] = this.success;
     if (Array.isArray(this.value)) {
-      data['value'] = [];
-      for (let item of this.value) data['value'].push(item);
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item);
     }
     return data;
   }

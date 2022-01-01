@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { AccountClient } from 'src/app/web-api-client';
 
 @Component({
@@ -29,13 +30,15 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) {
       return;
     }
-    this.client.register(this.registerForm.value).subscribe({
-      next: (response) => {
-        console.log('Registering successful!');
+    this.client.register(this.registerForm.value).subscribe(
+      (result) => {
+        console.log(result);
+        console.log(result.message);
       },
-      error: () => {
-        console.log('Error caught!');
-      },
-    });
+      (error) => {
+        console.log(error.message);
+        console.log(error);
+      }
+    );
   }
 }
