@@ -14,9 +14,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
 import { AccountClient } from './web-api-client';
+import { RegisterComponent } from './auth/register/register.component';
 
 @NgModule({
-  declarations: [LoginComponent, AppComponent],
+  declarations: [LoginComponent, AppComponent, RegisterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

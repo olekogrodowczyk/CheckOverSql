@@ -37,12 +37,24 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllers()
                 .AddFluentValidation(configuration => configuration.AutomaticValidationEnabled = false);
             services.AddApplication();
             services.AddInfrastructure(Configuration);
+            
             services.AddScoped<Seeder>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontEndClient", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+                });
+            });
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
@@ -75,6 +87,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
         {
+            app.UseCors("FrontEndClient");
+            
             seeder.Seed();
             if (env.IsDevelopment())
             {
@@ -99,14 +113,7 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
+            
         }
     }
 }
