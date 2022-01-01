@@ -1,0 +1,16 @@
+<div class="form-container">
+  <div class="form-wrapper">
+    <div class="form-header">Sign In</div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="login" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+      <button mat-flat-button color="accent">Submit</button>
+    </form>
+  </div>
+</div>
