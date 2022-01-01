@@ -38,14 +38,14 @@ export class AccountClient {
     @Optional() @Inject(API_BASE_URL) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
    * @param body (optional)
    * @return Success
    */
-  register(body: RegisterUserCommand | undefined): Observable<void> {
+  register(body: RegisterUserCommand | undefined): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Account/register';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -57,6 +57,7 @@ export class AccountClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -73,14 +74,17 @@ export class AccountClient {
             try {
               return this.processRegister(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processRegister(response: HttpResponseBase): Observable<void> {
+  protected processRegister(
+    response: HttpResponseBase
+  ): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -98,7 +102,31 @@ export class AccountClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -120,7 +148,7 @@ export class AccountClient {
    * @param body (optional)
    * @return Success
    */
-  login(body: LoginUserCommand | undefined): Observable<void> {
+  login(body: LoginUserCommand | undefined): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Account/login';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -132,6 +160,7 @@ export class AccountClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -148,14 +177,15 @@ export class AccountClient {
             try {
               return this.processLogin(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processLogin(response: HttpResponseBase): Observable<void> {
+  protected processLogin(response: HttpResponseBase): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -173,7 +203,31 @@ export class AccountClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -211,7 +265,7 @@ export class ApiClient {
    * @param body (optional)
    * @return Success
    */
-  database(body: SendQueryAdminCommand | undefined): Observable<void> {
+  database(body: SendQueryAdminCommand | undefined): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Database';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -223,6 +277,7 @@ export class ApiClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -239,14 +294,17 @@ export class ApiClient {
             try {
               return this.processDatabase(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processDatabase(response: HttpResponseBase): Observable<void> {
+  protected processDatabase(
+    response: HttpResponseBase
+  ): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -264,7 +322,31 @@ export class ApiClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -286,7 +368,7 @@ export class ApiClient {
    * @param body (optional)
    * @return Success
    */
-  exercise(body: CreateExerciseCommand | undefined): Observable<void> {
+  exercise(body: CreateExerciseCommand | undefined): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Exercise';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -298,6 +380,7 @@ export class ApiClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -314,14 +397,17 @@ export class ApiClient {
             try {
               return this.processExercise(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processExercise(response: HttpResponseBase): Observable<void> {
+  protected processExercise(
+    response: HttpResponseBase
+  ): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -339,7 +425,31 @@ export class ApiClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -361,7 +471,7 @@ export class ApiClient {
    * @param body (optional)
    * @return Success
    */
-  group(body: CreateGroupCommand | undefined): Observable<void> {
+  group(body: CreateGroupCommand | undefined): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Group';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -373,6 +483,7 @@ export class ApiClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -389,14 +500,15 @@ export class ApiClient {
             try {
               return this.processGroup(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processGroup(response: HttpResponseBase): Observable<void> {
+  protected processGroup(response: HttpResponseBase): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -414,7 +526,31 @@ export class ApiClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -436,7 +572,9 @@ export class ApiClient {
    * @param body (optional)
    * @return Success
    */
-  invitation(body: CreateInvitationCommand | undefined): Observable<void> {
+  invitation(
+    body: CreateInvitationCommand | undefined
+  ): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Invitation';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -448,6 +586,7 @@ export class ApiClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -464,14 +603,17 @@ export class ApiClient {
             try {
               return this.processInvitation(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processInvitation(response: HttpResponseBase): Observable<void> {
+  protected processInvitation(
+    response: HttpResponseBase
+  ): Observable<Int32Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -489,7 +631,31 @@ export class ApiClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -511,7 +677,9 @@ export class ApiClient {
    * @param body (optional)
    * @return Success
    */
-  solution(body: CreateSolutionCommand | undefined): Observable<void> {
+  solution(
+    body: CreateSolutionCommand | undefined
+  ): Observable<GetComparisonDtoResult> {
     let url_ = this.baseUrl + '/api/Solution';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -523,6 +691,7 @@ export class ApiClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -539,14 +708,21 @@ export class ApiClient {
             try {
               return this.processSolution(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetComparisonDtoResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetComparisonDtoResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processSolution(response: HttpResponseBase): Observable<void> {
+  protected processSolution(
+    response: HttpResponseBase
+  ): Observable<GetComparisonDtoResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -564,7 +740,31 @@ export class ApiClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetComparisonDtoResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -601,14 +801,16 @@ export class ExerciseClient {
   /**
    * @return Success
    */
-  getallcreated(): Observable<void> {
+  getallcreated(): Observable<GetExerciseDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Exercise/getallcreated';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -624,14 +826,21 @@ export class ExerciseClient {
             try {
               return this.processGetallcreated(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetExerciseDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetExerciseDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetallcreated(response: HttpResponseBase): Observable<void> {
+  protected processGetallcreated(
+    response: HttpResponseBase
+  ): Observable<GetExerciseDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -649,7 +858,31 @@ export class ExerciseClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetExerciseDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -670,14 +903,16 @@ export class ExerciseClient {
   /**
    * @return Success
    */
-  getallpublic(): Observable<void> {
+  getallpublic(): Observable<GetExerciseDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Exercise/getallpublic';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -693,14 +928,21 @@ export class ExerciseClient {
             try {
               return this.processGetallpublic(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetExerciseDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetExerciseDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetallpublic(response: HttpResponseBase): Observable<void> {
+  protected processGetallpublic(
+    response: HttpResponseBase
+  ): Observable<GetExerciseDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -718,7 +960,31 @@ export class ExerciseClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetExerciseDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -743,7 +1009,7 @@ export class ExerciseClient {
   assignexercise(
     id: number,
     body: AssignExerciseToUsersCommand | undefined
-  ): Observable<void> {
+  ): Observable<Int32IEnumerableResult> {
     let url_ = this.baseUrl + '/api/Exercise/assignexercise/{id}';
     if (id === undefined || id === null)
       throw new Error("The parameter 'id' must be defined.");
@@ -758,6 +1024,7 @@ export class ExerciseClient {
       responseType: 'blob',
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Accept: 'text/plain',
       }),
     };
 
@@ -774,16 +1041,21 @@ export class ExerciseClient {
             try {
               return this.processAssignexercise(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Int32IEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<Int32IEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
   protected processAssignexercise(
     response: HttpResponseBase
-  ): Observable<void> {
+  ): Observable<Int32IEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -801,7 +1073,31 @@ export class ExerciseClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Int32IEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -838,14 +1134,16 @@ export class GroupClient {
   /**
    * @return Success
    */
-  getusergroups(): Observable<void> {
+  getusergroups(): Observable<GetGroupDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Group/getusergroups';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -861,14 +1159,21 @@ export class GroupClient {
             try {
               return this.processGetusergroups(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetGroupDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetGroupDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetusergroups(response: HttpResponseBase): Observable<void> {
+  protected processGetusergroups(
+    response: HttpResponseBase
+  ): Observable<GetGroupDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -886,7 +1191,31 @@ export class GroupClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetGroupDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -907,7 +1236,7 @@ export class GroupClient {
   /**
    * @return Success
    */
-  deletegroup(groupId: number): Observable<void> {
+  deletegroup(groupId: number): Observable<Result> {
     let url_ = this.baseUrl + '/api/Group/deletegroup/{groupId}';
     if (groupId === undefined || groupId === null)
       throw new Error("The parameter 'groupId' must be defined.");
@@ -917,7 +1246,9 @@ export class GroupClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -933,14 +1264,14 @@ export class GroupClient {
             try {
               return this.processDeletegroup(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else return <Observable<Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processDeletegroup(response: HttpResponseBase): Observable<void> {
+  protected processDeletegroup(response: HttpResponseBase): Observable<Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -958,7 +1289,31 @@ export class GroupClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -979,7 +1334,9 @@ export class GroupClient {
   /**
    * @return Success
    */
-  getallassignments(groupId: number): Observable<void> {
+  getallassignments(
+    groupId: number
+  ): Observable<GetAssignmentDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Group/getallassignments/{groupId}';
     if (groupId === undefined || groupId === null)
       throw new Error("The parameter 'groupId' must be defined.");
@@ -989,7 +1346,9 @@ export class GroupClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1005,16 +1364,21 @@ export class GroupClient {
             try {
               return this.processGetallassignments(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetAssignmentDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetAssignmentDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
   protected processGetallassignments(
     response: HttpResponseBase
-  ): Observable<void> {
+  ): Observable<GetAssignmentDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1032,7 +1396,31 @@ export class GroupClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetAssignmentDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1070,7 +1458,9 @@ export class InvitationClient {
    * @param queryType (optional)
    * @return Success
    */
-  getall(queryType: string | undefined): Observable<void> {
+  getall(
+    queryType: string | undefined
+  ): Observable<GetInvitationDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Invitation/getall?';
     if (queryType === null)
       throw new Error("The parameter 'queryType' cannot be null.");
@@ -1081,7 +1471,9 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1097,14 +1489,21 @@ export class InvitationClient {
             try {
               return this.processGetall(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetInvitationDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetInvitationDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetall(response: HttpResponseBase): Observable<void> {
+  protected processGetall(
+    response: HttpResponseBase
+  ): Observable<GetInvitationDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1122,7 +1521,31 @@ export class InvitationClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetInvitationDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1143,7 +1566,7 @@ export class InvitationClient {
   /**
    * @return Success
    */
-  accept(invitationId: number): Observable<void> {
+  accept(invitationId: number): Observable<Result> {
     let url_ = this.baseUrl + '/api/Invitation/accept/{invitationId}';
     if (invitationId === undefined || invitationId === null)
       throw new Error("The parameter 'invitationId' must be defined.");
@@ -1156,7 +1579,9 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1172,14 +1597,14 @@ export class InvitationClient {
             try {
               return this.processAccept(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else return <Observable<Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processAccept(response: HttpResponseBase): Observable<void> {
+  protected processAccept(response: HttpResponseBase): Observable<Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1197,7 +1622,31 @@ export class InvitationClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1218,7 +1667,7 @@ export class InvitationClient {
   /**
    * @return Success
    */
-  reject(invitationId: number): Observable<void> {
+  reject(invitationId: number): Observable<Result> {
     let url_ = this.baseUrl + '/api/Invitation/reject/{invitationId}';
     if (invitationId === undefined || invitationId === null)
       throw new Error("The parameter 'invitationId' must be defined.");
@@ -1231,7 +1680,9 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1247,14 +1698,14 @@ export class InvitationClient {
             try {
               return this.processReject(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<Result>>(<any>_observableThrow(e));
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else return <Observable<Result>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processReject(response: HttpResponseBase): Observable<void> {
+  protected processReject(response: HttpResponseBase): Observable<Result> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1272,7 +1723,31 @@ export class InvitationClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1309,14 +1784,16 @@ export class SolutionClient {
   /**
    * @return Success
    */
-  getall(): Observable<void> {
+  getall(): Observable<GetSolutionDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Solution/getall';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1332,14 +1809,21 @@ export class SolutionClient {
             try {
               return this.processGetall(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetSolutionDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetSolutionDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetall(response: HttpResponseBase): Observable<void> {
+  protected processGetall(
+    response: HttpResponseBase
+  ): Observable<GetSolutionDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1357,7 +1841,31 @@ export class SolutionClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetSolutionDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1382,7 +1890,7 @@ export class SolutionClient {
   getquerydata(
     exerciseId: number | undefined,
     solutionId: number
-  ): Observable<void> {
+  ): Observable<StringIEnumerableIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Solution/getquerydata/{solutionId}?';
     if (solutionId === undefined || solutionId === null)
       throw new Error("The parameter 'solutionId' must be defined.");
@@ -1396,7 +1904,9 @@ export class SolutionClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1412,14 +1922,21 @@ export class SolutionClient {
             try {
               return this.processGetquerydata(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<StringIEnumerableIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<StringIEnumerableIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetquerydata(response: HttpResponseBase): Observable<void> {
+  protected processGetquerydata(
+    response: HttpResponseBase
+  ): Observable<StringIEnumerableIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1437,7 +1954,31 @@ export class SolutionClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = StringIEnumerableIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1474,14 +2015,16 @@ export class SolvingClient {
   /**
    * @return Success
    */
-  getall(): Observable<void> {
+  getall(): Observable<GetSolvingDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Solving/getall';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1497,14 +2040,21 @@ export class SolvingClient {
             try {
               return this.processGetall(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetSolvingDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetSolvingDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetall(response: HttpResponseBase): Observable<void> {
+  protected processGetall(
+    response: HttpResponseBase
+  ): Observable<GetSolvingDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1522,7 +2072,31 @@ export class SolvingClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetSolvingDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1543,7 +2117,7 @@ export class SolvingClient {
   /**
    * @return Success
    */
-  getbyid(solvingId: number): Observable<void> {
+  getbyid(solvingId: number): Observable<GetSolvingDtoResult> {
     let url_ = this.baseUrl + '/api/Solving/getbyid/{solvingId}';
     if (solvingId === undefined || solvingId === null)
       throw new Error("The parameter 'solvingId' must be defined.");
@@ -1553,7 +2127,9 @@ export class SolvingClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1569,14 +2145,21 @@ export class SolvingClient {
             try {
               return this.processGetbyid(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetSolvingDtoResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetSolvingDtoResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetbyid(response: HttpResponseBase): Observable<void> {
+  protected processGetbyid(
+    response: HttpResponseBase
+  ): Observable<GetSolvingDtoResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1594,7 +2177,31 @@ export class SolvingClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetSolvingDtoResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1615,14 +2222,16 @@ export class SolvingClient {
   /**
    * @return Success
    */
-  getalltodo(): Observable<void> {
+  getalltodo(): Observable<GetSolvingDtoIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Solving/getalltodo';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({}),
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
     };
 
     return this.http
@@ -1638,14 +2247,21 @@ export class SolvingClient {
             try {
               return this.processGetalltodo(<any>response_);
             } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
+              return <Observable<GetSolvingDtoIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
             }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
+          } else
+            return <Observable<GetSolvingDtoIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
         })
       );
   }
 
-  protected processGetalltodo(response: HttpResponseBase): Observable<void> {
+  protected processGetalltodo(
+    response: HttpResponseBase
+  ): Observable<GetSolvingDtoIEnumerableResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1663,7 +2279,31 @@ export class SolvingClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetSolvingDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1908,6 +2548,1011 @@ export interface ICreateSolutionCommand {
   exerciseId?: number;
 }
 
+export class ErrorResult implements IErrorResult {
+  message?: string | undefined;
+  errors?: { [key: string]: string[] } | undefined;
+  success?: boolean;
+
+  constructor(data?: IErrorResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      if (_data['errors']) {
+        this.errors = {} as any;
+        for (let key in _data['errors']) {
+          if (_data['errors'].hasOwnProperty(key))
+            (<any>this.errors)![key] =
+              _data['errors'][key] !== undefined ? _data['errors'][key] : [];
+        }
+      }
+      this.success = _data['success'];
+    }
+  }
+
+  static fromJS(data: any): ErrorResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new ErrorResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    if (this.errors) {
+      data['errors'] = {};
+      for (let key in this.errors) {
+        if (this.errors.hasOwnProperty(key))
+          (<any>data['errors'])[key] = this.errors[key];
+      }
+    }
+    data['success'] = this.success;
+    return data;
+  }
+}
+
+export interface IErrorResult {
+  message?: string | undefined;
+  errors?: { [key: string]: string[] } | undefined;
+  success?: boolean;
+}
+
+export class GetAssignmentDto implements IGetAssignmentDto {
+  user?: GetUserDto;
+  role?: string | undefined;
+  joined?: Date | undefined;
+
+  constructor(data?: IGetAssignmentDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.user = _data['user']
+        ? GetUserDto.fromJS(_data['user'])
+        : <any>undefined;
+      this.role = _data['role'];
+      this.joined = _data['joined']
+        ? new Date(_data['joined'].toString())
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetAssignmentDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetAssignmentDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['user'] = this.user ? this.user.toJSON() : <any>undefined;
+    data['role'] = this.role;
+    data['joined'] = this.joined ? this.joined.toISOString() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetAssignmentDto {
+  user?: GetUserDto;
+  role?: string | undefined;
+  joined?: Date | undefined;
+}
+
+export class GetAssignmentDtoIEnumerableResult
+  implements IGetAssignmentDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetAssignmentDto[] | undefined;
+
+  constructor(data?: IGetAssignmentDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetAssignmentDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetAssignmentDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetAssignmentDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetAssignmentDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetAssignmentDto[] | undefined;
+}
+
+export class GetComparisonDto implements IGetComparisonDto {
+  solutionId?: number;
+  solutionSolver?: string | undefined;
+  exerciseId?: number;
+  exerciseTitle?: string | undefined;
+  createdAt?: Date;
+  result?: boolean;
+
+  constructor(data?: IGetComparisonDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.solutionId = _data['solutionId'];
+      this.solutionSolver = _data['solutionSolver'];
+      this.exerciseId = _data['exerciseId'];
+      this.exerciseTitle = _data['exerciseTitle'];
+      this.createdAt = _data['createdAt']
+        ? new Date(_data['createdAt'].toString())
+        : <any>undefined;
+      this.result = _data['result'];
+    }
+  }
+
+  static fromJS(data: any): GetComparisonDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetComparisonDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['solutionId'] = this.solutionId;
+    data['solutionSolver'] = this.solutionSolver;
+    data['exerciseId'] = this.exerciseId;
+    data['exerciseTitle'] = this.exerciseTitle;
+    data['createdAt'] = this.createdAt
+      ? this.createdAt.toISOString()
+      : <any>undefined;
+    data['result'] = this.result;
+    return data;
+  }
+}
+
+export interface IGetComparisonDto {
+  solutionId?: number;
+  solutionSolver?: string | undefined;
+  exerciseId?: number;
+  exerciseTitle?: string | undefined;
+  createdAt?: Date;
+  result?: boolean;
+}
+
+export class GetComparisonDtoResult implements IGetComparisonDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetComparisonDto;
+
+  constructor(data?: IGetComparisonDtoResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      this.value = _data['value']
+        ? GetComparisonDto.fromJS(_data['value'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetComparisonDtoResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetComparisonDtoResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    data['value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetComparisonDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetComparisonDto;
+}
+
+export class GetExerciseDto implements IGetExerciseDto {
+  id?: number;
+  title?: string | undefined;
+  description?: string | undefined;
+  maxPoints?: number;
+  creator?: string | undefined;
+  databaseId?: number;
+  validAnswer?: string | undefined;
+
+  constructor(data?: IGetExerciseDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['id'];
+      this.title = _data['title'];
+      this.description = _data['description'];
+      this.maxPoints = _data['maxPoints'];
+      this.creator = _data['creator'];
+      this.databaseId = _data['databaseId'];
+      this.validAnswer = _data['validAnswer'];
+    }
+  }
+
+  static fromJS(data: any): GetExerciseDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetExerciseDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['description'] = this.description;
+    data['maxPoints'] = this.maxPoints;
+    data['creator'] = this.creator;
+    data['databaseId'] = this.databaseId;
+    data['validAnswer'] = this.validAnswer;
+    return data;
+  }
+}
+
+export interface IGetExerciseDto {
+  id?: number;
+  title?: string | undefined;
+  description?: string | undefined;
+  maxPoints?: number;
+  creator?: string | undefined;
+  databaseId?: number;
+  validAnswer?: string | undefined;
+}
+
+export class GetExerciseDtoIEnumerableResult
+  implements IGetExerciseDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDto[] | undefined;
+
+  constructor(data?: IGetExerciseDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetExerciseDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetExerciseDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetExerciseDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetExerciseDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDto[] | undefined;
+}
+
+export class GetGroupDto implements IGetGroupDto {
+  id?: number;
+  name?: string | undefined;
+
+  constructor(data?: IGetGroupDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['id'];
+      this.name = _data['name'];
+    }
+  }
+
+  static fromJS(data: any): GetGroupDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetGroupDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
+  }
+}
+
+export interface IGetGroupDto {
+  id?: number;
+  name?: string | undefined;
+}
+
+export class GetGroupDtoIEnumerableResult
+  implements IGetGroupDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetGroupDto[] | undefined;
+
+  constructor(data?: IGetGroupDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetGroupDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetGroupDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetGroupDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetGroupDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetGroupDto[] | undefined;
+}
+
+export class GetInvitationDto implements IGetInvitationDto {
+  id?: number;
+  groupName?: string | undefined;
+  sender?: string | undefined;
+  receiver?: string | undefined;
+  status?: string | undefined;
+  roleName?: string | undefined;
+  sentAt?: Date;
+  answeredAt?: Date;
+
+  constructor(data?: IGetInvitationDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['id'];
+      this.groupName = _data['groupName'];
+      this.sender = _data['sender'];
+      this.receiver = _data['receiver'];
+      this.status = _data['status'];
+      this.roleName = _data['roleName'];
+      this.sentAt = _data['sentAt']
+        ? new Date(_data['sentAt'].toString())
+        : <any>undefined;
+      this.answeredAt = _data['answeredAt']
+        ? new Date(_data['answeredAt'].toString())
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetInvitationDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetInvitationDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['groupName'] = this.groupName;
+    data['sender'] = this.sender;
+    data['receiver'] = this.receiver;
+    data['status'] = this.status;
+    data['roleName'] = this.roleName;
+    data['sentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
+    data['answeredAt'] = this.answeredAt
+      ? this.answeredAt.toISOString()
+      : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetInvitationDto {
+  id?: number;
+  groupName?: string | undefined;
+  sender?: string | undefined;
+  receiver?: string | undefined;
+  status?: string | undefined;
+  roleName?: string | undefined;
+  sentAt?: Date;
+  answeredAt?: Date;
+}
+
+export class GetInvitationDtoIEnumerableResult
+  implements IGetInvitationDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetInvitationDto[] | undefined;
+
+  constructor(data?: IGetInvitationDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetInvitationDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetInvitationDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetInvitationDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetInvitationDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetInvitationDto[] | undefined;
+}
+
+export class GetSolutionDto implements IGetSolutionDto {
+  id?: number;
+  dialect?: string | undefined;
+  query?: string | undefined;
+  creator?: string | undefined;
+  exercise?: GetExerciseDto;
+
+  constructor(data?: IGetSolutionDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['id'];
+      this.dialect = _data['dialect'];
+      this.query = _data['query'];
+      this.creator = _data['creator'];
+      this.exercise = _data['exercise']
+        ? GetExerciseDto.fromJS(_data['exercise'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetSolutionDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetSolutionDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['dialect'] = this.dialect;
+    data['query'] = this.query;
+    data['creator'] = this.creator;
+    data['exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetSolutionDto {
+  id?: number;
+  dialect?: string | undefined;
+  query?: string | undefined;
+  creator?: string | undefined;
+  exercise?: GetExerciseDto;
+}
+
+export class GetSolutionDtoIEnumerableResult
+  implements IGetSolutionDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolutionDto[] | undefined;
+
+  constructor(data?: IGetSolutionDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetSolutionDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetSolutionDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetSolutionDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetSolutionDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolutionDto[] | undefined;
+}
+
+export class GetSolvingDto implements IGetSolvingDto {
+  assignedBy?: string | undefined;
+  solver?: string | undefined;
+  assignedAt?: Date;
+  sentAt?: Date | undefined;
+  deadLine?: Date | undefined;
+  status?: string | undefined;
+  exercise?: GetExerciseDto;
+
+  constructor(data?: IGetSolvingDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.assignedBy = _data['assignedBy'];
+      this.solver = _data['solver'];
+      this.assignedAt = _data['assignedAt']
+        ? new Date(_data['assignedAt'].toString())
+        : <any>undefined;
+      this.sentAt = _data['sentAt']
+        ? new Date(_data['sentAt'].toString())
+        : <any>undefined;
+      this.deadLine = _data['deadLine']
+        ? new Date(_data['deadLine'].toString())
+        : <any>undefined;
+      this.status = _data['status'];
+      this.exercise = _data['exercise']
+        ? GetExerciseDto.fromJS(_data['exercise'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetSolvingDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetSolvingDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['assignedBy'] = this.assignedBy;
+    data['solver'] = this.solver;
+    data['assignedAt'] = this.assignedAt
+      ? this.assignedAt.toISOString()
+      : <any>undefined;
+    data['sentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
+    data['deadLine'] = this.deadLine
+      ? this.deadLine.toISOString()
+      : <any>undefined;
+    data['status'] = this.status;
+    data['exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetSolvingDto {
+  assignedBy?: string | undefined;
+  solver?: string | undefined;
+  assignedAt?: Date;
+  sentAt?: Date | undefined;
+  deadLine?: Date | undefined;
+  status?: string | undefined;
+  exercise?: GetExerciseDto;
+}
+
+export class GetSolvingDtoIEnumerableResult
+  implements IGetSolvingDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolvingDto[] | undefined;
+
+  constructor(data?: IGetSolvingDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value'])
+          this.value!.push(GetSolvingDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GetSolvingDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetSolvingDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGetSolvingDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolvingDto[] | undefined;
+}
+
+export class GetSolvingDtoResult implements IGetSolvingDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolvingDto;
+
+  constructor(data?: IGetSolvingDtoResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      this.value = _data['value']
+        ? GetSolvingDto.fromJS(_data['value'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetSolvingDtoResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetSolvingDtoResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    data['value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetSolvingDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetSolvingDto;
+}
+
+export class GetUserDto implements IGetUserDto {
+  id?: number;
+  name?: string | undefined;
+
+  constructor(data?: IGetUserDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['id'];
+      this.name = _data['name'];
+    }
+  }
+
+  static fromJS(data: any): GetUserDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetUserDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
+  }
+}
+
+export interface IGetUserDto {
+  id?: number;
+  name?: string | undefined;
+}
+
+export class Int32IEnumerableResult implements IInt32IEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: number[] | undefined;
+
+  constructor(data?: IInt32IEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value']) this.value!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): Int32IEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new Int32IEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IInt32IEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: number[] | undefined;
+}
+
+export class Int32Result implements IInt32Result {
+  message?: string | undefined;
+  success?: boolean;
+  value?: number;
+
+  constructor(data?: IInt32Result) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      this.value = _data['value'];
+    }
+  }
+
+  static fromJS(data: any): Int32Result {
+    data = typeof data === 'object' ? data : {};
+    let result = new Int32Result();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    data['value'] = this.value;
+    return data;
+  }
+}
+
+export interface IInt32Result {
+  message?: string | undefined;
+  success?: boolean;
+  value?: number;
+}
+
 export class LoginUserCommand implements ILoginUserCommand {
   email?: string | undefined;
   password?: string | undefined;
@@ -2008,6 +3653,46 @@ export interface IRegisterUserCommand {
   dateOfBirth?: Date;
 }
 
+export class Result implements IResult {
+  message?: string | undefined;
+  success?: boolean;
+
+  constructor(data?: IResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+    }
+  }
+
+  static fromJS(data: any): Result {
+    data = typeof data === 'object' ? data : {};
+    let result = new Result();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    return data;
+  }
+}
+
+export interface IResult {
+  message?: string | undefined;
+  success?: boolean;
+}
+
 export class SendQueryAdminCommand implements ISendQueryAdminCommand {
   query?: string | undefined;
   database?: string | undefined;
@@ -2046,6 +3731,58 @@ export class SendQueryAdminCommand implements ISendQueryAdminCommand {
 export interface ISendQueryAdminCommand {
   query?: string | undefined;
   database?: string | undefined;
+}
+
+export class StringIEnumerableIEnumerableResult
+  implements IStringIEnumerableIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: string[][] | undefined;
+
+  constructor(data?: IStringIEnumerableIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['message'];
+      this.success = _data['success'];
+      if (Array.isArray(_data['value'])) {
+        this.value = [] as any;
+        for (let item of _data['value']) this.value!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): StringIEnumerableIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new StringIEnumerableIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['message'] = this.message;
+    data['success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['value'] = [];
+      for (let item of this.value) data['value'].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IStringIEnumerableIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: string[][] | undefined;
 }
 
 export class ApiException extends Error {
