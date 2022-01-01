@@ -27,7 +27,7 @@ import {
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable()
-export class Client {
+export class AccountClient {
   private http: HttpClient;
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
@@ -55,7 +55,6 @@ export class Client {
       body: content_,
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
@@ -131,7 +130,6 @@ export class Client {
       body: content_,
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
@@ -192,6 +190,22 @@ export class Client {
     }
     return _observableOf(<any>null);
   }
+}
+
+@Injectable()
+export class ApiClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
 
   /**
    * @param body (optional)
@@ -207,7 +221,6 @@ export class Client {
       body: content_,
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
@@ -283,7 +296,6 @@ export class Client {
       body: content_,
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
@@ -346,6 +358,247 @@ export class Client {
   }
 
   /**
+   * @param body (optional)
+   * @return Success
+   */
+  group(body: CreateGroupCommand | undefined): Observable<void> {
+    let url_ = this.baseUrl + '/api/Group';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGroup(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGroup(<any>response_);
+            } catch (e) {
+              return <Observable<void>>(<any>_observableThrow(e));
+            }
+          } else return <Observable<void>>(<any>_observableThrow(response_));
+        })
+      );
+  }
+
+  protected processGroup(response: HttpResponseBase): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return _observableOf(<any>null);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(<any>null);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  invitation(body: CreateInvitationCommand | undefined): Observable<void> {
+    let url_ = this.baseUrl + '/api/Invitation';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processInvitation(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processInvitation(<any>response_);
+            } catch (e) {
+              return <Observable<void>>(<any>_observableThrow(e));
+            }
+          } else return <Observable<void>>(<any>_observableThrow(response_));
+        })
+      );
+  }
+
+  protected processInvitation(response: HttpResponseBase): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return _observableOf(<any>null);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(<any>null);
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  solution(body: CreateSolutionCommand | undefined): Observable<void> {
+    let url_ = this.baseUrl + '/api/Solution';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processSolution(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processSolution(<any>response_);
+            } catch (e) {
+              return <Observable<void>>(<any>_observableThrow(e));
+            }
+          } else return <Observable<void>>(<any>_observableThrow(response_));
+        })
+      );
+  }
+
+  protected processSolution(response: HttpResponseBase): Observable<void> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return _observableOf(<any>null);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(<any>null);
+  }
+}
+
+@Injectable()
+export class ExerciseClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
+
+  /**
    * @return Success
    */
   getallcreated(): Observable<void> {
@@ -355,7 +608,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -425,7 +677,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -505,7 +756,6 @@ export class Client {
       body: content_,
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
@@ -568,81 +818,21 @@ export class Client {
     }
     return _observableOf(<any>null);
   }
+}
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  group(body: CreateGroupCommand | undefined): Observable<void> {
-    let url_ = this.baseUrl + '/api/Group';
-    url_ = url_.replace(/[?&]$/, '');
+@Injectable()
+export class GroupClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
 
-    const content_ = JSON.stringify(body);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      withCredentials: true,
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGroup(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGroup(<any>response_);
-            } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processGroup(response: HttpResponseBase): Observable<void> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(<any>null);
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -655,7 +845,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -728,7 +917,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -801,7 +989,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -862,81 +1049,21 @@ export class Client {
     }
     return _observableOf(<any>null);
   }
+}
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  invitation(body: CreateInvitationCommand | undefined): Observable<void> {
-    let url_ = this.baseUrl + '/api/Invitation';
-    url_ = url_.replace(/[?&]$/, '');
+@Injectable()
+export class InvitationClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
 
-    const content_ = JSON.stringify(body);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      withCredentials: true,
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processInvitation(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processInvitation(<any>response_);
-            } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processInvitation(response: HttpResponseBase): Observable<void> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(<any>null);
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -954,7 +1081,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1030,7 +1156,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1106,7 +1231,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1165,18 +1289,33 @@ export class Client {
     }
     return _observableOf(<any>null);
   }
+}
+
+@Injectable()
+export class SolutionClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
 
   /**
    * @return Success
    */
-  getall2(): Observable<void> {
+  getall(): Observable<void> {
     let url_ = this.baseUrl + '/api/Solution/getall';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1184,14 +1323,14 @@ export class Client {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetall2(response_);
+          return this.processGetall(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetall2(<any>response_);
+              return this.processGetall(<any>response_);
             } catch (e) {
               return <Observable<void>>(<any>_observableThrow(e));
             }
@@ -1200,83 +1339,7 @@ export class Client {
       );
   }
 
-  protected processGetall2(response: HttpResponseBase): Observable<void> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return _observableOf(<any>null);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(<any>null);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  solution(body: CreateSolutionCommand | undefined): Observable<void> {
-    let url_ = this.baseUrl + '/api/Solution';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = JSON.stringify(body);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      withCredentials: true,
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processSolution(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processSolution(<any>response_);
-            } catch (e) {
-              return <Observable<void>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<void>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processSolution(response: HttpResponseBase): Observable<void> {
+  protected processGetall(response: HttpResponseBase): Observable<void> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1333,7 +1396,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1392,18 +1454,33 @@ export class Client {
     }
     return _observableOf(<any>null);
   }
+}
+
+@Injectable()
+export class SolvingClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
 
   /**
    * @return Success
    */
-  getall3(): Observable<void> {
+  getall(): Observable<void> {
     let url_ = this.baseUrl + '/api/Solving/getall';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1411,14 +1488,14 @@ export class Client {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetall3(response_);
+          return this.processGetall(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetall3(<any>response_);
+              return this.processGetall(<any>response_);
             } catch (e) {
               return <Observable<void>>(<any>_observableThrow(e));
             }
@@ -1427,7 +1504,7 @@ export class Client {
       );
   }
 
-  protected processGetall3(response: HttpResponseBase): Observable<void> {
+  protected processGetall(response: HttpResponseBase): Observable<void> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1476,7 +1553,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
@@ -1546,7 +1622,6 @@ export class Client {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({}),
     };
 
