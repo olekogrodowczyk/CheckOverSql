@@ -29,6 +29,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolutionDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllCreatedByUser()
         {
             int userId = (int)_userContextService.GetUserId;
@@ -37,6 +39,8 @@ namespace WebAPI.Controllers
         }
         
         [HttpPost()]
+        [ProducesResponseType(200, Type = typeof(Result<GetComparisonDto>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateSolutionCommand command)
         {
             var result = await Mediator.Send(command);
@@ -44,6 +48,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getquerydata/{solutionId}")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetQueryData([FromQuery] int exerciseId, [FromRoute] int solutionId)
         {
             var command = new SendSolutionQueryCommand { ExerciseId = exerciseId, SolutionId = solutionId };

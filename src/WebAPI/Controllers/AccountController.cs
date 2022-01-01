@@ -20,6 +20,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type= typeof(ErrorResult))]
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
             var result = await Mediator.Send(command);
@@ -28,6 +30,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
             var result = await Mediator.Send(command);

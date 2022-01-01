@@ -27,6 +27,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateInvitationCommand command)
         {
             int result = await Mediator.Send(command);
@@ -34,6 +36,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetInvitationDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAll([FromQuery] string queryType)
         {
             int loggedUserId = (int)_userContextService.GetUserId;
@@ -43,6 +47,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPatch("accept/{invitationId}")]
+        [ProducesResponseType(200, Type = typeof(Result))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Accept([FromRoute] int invitationId)
         {
             await Mediator.Send(new AcceptInvitationQuery { InvitationId = invitationId });
@@ -50,6 +56,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPatch("reject/{invitationId}")]
+        [ProducesResponseType(200, Type = typeof(Result))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Reject([FromRoute] int invitationId)
         {
             await Mediator.Send(new RejectInvitationQuery { InvitationId = invitationId });

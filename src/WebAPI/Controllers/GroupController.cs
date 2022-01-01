@@ -26,7 +26,9 @@ namespace WebAPI.Controllers
         {
         }
         
-        [HttpPost] 
+        [HttpPost]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateGroupCommand command)
         {
             var result = await Mediator.Send(command);
@@ -34,6 +36,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getusergroups")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetGroupDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetUserGroups()
         {
             var result = await Mediator.Send(new GetUserGroupsQuery());
@@ -41,6 +45,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("deletegroup/{groupId}")]
+        [ProducesResponseType(200, Type = typeof(Result))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> DeleteGroup(int groupId)
         {
             await Mediator.Send(new DeleteGroupCommand { GroupId = groupId });
@@ -48,6 +54,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getallassignments/{groupId}")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetAssignmentDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllAssignmentsInGroup([FromRoute] int groupId)
         {
             var result = await Mediator.Send(new GetAllAssignmentsInGroupQuery { GroupId = groupId });

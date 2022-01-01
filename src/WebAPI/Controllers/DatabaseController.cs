@@ -20,6 +20,8 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         [HttpPost]
         public async Task<IActionResult> SendQueryAdmin(SendQueryAdminCommand command)
         {

@@ -31,6 +31,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateExerciseCommand command)
         {
             var result = await Mediator.Send(command);
@@ -38,6 +40,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getallcreated")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetExerciseDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllCreatedByLoggedUser()
         {
             var result = await Mediator.Send(new GetAllCreatedExercisesQuery());
@@ -46,6 +50,8 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetExerciseDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         [HttpGet("getallpublic")]
         public async Task<IActionResult> GetAllPublic()
         {
@@ -54,6 +60,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("assignexercise/{id}")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<int>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> AssignExerciseToUsersInGroup
             ([FromRoute] int id, [FromBody] AssignExerciseToUsersCommand command)
         {

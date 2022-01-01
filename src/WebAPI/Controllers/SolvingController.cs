@@ -24,6 +24,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllSolvingsAssignedToUser()
         {
             int loggedUserId = (int)_userContextService.GetUserId;
@@ -32,6 +34,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbyid/{solvingId}")]
+        [ProducesResponseType(200, Type = typeof(Result<GetSolvingDto>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetUserSolvingById([FromRoute] int solvingId)
         {
             var result = await Mediator.Send(new GetUserSolvingByIdQuery { SolvingId = solvingId });
@@ -39,6 +43,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getalltodo")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()
         {
             int loggedUserId = (int)_userContextService.GetUserId;
