@@ -13,8 +13,9 @@ import { AccountClient } from 'src/app/web-api-client';
 })
 export class RegisterComponent implements OnInit {
   registerForm = new FormGroup({
-    firstName: new FormControl('', [Validators.required]),
-    lastName: new FormControl('', [Validators.required]),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    login: new FormControl('', [Validators.required]),
     email: new FormControl('', [
       Validators.required,
       Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$'),

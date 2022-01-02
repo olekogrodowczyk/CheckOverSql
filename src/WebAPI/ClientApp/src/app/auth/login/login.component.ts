@@ -6,6 +6,7 @@ import { FormControl } from '@angular/forms';
 import { AccountClient } from 'src/app/web-api-client';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private client: AccountClient,
     private snackbar: SnackbarService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
   ngOnInit(): void {}
 
@@ -29,10 +31,12 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-
     this.client.login(this.loginForm.value).subscribe(
       (result) => {
         if (result.message) this.snackbar.openSnackBar(result.message);
+        if (result.value) this.authService.storeJwtToken(result.value);
+        this.authService.loggedUser$.next(this.loginForm.value.email ?? '');
+        this.authService.signedIn$.next(true);
         this.router.navigateByUrl('/');
       },
       (error) => {

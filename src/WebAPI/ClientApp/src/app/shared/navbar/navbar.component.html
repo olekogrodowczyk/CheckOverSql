@@ -1,10 +1,34 @@
 <mat-toolbar color="primary" class="toolbar">
   <span>CheckOverSql</span>
   <span class="spacer"></span>
-  <a routerLink="/login" class="register-button" mat-flat-button color="accent">
-    Sign In
-  </a>
-  <a routerLink="/register" class="login-button" mat-flat-button color="accent"
-    >Sign Up</a
-  >
+  <ng-container *ngIf="!(authService.signedIn$ | async)">
+    <a
+      routerLink="/login"
+      class="register-button navbar-button"
+      mat-flat-button
+      color="accent"
+    >
+      Sign In
+    </a>
+    <a
+      routerLink="/register"
+      class="login-button navbar-button"
+      mat-flat-button
+      color="accent"
+      >Sign Up</a
+    >
+  </ng-container>
+  <ng-container *ngIf="authService.signedIn$ | async">
+    <p *ngIf="authService.loggedUser$ | async" class="welcome">
+      Hello, {{ authService.loggedUser$.getValue() }}
+    </p>
+    <button
+      (click)="logout()"
+      class="login-button navbar-button"
+      mat-flat-button
+      color="accent"
+    >
+      Sign out
+    </button>
+  </ng-container>
 </mat-toolbar>

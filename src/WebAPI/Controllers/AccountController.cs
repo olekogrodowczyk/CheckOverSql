@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(200, Type = typeof(Result<string>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
