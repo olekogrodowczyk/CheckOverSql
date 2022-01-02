@@ -4,14 +4,16 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211108013600_fixNames")]
+    partial class fixNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,11 +34,11 @@ namespace Infrastructure.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupRoleId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -45,7 +47,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("GroupRoleId");
+                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
 
@@ -248,22 +250,22 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupRoleId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PermissionId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("GroupRoleId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("GroupRolePermissions");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Invitation", b =>
@@ -273,13 +275,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("AnsweredAt")
+                    b.Property<DateTime>("AnsweredAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<int>("GroupRoleId")
@@ -362,9 +364,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool?>("Checked")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
@@ -377,14 +376,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsValid")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("Outcome")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Query")
                         .HasColumnType("nvarchar(max)");
@@ -412,17 +405,20 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AssignmentId")
+                    b.Property<string>("Answer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DeadLine")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Dialect")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
@@ -439,8 +435,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId");
-
-                    b.HasIndex("CreatorId");
 
                     b.HasIndex("ExerciseId");
 
@@ -476,9 +470,6 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -497,12 +488,12 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Assignments")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.GroupRole", "GroupRole")
                         .WithMany("Assignments")
-                        .HasForeignKey("GroupRoleId")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -589,15 +580,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.GroupRolePermission", b =>
                 {
-                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
-                        .WithMany("RolePermissions")
-                        .HasForeignKey("GroupRoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Permission", "Permission")
                         .WithMany("RolePermissions")
                         .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.GroupRole", "GroupRole")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -611,7 +602,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Invitations")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.GroupRole", "GroupRole")
                         .WithMany("Invitations")
@@ -671,11 +663,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Assignment", "Assignment")
                         .WithMany("Solvings")
                         .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Domain.Entities.User", "Creator")
-                        .WithMany("SolvingsCreated")
-                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -686,8 +673,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Assignment");
-
-                    b.Navigation("Creator");
 
                     b.Navigation("Exercise");
                 });
@@ -765,8 +750,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("InvitationsSent");
 
                     b.Navigation("Solutions");
-
-                    b.Navigation("SolvingsCreated");
                 });
 #pragma warning restore 612, 618
         }
