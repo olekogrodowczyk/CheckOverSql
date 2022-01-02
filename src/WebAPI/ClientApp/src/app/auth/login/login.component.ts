@@ -35,9 +35,9 @@ export class LoginComponent implements OnInit {
       (result) => {
         if (result.message) this.snackbar.openSnackBar(result.message);
         if (result.value) this.authService.storeJwtToken(result.value);
-        this.authService.loggedUser$.next(this.loginForm.value.email ?? '');
         this.authService.signedIn$.next(true);
         this.router.navigateByUrl('/');
+        location.reload();
       },
       (error) => {
         if (error.message) this.snackbar.openSnackBar(error.message);
