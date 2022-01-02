@@ -13,6 +13,14 @@ namespace Infrastructure.Data
         public static void InitializeConfigurations(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Login)
+                .IsUnique();
+
+
+            modelBuilder.Entity<User>()
                 .Property(x => x.Email)
                 .IsRequired();
 
@@ -27,6 +35,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<User>()
                 .Property(x => x.Email)
                 .HasMaxLength(25);
+                
         }
     }
 }
