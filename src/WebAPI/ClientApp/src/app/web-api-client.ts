@@ -148,7 +148,7 @@ export class AccountClient {
    * @param body (optional)
    * @return Success
    */
-  login(body: LoginUserCommand | undefined): Observable<Int32Result> {
+  login(body: LoginUserCommand | undefined): Observable<StringResult> {
     let url_ = this.baseUrl + '/api/Account/login';
     url_ = url_.replace(/[?&]$/, '');
 
@@ -177,15 +177,15 @@ export class AccountClient {
             try {
               return this.processLogin(<any>response_);
             } catch (e) {
-              return <Observable<Int32Result>>(<any>_observableThrow(e));
+              return <Observable<StringResult>>(<any>_observableThrow(e));
             }
           } else
-            return <Observable<Int32Result>>(<any>_observableThrow(response_));
+            return <Observable<StringResult>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processLogin(response: HttpResponseBase): Observable<Int32Result> {
+  protected processLogin(response: HttpResponseBase): Observable<StringResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -208,7 +208,7 @@ export class AccountClient {
             _responseText === ''
               ? null
               : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Int32Result.fromJS(resultData200);
+          result200 = StringResult.fromJS(resultData200);
           return _observableOf(result200);
         })
       );
@@ -3783,6 +3783,50 @@ export interface IStringIEnumerableIEnumerableResult {
   message?: string | undefined;
   success?: boolean;
   value?: string[][] | undefined;
+}
+
+export class StringResult implements IStringResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: string | undefined;
+
+  constructor(data?: IStringResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value'];
+    }
+  }
+
+  static fromJS(data: any): StringResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new StringResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value;
+    return data;
+  }
+}
+
+export interface IStringResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: string | undefined;
 }
 
 export class ApiException extends Error {
