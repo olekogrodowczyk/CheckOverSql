@@ -4,36 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Migrations\20211108013600_fixNames - Copy.cs" />
-    <Compile Remove="Migrations\20211108013600_fixNames - Copy.Designer.cs" />
-    <Compile Remove="Migrations\20211108013600_fixNames.cs" />
-    <Compile Remove="Migrations\20211108013600_fixNames.Designer.cs" />
-    <Compile Remove="Migrations\20211108023502_fixGroupRoleName.cs" />
-    <Compile Remove="Migrations\20211108023502_fixGroupRoleName.Designer.cs" />
-    <Compile Remove="Migrations\20211108220456_fixGroupRoleNameinGroupRolePermissionEntity.cs" />
-    <Compile Remove="Migrations\20211108220456_fixGroupRoleNameinGroupRolePermissionEntity.Designer.cs" />
-    <Compile Remove="Migrations\20211108221824_FixGroupRolePermissionEntityName.cs" />
-    <Compile Remove="Migrations\20211108221824_FixGroupRolePermissionEntityName.Designer.cs" />
-    <Compile Remove="Migrations\20211112011652_addCreatorIdToSolving.cs" />
-    <Compile Remove="Migrations\20211112011652_addCreatorIdToSolving.Designer.cs" />
-    <Compile Remove="Migrations\20211114215711_addTwoFieldsIntoSolutionEntity.cs" />
-    <Compile Remove="Migrations\20211114215711_addTwoFieldsIntoSolutionEntity.Designer.cs" />
-    <Compile Remove="Migrations\20211114224001_fixDataInSolutionEntity.cs" />
-    <Compile Remove="Migrations\20211114224001_fixDataInSolutionEntity.Designer.cs" />
-    <Compile Remove="Migrations\20211115024622_fix.cs" />
-    <Compile Remove="Migrations\20211115024622_fix.Designer.cs" />
-    <Compile Remove="Migrations\20211116002822_addOutcomeToSolution.cs" />
-    <Compile Remove="Migrations\20211116002822_addOutcomeToSolution.Designer.cs" />
-    <Compile Remove="Migrations\20211118105032_ChangeDeleteBehavior.cs" />
-    <Compile Remove="Migrations\20211118105032_ChangeDeleteBehavior.Designer.cs" />
-    <Compile Remove="Migrations\20211118105856_ChangeDeleteBehaviorFix.cs" />
-    <Compile Remove="Migrations\20211118105856_ChangeDeleteBehaviorFix.Designer.cs" />
-    <Compile Remove="Migrations\20211118112122_ChangeDeleteBehaviorToInvitationGroup.cs" />
-    <Compile Remove="Migrations\20211118112122_ChangeDeleteBehaviorToInvitationGroup.Designer.cs" />
-    <Compile Remove="Migrations\20211118112248_ChangeDeleteBehaviorToInvitationGroup2.cs" />
-    <Compile Remove="Migrations\20211118112248_ChangeDeleteBehaviorToInvitationGroup2.Designer.cs" />
-  </ItemGroup>
+  
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
