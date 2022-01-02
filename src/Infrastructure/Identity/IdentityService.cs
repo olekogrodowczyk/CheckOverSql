@@ -107,11 +107,11 @@ namespace Infrastructure.Identity.Services
         {
             if (_context.Users.Any(x => x.Email == model.Email))
             {
-                throw new AlreadyExistsException($"User with defined email: {model.Email} already exists");
+                throw new AlreadyExistsException($"User with defined email: {model.Email} already exists", true);
             }
             if(_context.Users.Any(x=>x.Login==model.Login))
             {
-                throw new AlreadyExistsException($"User with defined login: {model.Login} already exists");
+                throw new AlreadyExistsException($"User with defined login: {model.Login} already exists", true);
             }
 
             var newUser = new User()
