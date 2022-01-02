@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
             var result = await Mediator.Send(command);
-            return Ok(new Result<int>(result, "Pomyślnie zarejestrowano użytkownika"));
+            return Ok(new Result<int>(result, "User registered successfully"));
 
         }
 
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
             var result = await Mediator.Send(command);
-            return Ok(new Result<string>(result, "Pomyślnie zalogowano"));
+            return Ok(new Result<string>(result, "User signed in successfully"));
         }
     }
 }

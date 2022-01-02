@@ -12,9 +12,9 @@ namespace Application.Identities.Commands.LoginUser
         public LoginUserCommandValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Podany email jest pusty");
+                .NotEmpty().WithMessage("Defined email is empty");
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Podane hasło jest puste");              
+                .NotEmpty().WithMessage("Defined password is empty");              
         }
     }
 }
