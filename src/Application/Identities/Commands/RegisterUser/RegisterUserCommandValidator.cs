@@ -12,14 +12,14 @@ namespace Application.Identities.Commands.LoginUser
     {
         public RegisterUserCommandValidator()
         {
-            RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("First name has not been defined");
-
-            RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Last name has not been defined");
+            RuleFor(x => x.Login)
+                .NotEmpty().WithMessage("Login has not been defined");
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email has not been defined");
+
+            RuleFor(x => x.ConfirmPassword)
+                .NotEmpty().WithMessage("Password confirmation has not been defined");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password cannot be empty")

@@ -86,7 +86,9 @@ namespace Infrastructure.Identity.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.Value.ToString()),
-                new Claim(ClaimTypes.Role,user.Role.Name)
+                new Claim(ClaimTypes.Role,user.Role.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("login", user.Login),
             };
             return claims;
         }    
@@ -107,10 +109,15 @@ namespace Infrastructure.Identity.Services
             {
                 throw new AlreadyExistsException($"User with defined email: {model.Email} already exists");
             }
+            if(_context.Users.Any(x=>x.Login==model.Login))
+            {
+                throw new AlreadyExistsException($"User with defined login: {model.Login} already exists");
+            }
 
             var newUser = new User()
             {
                 Email = model.Email,
+                Login = model.Login,
                 DateOfBirth = model.DateOfBirth,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
