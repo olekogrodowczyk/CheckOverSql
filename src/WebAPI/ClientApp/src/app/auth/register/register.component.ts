@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { AccountClient } from 'src/app/web-api-client';
 
@@ -22,7 +23,11 @@ export class RegisterComponent implements OnInit {
     confirmPassword: new FormControl('', [Validators.required]),
   });
 
-  constructor(private client: AccountClient) {}
+  constructor(
+    private client: AccountClient,
+    private snackBar: SnackbarService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
@@ -32,12 +37,11 @@ export class RegisterComponent implements OnInit {
     }
     this.client.register(this.registerForm.value).subscribe(
       (result) => {
-        console.log(result);
-        console.log(result.message);
+        if (result.message) this.snackBar.openSnackBar(result.message);
+        this.router.navigateByUrl('/login');
       },
       (error) => {
-        console.log(error.message);
-        console.log(error);
+        if (error.message) this.snackBar.openSnackBar(error.message);
       }
     );
   }

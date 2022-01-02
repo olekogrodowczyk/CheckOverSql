@@ -6,10 +6,17 @@ import { FooterComponent } from './footer/footer.component';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { SnackbarService } from './snackbar.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [NavbarComponent, FooterComponent],
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, RouterModule],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    RouterModule,
+    MatSnackBarModule,
+  ],
   exports: [NavbarComponent, FooterComponent],
   providers: [SnackbarService],
 })

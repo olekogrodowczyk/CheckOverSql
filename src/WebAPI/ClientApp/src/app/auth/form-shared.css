@@ -11,6 +11,7 @@
   margin-right: auto;
   text-align: center;
   width: 20%;
+  min-width: 400px;
 }
 
 .form-header {

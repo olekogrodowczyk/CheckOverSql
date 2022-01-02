@@ -4,6 +4,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormGroup, Validators } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { AccountClient } from 'src/app/web-api-client';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,11 +14,15 @@ import { AccountClient } from 'src/app/web-api-client';
 })
 export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
-    login: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
 
-  constructor(private client: AccountClient) {}
+  constructor(
+    private client: AccountClient,
+    private snackbar: SnackbarService,
+    private router: Router
+  ) {}
   ngOnInit(): void {}
 
   onSubmit() {
@@ -26,9 +32,12 @@ export class LoginComponent implements OnInit {
 
     this.client.login(this.loginForm.value).subscribe(
       (result) => {
-        console.log(result);
+        if (result.message) this.snackbar.openSnackBar(result.message);
+        this.router.navigateByUrl('/');
       },
-      (error) => console.log(error)
+      (error) => {
+        if (error.message) this.snackbar.openSnackBar(error.message);
+      }
     );
   }
 }
