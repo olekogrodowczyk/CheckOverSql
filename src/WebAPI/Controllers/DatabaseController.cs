@@ -1,5 +1,6 @@
 ﻿using Application.Databases.Commands.SendQueryAdmin;
 using Application.Databases.Queries.GetDatabaseNames;
+using Application.Databases.Queries.GetQueryValueAdmin;
 using Application.Interfaces;
 using Application.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,16 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Query executed successfully, number of rows affected returned."));
+        }
+
+        [Authorize(Roles ="Admin")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        [HttpPost("SendQueryValueAdmin")]
+        public async Task<IActionResult> GetQueryValueAdmin([FromBody] GetQueryValueAdminQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return Ok(new Result<IEnumerable<IEnumerable<string>>>(result, "Query executed successfully, data returned"));
         }
 
         [Authorize]
