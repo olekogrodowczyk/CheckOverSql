@@ -23,14 +23,12 @@ export class IsLoggedInGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.signedIn$.pipe(
-      skipWhile((value) => value === null),
-      take(1),
-      tap((authenticated: boolean) => {
-        if (authenticated) {
-          this.router.navigateByUrl('/');
-        }
-      })
-    );
+    console.log(this.authService.signedIn$.getValue());
+    if (this.authService.signedIn$.getValue() === true) {
+      this.router.navigateByUrl('/');
+      return false;
+    } else {
+      return true;
+    }
   }
 }
