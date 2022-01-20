@@ -6,6 +6,7 @@
   </a>
 
   <a
+    *ngIf="authService.signedIn$ | async"
     class="menu-button"
     mat-flat-button
     color="accent"

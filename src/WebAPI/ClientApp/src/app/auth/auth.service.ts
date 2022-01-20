@@ -41,6 +41,7 @@ export class AuthService {
     this.loggedUser$.next(null);
     this.removeJwtToken();
     this.signedIn$.next(false);
+    this.router.navigateByUrl('/');
   }
 
   storeJwtToken(jwt: string) {
