@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Databases\Queries\" />
     <Folder Include="Solvings\Commands\" />
   </ItemGroup>
 
