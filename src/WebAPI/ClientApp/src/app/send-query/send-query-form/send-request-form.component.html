@@ -1,13 +1,15 @@
 <div class="form-container">
   <div class="form-wrapper">
-    <div class="form-header">Sign In</div>
+    <div class="form-header">Send Query</div>
     <form [formGroup]="SendQueryAdminForm" (ngSubmit)="onSubmit()" class="form">
       <mat-form-field appearance="fill">
         <mat-label>Select database</mat-label>
         <mat-select formControlName="databaseName">
-          <mat-option *ngFor="let database of databaseNames" value="one">{{
-            database
-          }}</mat-option>
+          <mat-option
+            *ngFor="let database of databaseNames"
+            [value]="database"
+            >{{ database }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">

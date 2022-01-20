@@ -8,9 +8,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { QueryResultComponent } from './query-result/query-result.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
-  declarations: [HomeComponent, SendQueryFormComponent],
+  declarations: [HomeComponent, SendQueryFormComponent, QueryResultComponent],
   imports: [
     CommonModule,
     SendRequestRoutingModule,
@@ -20,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    MatTableModule,
   ],
 })
 export class SendQueryModule {}

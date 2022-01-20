@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { DatabaseClient } from 'src/app/web-api-client';
+import { SendQueryService } from '../send-query.service';
 
 @Component({
   selector: 'app-send-query-form',
@@ -16,7 +18,9 @@ export class SendQueryFormComponent implements OnInit {
   databaseNames: string[] = [];
   constructor(
     private databaseClient: DatabaseClient,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private sendQueryService: SendQueryService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -42,5 +46,17 @@ export class SendQueryFormComponent implements OnInit {
       return;
     }
     console.log(this.SendQueryAdminForm.value);
+    this.databaseClient
+      .sendQueryValueAdmin(this.SendQueryAdminForm.value)
+      .subscribe({
+        next: (result) => {
+          this.sendQueryService.queryResult = result.value!;
+          this.snackBar.openSnackBar('Data returned successfully');
+          this.router.navigateByUrl('send-query/query-result');
+        },
+        error: () => {
+          this.snackBar.openSnackBar('Unexpected error occurred');
+        },
+      });
   }
 }
