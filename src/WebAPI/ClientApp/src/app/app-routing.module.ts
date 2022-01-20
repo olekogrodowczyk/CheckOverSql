@@ -15,6 +15,13 @@ const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
   },
+  {
+    path: 'send-query',
+    loadChildren: () =>
+      import('./send-query/send-query.module').then(
+        (mod) => mod.SendQueryModule
+      ),
+  },
 ];
 
 @NgModule({

@@ -1,6 +1,19 @@
 <mat-toolbar color="primary" class="toolbar">
   <img class="logo" src="assets/images/logo-white.png" alt="logo" />
-  <span>CheckOverSql</span>
+
+  <a color="accent" [routerLink]="['/']">
+    <span>CheckOverSql</span>
+  </a>
+
+  <a
+    class="menu-button"
+    mat-flat-button
+    color="accent"
+    [routerLink]="['send-query']"
+  >
+    Send query
+  </a>
+
   <span class="spacer"></span>
   <ng-container *ngIf="!(authService.signedIn$ | async)">
     <a
