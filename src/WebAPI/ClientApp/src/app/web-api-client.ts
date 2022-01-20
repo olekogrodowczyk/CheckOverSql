@@ -55,6 +55,7 @@ export class AccountClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -158,6 +159,7 @@ export class AccountClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -258,7 +260,7 @@ export class ApiClient {
     @Optional() @Inject(API_BASE_URL) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -275,6 +277,7 @@ export class ApiClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -378,6 +381,7 @@ export class ApiClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -481,6 +485,7 @@ export class ApiClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -584,6 +589,7 @@ export class ApiClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -689,6 +695,7 @@ export class ApiClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -784,6 +791,235 @@ export class ApiClient {
 }
 
 @Injectable()
+export class DatabaseClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = 'https://localhost:5001';
+  }
+
+  /**
+   * @param body (optional)
+   * @return Success
+   */
+  sendQueryValueAdmin(
+    body: GetQueryValueAdminQuery | undefined
+  ): Observable<StringIEnumerableIEnumerableResult> {
+    let url_ = this.baseUrl + '/api/Database/SendQueryValueAdmin';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      withCredentials: true,
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processSendQueryValueAdmin(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processSendQueryValueAdmin(<any>response_);
+            } catch (e) {
+              return <Observable<StringIEnumerableIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
+            }
+          } else
+            return <Observable<StringIEnumerableIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
+        })
+      );
+  }
+
+  protected processSendQueryValueAdmin(
+    response: HttpResponseBase
+  ): Observable<StringIEnumerableIEnumerableResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = StringIEnumerableIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(<any>null);
+  }
+
+  /**
+   * @return Success
+   */
+  getdatabasenames(): Observable<StringIEnumerableResult> {
+    let url_ = this.baseUrl + '/api/Database/getdatabasenames';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      withCredentials: true,
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetdatabasenames(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetdatabasenames(<any>response_);
+            } catch (e) {
+              return <Observable<StringIEnumerableResult>>(
+                (<any>_observableThrow(e))
+              );
+            }
+          } else
+            return <Observable<StringIEnumerableResult>>(
+              (<any>_observableThrow(response_))
+            );
+        })
+      );
+  }
+
+  protected processGetdatabasenames(
+    response: HttpResponseBase
+  ): Observable<StringIEnumerableResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (<any>response).error instanceof Blob
+        ? (<any>response).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = StringIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(<any>null);
+  }
+}
+
+@Injectable()
 export class ExerciseClient {
   private http: HttpClient;
   private baseUrl: string;
@@ -808,6 +1044,7 @@ export class ExerciseClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -910,6 +1147,7 @@ export class ExerciseClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1022,6 +1260,7 @@ export class ExerciseClient {
       body: content_,
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Accept: 'text/plain',
@@ -1141,6 +1380,7 @@ export class GroupClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1246,6 +1486,7 @@ export class GroupClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1346,6 +1587,7 @@ export class GroupClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1471,6 +1713,7 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1579,6 +1822,7 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1680,6 +1924,7 @@ export class InvitationClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1791,6 +2036,7 @@ export class SolutionClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1904,6 +2150,7 @@ export class SolutionClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -2022,6 +2269,7 @@ export class SolvingClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -2127,6 +2375,7 @@ export class SolvingClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -2229,6 +2478,7 @@ export class SolvingClient {
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
+      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -2569,7 +2819,7 @@ export class ErrorResult implements IErrorResult {
         this.errors = {} as any;
         for (let key in _data['Errors']) {
           if (_data['Errors'].hasOwnProperty(key))
-            (<any>this.errors)![key] =
+            (<any>this.errors)[key] =
               _data['Errors'][key] !== undefined ? _data['Errors'][key] : [];
         }
       }
@@ -3141,6 +3391,46 @@ export interface IGetInvitationDtoIEnumerableResult {
   value?: GetInvitationDto[] | undefined;
 }
 
+export class GetQueryValueAdminQuery implements IGetQueryValueAdminQuery {
+  databaseName?: string | undefined;
+  query?: string | undefined;
+
+  constructor(data?: IGetQueryValueAdminQuery) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.databaseName = _data['DatabaseName'];
+      this.query = _data['Query'];
+    }
+  }
+
+  static fromJS(data: any): GetQueryValueAdminQuery {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetQueryValueAdminQuery();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['DatabaseName'] = this.databaseName;
+    data['Query'] = this.query;
+    return data;
+  }
+}
+
+export interface IGetQueryValueAdminQuery {
+  databaseName?: string | undefined;
+  query?: string | undefined;
+}
+
 export class GetSolutionDto implements IGetSolutionDto {
   id?: number;
   dialect?: string | undefined;
@@ -3596,6 +3886,7 @@ export interface ILoginUserCommand {
 export class RegisterUserCommand implements IRegisterUserCommand {
   firstName?: string | undefined;
   lastName?: string | undefined;
+  login?: string | undefined;
   email?: string | undefined;
   password?: string | undefined;
   confirmPassword?: string | undefined;
@@ -3614,6 +3905,7 @@ export class RegisterUserCommand implements IRegisterUserCommand {
     if (_data) {
       this.firstName = _data['FirstName'];
       this.lastName = _data['LastName'];
+      this.login = _data['Login'];
       this.email = _data['Email'];
       this.password = _data['Password'];
       this.confirmPassword = _data['ConfirmPassword'];
@@ -3634,6 +3926,7 @@ export class RegisterUserCommand implements IRegisterUserCommand {
     data = typeof data === 'object' ? data : {};
     data['FirstName'] = this.firstName;
     data['LastName'] = this.lastName;
+    data['Login'] = this.login;
     data['Email'] = this.email;
     data['Password'] = this.password;
     data['ConfirmPassword'] = this.confirmPassword;
@@ -3647,6 +3940,7 @@ export class RegisterUserCommand implements IRegisterUserCommand {
 export interface IRegisterUserCommand {
   firstName?: string | undefined;
   lastName?: string | undefined;
+  login?: string | undefined;
   email?: string | undefined;
   password?: string | undefined;
   confirmPassword?: string | undefined;
@@ -3783,6 +4077,56 @@ export interface IStringIEnumerableIEnumerableResult {
   message?: string | undefined;
   success?: boolean;
   value?: string[][] | undefined;
+}
+
+export class StringIEnumerableResult implements IStringIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: string[] | undefined;
+
+  constructor(data?: IStringIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
+        this.value = [] as any;
+        for (let item of _data['Value']) this.value!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): StringIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new StringIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IStringIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: string[] | undefined;
 }
 
 export class StringResult implements IStringResult {
