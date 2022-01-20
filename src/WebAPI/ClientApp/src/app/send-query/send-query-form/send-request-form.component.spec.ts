@@ -1,20 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SendRequestFormComponent } from './send-request-form.component';
+import { SendQueryFormComponent } from './send-request-form.component';
 
 describe('SendRequestFormComponent', () => {
-  let component: SendRequestFormComponent;
-  let fixture: ComponentFixture<SendRequestFormComponent>;
+  let component: SendQueryFormComponent;
+  let fixture: ComponentFixture<SendQueryFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SendRequestFormComponent ]
-    })
-    .compileComponents();
+      declarations: [SendQueryFormComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SendRequestFormComponent);
+    fixture = TestBed.createComponent(SendQueryFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

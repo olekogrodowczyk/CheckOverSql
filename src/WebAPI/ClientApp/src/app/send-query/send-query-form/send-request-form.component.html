@@ -1,1 +1,20 @@
-<p>send-request-form works!</p>
+<div class="form-container">
+  <div class="form-wrapper">
+    <div class="form-header">Sign In</div>
+    <form [formGroup]="SendQueryAdminForm" (ngSubmit)="onSubmit()" class="form">
+      <mat-form-field appearance="fill">
+        <mat-label>Select database</mat-label>
+        <mat-select formControlName="databaseName">
+          <mat-option *ngFor="let database of databaseNames" value="one">{{
+            database
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Textarea</mat-label>
+        <textarea formControlName="query" matInput></textarea>
+      </mat-form-field>
+      <button mat-flat-button color="accent">Submit</button>
+    </form>
+  </div>
+</div>

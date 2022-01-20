@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AccountClient } from './web-api-client';
+import { AccountClient, DatabaseClient } from './web-api-client';
 import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthModule } from './auth/auth.module';
 
@@ -22,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
   ],
   providers: [
     AccountClient,
+    DatabaseClient,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
