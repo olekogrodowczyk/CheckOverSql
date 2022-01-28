@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,15 +37,18 @@ namespace Infrastructure.Repositories
 
             connection.Open();
 
-            SqlCommand command = new SqlCommand(query, connection);       
-            var result =  await getDataInDictionary(command);
+            SqlCommand command = new SqlCommand(query, connection);
+            var columnNames = await getColumnNames(command);
+            var queryResult =  await getDataInMatrix(command);            
+            queryResult.Insert(0, columnNames);
 
+            await command.DisposeAsync();
             connection.Close();
 
-            return result;
+            return queryResult;
         }
 
-        private async Task<List<List<string>>> getDataInDictionary(SqlCommand command)
+        private async Task<List<List<string>>> getDataInMatrix(SqlCommand command)
         {
             List<List<string>> values = new List<List<string>>();
             using (SqlDataReader reader = await command.ExecuteReaderAsync())
@@ -61,6 +65,25 @@ namespace Infrastructure.Repositories
                 }
             }
             return values;
+        }
+
+        private async Task<List<string>> getColumnNames(SqlCommand command)
+        {
+            DataTable dataTable = null;
+            using(SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SchemaOnly))
+            {
+                dataTable = await reader.GetSchemaTableAsync();
+            }
+            List<string> columnNames = new List<string>();
+            dataTable.Rows
+                .Cast<DataRow>()
+                .ToList()
+                .ForEach(row =>
+                {
+                    columnNames.Add(row.ItemArray[0].ToString());
+                });         
+               
+            return columnNames;
         }
     }
 }
