@@ -9,14 +9,14 @@ import { SendQueryService } from '../send-query.service';
 export class QueryResultComponent implements OnInit {
   columnNames: string[] = [];
   queryResult: string[][] = [];
-  data: object[] = [{ Id: 1, imie: 'Maniek', LastName: 'Cuch' }];
+  dataSource: object[] = [];
   constructor(private sendQueryService: SendQueryService) {}
 
   ngOnInit(): void {
     this.queryResult = this.sendQueryService.queryResult;
     this.assignColumnNames();
-    this.data = this.getData();
-    console.log(this.data);
+    this.dataSource = this.getData();
+    console.log(this.dataSource);
   }
 
   getData() {
