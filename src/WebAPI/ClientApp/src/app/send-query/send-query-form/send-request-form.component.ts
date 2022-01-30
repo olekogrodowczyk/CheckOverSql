@@ -51,7 +51,7 @@ export class SendQueryFormComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.sendQueryService.queryResult = result.value!;
-          this.snackBar.openSnackBar('Data returned successfully');
+          this.snackBar.openSnackBar('Query executed successfully');
           this.router.navigateByUrl('send-query/query-result');
         },
         error: ({ message }) => {
