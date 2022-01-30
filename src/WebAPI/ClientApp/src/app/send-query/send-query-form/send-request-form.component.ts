@@ -54,8 +54,8 @@ export class SendQueryFormComponent implements OnInit {
           this.snackBar.openSnackBar('Data returned successfully');
           this.router.navigateByUrl('send-query/query-result');
         },
-        error: () => {
-          this.snackBar.openSnackBar('Unexpected error occurred');
+        error: ({ message }) => {
+          this.snackBar.openSnackBar(message);
         },
       });
   }

@@ -30,7 +30,7 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
 
         public async Task<IEnumerable<IEnumerable<string>>> Handle(GetQueryValueAdminQuery request, CancellationToken cancellationToken)
         {
-            var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName);
+            var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName, false);
             return result;
         }
     }

@@ -37,9 +37,9 @@ namespace Infrastructure.Repositories
 
             connection.Open();
 
-            SqlCommand command = new SqlCommand(query, connection);
+            SqlCommand command = new SqlCommand(query, connection);            
+            var queryResult =  await getDataInMatrix(command);
             var columnNames = await getColumnNames(command);
-            var queryResult =  await getDataInMatrix(command);            
             queryResult.Insert(0, columnNames);
 
             await command.DisposeAsync();
@@ -75,13 +75,10 @@ namespace Infrastructure.Repositories
                 dataTable = await reader.GetSchemaTableAsync();
             }
             List<string> columnNames = new List<string>();
-            dataTable.Rows
-                .Cast<DataRow>()
-                .ToList()
-                .ForEach(row =>
-                {
-                    columnNames.Add(row.ItemArray[0].ToString());
-                });         
+            dataTable?.Rows?.Cast<DataRow>().ToList().ForEach(row =>
+            {
+                columnNames.Add(row.ItemArray[0].ToString());
+            });         
                
             return columnNames;
         }

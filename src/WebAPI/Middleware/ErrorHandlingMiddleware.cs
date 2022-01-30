@@ -61,9 +61,9 @@ namespace WebAPI.Middleware
                         code = HttpStatusCode.InternalServerError;
                         result = new ErrorResult(globalMessage);
                         break;
-                    case SqlException _:
-                        code = HttpStatusCode.Forbidden;
-                        result = new ErrorResult("Unauthorized attempt to use a database");
+                    case SqlException sqlException:
+                        code = HttpStatusCode.BadRequest;
+                        result = new ErrorResult(sqlException.Message);
                         break;
                     case Exception:
                         code = HttpStatusCode.InternalServerError;
