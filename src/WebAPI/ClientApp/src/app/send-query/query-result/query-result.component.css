@@ -27,8 +27,10 @@
 
 .mat-header-row th {
   position: sticky;
+  font-weight: bold;
   top: 0;
 }
+
 td,
 th {
   padding-right: 0px !important;
