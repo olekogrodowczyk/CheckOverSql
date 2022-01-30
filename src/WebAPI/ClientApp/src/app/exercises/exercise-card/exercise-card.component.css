@@ -1,0 +1,12 @@
+.mat-card-footer {
+  display: flex;
+  margin-left: 0.2em;
+}
+
+.exercise-card {
+  max-width: 400px;
+}
+
+.mat-card-content {
+  height: 60px;
+}

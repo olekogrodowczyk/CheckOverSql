@@ -1,1 +1,5 @@
-<p>created works!</p>
+<mat-grid-list cols="4" rowHeight="2:1.2">
+  <mat-grid-tile *ngFor="let exercise of exercises">
+    <app-exercise-card [model]="exercise"> </app-exercise-card>
+  </mat-grid-tile>
+</mat-grid-list>
