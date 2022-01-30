@@ -17,6 +17,12 @@ const routes: Routes = [
     component: RegisterComponent,
   },
   {
+    path: 'exercises',
+    canLoad: [AuthGuard],
+    loadChildren: () =>
+      import('./exercises/exercises.module').then((mod) => mod.ExercisesModule),
+  },
+  {
     path: 'send-query',
     canLoad: [AuthGuard],
     loadChildren: () =>
