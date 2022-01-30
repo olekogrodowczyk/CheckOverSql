@@ -7,12 +7,31 @@ import { SendQueryService } from '../send-query.service';
   styleUrls: ['./query-result.component.css'],
 })
 export class QueryResultComponent implements OnInit {
-  displayedColumns: string[] = ['1', '2', '3', '4'];
+  columnNames: string[] = [];
   queryResult: string[][] = [];
+  data: object[] = [{ Id: 1, imie: 'Maniek', LastName: 'Cuch' }];
   constructor(private sendQueryService: SendQueryService) {}
 
   ngOnInit(): void {
     this.queryResult = this.sendQueryService.queryResult;
-    console.log(this.queryResult);
+    this.assignColumnNames();
+    this.data = this.getData();
+    console.log(this.data);
+  }
+
+  getData() {
+    let data: object[] = [];
+    for (let i = 1; i < this.queryResult.length; i++) {
+      let object: any = {};
+      for (let j = 0; j < this.columnNames.length; j++) {
+        object[this.columnNames[j]] = this.queryResult[i][j];
+      }
+      data.push(object);
+    }
+    return data;
+  }
+
+  assignColumnNames() {
+    this.columnNames = this.queryResult[0];
   }
 }
