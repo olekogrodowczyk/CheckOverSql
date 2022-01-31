@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Models;
+using Application.Common.Models.ExtenstionMethods;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -74,6 +76,15 @@ namespace Infrastructure.Repositories
             query = includeProperties?.Aggregate(query, (current, include) => current.Include(include));
 
             return await query.Where(predicate).ToListAsync();
+        }
+
+        public async Task<PaginatedList<T>> GetPaginatedResultAsync(Expression<Func<T, bool>> predicate,
+             int pageNumber, int pageSize, params Expression<Func<T, object>>[] includeProperties)
+        {
+            var query = _context.Set<T>().AsQueryable();
+            query = includeProperties?.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.Where(predicate).PaginatedListAsync(pageNumber, pageSize);
         }
 
         public async Task UpdateAsync(T entity)
