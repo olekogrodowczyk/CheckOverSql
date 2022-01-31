@@ -9,6 +9,7 @@ import { ExerciseClient, GetExerciseDto } from 'src/app/web-api-client';
 })
 export class CreatedComponent implements OnInit {
   exercises: GetExerciseDto[] = [];
+  breakpoint: number = 0;
   constructor(
     private exerciseClient: ExerciseClient,
     private snackBar: SnackbarService

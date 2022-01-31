@@ -1,5 +1,13 @@
-<mat-grid-list cols="4" rowHeight="2:1.2">
-  <mat-grid-tile *ngFor="let exercise of exercises">
-    <app-exercise-card [model]="exercise"> </app-exercise-card>
-  </mat-grid-tile>
-</mat-grid-list>
+<div class="exercises-list">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div
+      fxFlex-xl="25%"
+      fxFlex-lg="33%"
+      fxFlex.sm="50%"
+      fxFlex.xs="100%"
+      *ngFor="let exercise of exercises"
+    >
+      <app-exercise-card [model]="exercise"> </app-exercise-card>
+    </div>
+  </div>
+</div>

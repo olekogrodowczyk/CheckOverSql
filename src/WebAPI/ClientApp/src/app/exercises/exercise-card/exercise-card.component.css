@@ -10,3 +10,8 @@
 .mat-card-content {
   height: 60px;
 }
+
+.solve-button {
+  margin-left: 0.6em;
+  margin-top: 0.5em;
+}

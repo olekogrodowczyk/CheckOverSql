@@ -13,6 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ExerciseCardComponent } from './exercise-card/exercise-card.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatDividerModule,
     MatButtonModule,
     MatGridListModule,
+    FlexLayoutModule,
   ],
 })
 export class ExercisesModule {}
