@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Common.Models;
 
 namespace WebAPI.Controllers
 {
@@ -39,13 +40,13 @@ namespace WebAPI.Controllers
             return Ok(new Result<int>(result, "New exercises created succesfully"));
         }
 
-        [HttpGet("getallcreated")]
-        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetExerciseDto>>))]
+        [HttpGet("GetAllCreated")]
+        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<GetExerciseDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        public async Task<IActionResult> GetAllCreatedByLoggedUser()
+        public async Task<IActionResult> GetAllCreatedByLoggedUser([FromQuery] GetAllCreatedExercisesQuery query)
         {
-            var result = await Mediator.Send(new GetAllCreatedExercisesQuery());
-            return Ok(new Result<IEnumerable<GetExerciseDto>>
+            var result = await Mediator.Send(query);
+            return Ok(new Result<PaginatedList<GetExerciseDto>>
                 (result,"All exercises created by logged user returned successfully"));
         }
 

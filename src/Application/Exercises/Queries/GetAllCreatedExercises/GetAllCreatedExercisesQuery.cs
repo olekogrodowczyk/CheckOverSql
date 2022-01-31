@@ -9,15 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Entities;
+using Application.Common.Models;
+using Application.Common.Models.ExtenstionMethods;
 
 namespace Application.Exercises.Queries.GetAllCreated
 {
-    public class GetAllCreatedExercisesQuery : IRequest<IEnumerable<GetExerciseDto>>
-    {
-        public int UserId { get; set; }
+    public class GetAllCreatedExercisesQuery : IRequest<PaginatedList<GetExerciseDto>>
+    {    
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 
-    public class GetAllCreatedQueryHandler : IRequestHandler<GetAllCreatedExercisesQuery, IEnumerable<GetExerciseDto>>
+    public class GetAllCreatedQueryHandler : IRequestHandler<GetAllCreatedExercisesQuery, PaginatedList<GetExerciseDto>>
     {
         private readonly IUserContextService _userContextService;
         private readonly IExerciseRepository _exerciseRepository;
@@ -31,12 +35,13 @@ namespace Application.Exercises.Queries.GetAllCreated
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<GetExerciseDto>> Handle(GetAllCreatedExercisesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllCreatedExercisesQuery request, CancellationToken cancellationToken)
         {
             int loggedUserId = (int)_userContextService.GetUserId;
-            var exercises = await _exerciseRepository.GetWhereAsync(x => x.CreatorId == loggedUserId, x => x.Creator);
-            var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseDto>>(exercises);
-            return exerciseDtos;
+            var exercises = await _exerciseRepository
+                .GetPaginatedResultAsync(x => x.CreatorId == loggedUserId, request.PageNumber, request.PageSize, x => x.Creator);
+            return await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
+            
         }
     }
 }
