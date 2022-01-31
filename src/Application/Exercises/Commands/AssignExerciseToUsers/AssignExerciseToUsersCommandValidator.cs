@@ -45,11 +45,8 @@ namespace Application.Dto.AssignExerciseToUsers
             if (!groupExists) { return false; }
 
             var assignment = await _assignmentRepository
-                .SingleAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
-            if (assignment == null)
-            {
-                return false;
-            }
+                .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
+            if (assignment == null) { return false; }
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
                 , new PermissionRequirement(PermissionNames.AssigningExercises));

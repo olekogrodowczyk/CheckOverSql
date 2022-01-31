@@ -69,7 +69,7 @@ namespace Application.Dto.CreateInvitationDto
 
         public async Task<bool> EmailExists(string email, CancellationToken cancellationToken)
         {
-            var result = await _userRepository.SingleAsync(x => x.Email == email);
+            var result = await _userRepository.SingleOrDefaultAsync(x => x.Email == email);
             if(result is not null) { return true; }
             return false;
         }

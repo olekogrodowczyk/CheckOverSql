@@ -1,4 +1,5 @@
 ﻿using Application.Authorization;
+using Application.Common.Exceptions;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
@@ -50,7 +51,8 @@ namespace Application.Invitations.Commands.CreateInvitation
             var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
             var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
             var group = await _groupRepository.GetByIdAsync(command.GroupId);
-            var assignment = await _assignmentRepository.SingleAsync(x => x.UserId == _userContextService.GetUserId);
+            var assignment = await _assignmentRepository.SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId);
+            if(assignment is null) { throw new NotFoundException("Unexpected error occurred"); }
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
                 , new PermissionRequirement(PermissionNames.SendingInvitations));

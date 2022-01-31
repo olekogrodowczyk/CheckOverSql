@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common.Exceptions;
 
 namespace Application.Services
 {
@@ -95,7 +96,8 @@ namespace Application.Services
 
         public async Task<int> GetComparisonResult(int exerciseId, int solutionId)
         {
-            var comparison = await _comparisonRepository.SingleAsync(x=>x.ExerciseId == exerciseId && x.SolutionId == solutionId);
+            var comparison = await _comparisonRepository.SingleOrDefaultAsync(x=>x.ExerciseId == exerciseId && x.SolutionId == solutionId);
+            if(comparison is null) { throw new NotFoundException("Unexpected error occurred"); }
             return comparison.Id;
         }
 
