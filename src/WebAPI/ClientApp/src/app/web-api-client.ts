@@ -1037,14 +1037,24 @@ export class ExerciseClient {
   /**
    * @return Success
    */
-  getallcreated(): Observable<GetExerciseDtoIEnumerableResult> {
-    let url_ = this.baseUrl + '/api/Exercise/getallcreated';
+  getAllCreated(
+    pageNumber: number | undefined,
+    pageSize: number | undefined
+  ): Observable<GetExerciseDtoPaginatedListResult> {
+    let url_ = this.baseUrl + '/api/Exercise/GetAllCreated?';
+    if (pageNumber === null)
+      throw new Error("The parameter 'pageNumber' cannot be null.");
+    else if (pageNumber !== undefined)
+      url_ += 'PageNumber=' + encodeURIComponent('' + pageNumber) + '&';
+    if (pageSize === null)
+      throw new Error("The parameter 'pageSize' cannot be null.");
+    else if (pageSize !== undefined)
+      url_ += 'PageSize=' + encodeURIComponent('' + pageSize) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1054,30 +1064,30 @@ export class ExerciseClient {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetallcreated(response_);
+          return this.processGetAllCreated(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetallcreated(<any>response_);
+              return this.processGetAllCreated(<any>response_);
             } catch (e) {
-              return <Observable<GetExerciseDtoIEnumerableResult>>(
+              return <Observable<GetExerciseDtoPaginatedListResult>>(
                 (<any>_observableThrow(e))
               );
             }
           } else
-            return <Observable<GetExerciseDtoIEnumerableResult>>(
+            return <Observable<GetExerciseDtoPaginatedListResult>>(
               (<any>_observableThrow(response_))
             );
         })
       );
   }
 
-  protected processGetallcreated(
+  protected processGetAllCreated(
     response: HttpResponseBase
-  ): Observable<GetExerciseDtoIEnumerableResult> {
+  ): Observable<GetExerciseDtoPaginatedListResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1100,7 +1110,7 @@ export class ExerciseClient {
             _responseText === ''
               ? null
               : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = GetExerciseDtoIEnumerableResult.fromJS(resultData200);
+          result200 = GetExerciseDtoPaginatedListResult.fromJS(resultData200);
           return _observableOf(result200);
         })
       );
@@ -3744,9 +3754,122 @@ export class GetUserDto implements IGetUserDto {
   }
 }
 
+export interface IGetExerciseDtoPaginatedList {
+  items?: GetExerciseDto[] | undefined;
+  pageNumber?: number;
+  totalPages?: number;
+  totalCount?: number;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+}
+
+export class GetExerciseDtoPaginatedList
+  implements IGetExerciseDtoPaginatedList
+{
+  items?: GetExerciseDto[] | undefined;
+  pageNumber?: number;
+  totalPages?: number;
+  totalCount?: number;
+  readonly hasPreviousPage?: boolean;
+  readonly hasNextPage?: boolean;
+
+  constructor(data?: IGetExerciseDtoPaginatedList) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data['Items'])) {
+        this.items = [] as any;
+        for (let item of _data['Items'])
+          this.items!.push(GetExerciseDto.fromJS(item));
+      }
+      this.pageNumber = _data['PageNumber'];
+      this.totalPages = _data['TotalPages'];
+      this.totalCount = _data['TotalCount'];
+      (<any>this).hasPreviousPage = _data['HasPreviousPage'];
+      (<any>this).hasNextPage = _data['HasNextPage'];
+    }
+  }
+
+  static fromJS(data: any): GetExerciseDtoPaginatedList {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetExerciseDtoPaginatedList();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.items)) {
+      data['Items'] = [];
+      for (let item of this.items) data['Items'].push(item.toJSON());
+    }
+    data['PageNumber'] = this.pageNumber;
+    data['TotalPages'] = this.totalPages;
+    data['TotalCount'] = this.totalCount;
+    data['HasPreviousPage'] = this.hasPreviousPage;
+    data['HasNextPage'] = this.hasNextPage;
+    return data;
+  }
+}
+
 export interface IGetUserDto {
   id?: number;
   name?: string | undefined;
+}
+
+export interface IGetExerciseDtoPaginatedListResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDtoPaginatedList;
+}
+
+export class GetExerciseDtoPaginatedListResult
+  implements IGetExerciseDtoPaginatedListResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDtoPaginatedList;
+
+  constructor(data?: IGetExerciseDtoPaginatedListResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value']
+        ? GetExerciseDtoPaginatedList.fromJS(_data['Value'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetExerciseDtoPaginatedListResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetExerciseDtoPaginatedListResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
 }
 
 export class Int32IEnumerableResult implements IInt32IEnumerableResult {

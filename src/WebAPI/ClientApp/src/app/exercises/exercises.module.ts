@@ -14,6 +14,8 @@ import { ExerciseCardComponent } from './exercise-card/exercise-card.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatButtonModule,
     MatGridListModule,
     FlexLayoutModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class ExercisesModule {}
