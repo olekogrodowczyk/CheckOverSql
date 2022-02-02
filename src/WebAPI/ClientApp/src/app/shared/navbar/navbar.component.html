@@ -7,18 +7,20 @@
 
   <a
     *ngIf="authService.signedIn$ | async"
+    routerLinkActive="isButtonActive"
     class="menu-button"
     mat-flat-button
-    color="accent"
+    color="primary"
     [routerLink]="['send-query']"
   >
     Send query
   </a>
   <a
     *ngIf="authService.signedIn$ | async"
+    routerLinkActive="isButtonActive"
     class="menu-button"
     mat-flat-button
-    color="accent"
+    color="primary"
     [routerLink]="['exercises']"
     >Exercises</a
   >
@@ -29,7 +31,7 @@
       routerLink="/login"
       class="register-button navbar-button"
       mat-flat-button
-      color="accent"
+      color="primary"
     >
       Sign In
     </a>
@@ -37,7 +39,7 @@
       routerLink="/register"
       class="login-button navbar-button"
       mat-flat-button
-      color="accent"
+      color="primary"
       >Sign Up</a
     >
   </ng-container>
@@ -49,7 +51,7 @@
       (click)="logout()"
       class="login-button navbar-button"
       mat-flat-button
-      color="accent"
+      color="primary"
     >
       Sign out
     </button>
