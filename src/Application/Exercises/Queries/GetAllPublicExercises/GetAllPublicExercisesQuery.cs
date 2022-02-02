@@ -1,5 +1,10 @@
-﻿using Application.Groups;
+﻿using Application.Common.Models;
+using Application.Common.Models.ExtenstionMethods;
+using Application.Groups;
+using Application.Interfaces;
 using AutoMapper;
+using Domain.Common;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using System;
@@ -11,26 +16,32 @@ using System.Threading.Tasks;
 
 namespace Application.Exercises.Queries.GetAllPublicExercises
 {
-    public class GetAllPublicExercisesQuery : IRequest<IEnumerable<GetExerciseDto>>
+    public class GetAllPublicExercisesQuery : IRequest<PaginatedList<GetExerciseDto>>
     {
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 
-    public class GetAllPublicExercisesQueryHandler : IRequestHandler<GetAllPublicExercisesQuery, IEnumerable<GetExerciseDto>>
+    public class GetAllPublicExercisesQueryHandler : IRequestHandler<GetAllPublicExercisesQuery, PaginatedList<GetExerciseDto>>
     {
         private readonly IMapper _mapper;
         private readonly IExerciseRepository _exerciseRepository;
+        private readonly IUserContextService _userContextService;
 
-        public GetAllPublicExercisesQueryHandler(IMapper mapper, IExerciseRepository exerciseRepository )
+        public GetAllPublicExercisesQueryHandler(IMapper mapper, IExerciseRepository exerciseRepository
+            , IUserContextService userContextService )
         {
             _mapper = mapper;
             _exerciseRepository = exerciseRepository;
+            _userContextService = userContextService;
         }
 
-        public async Task<IEnumerable<GetExerciseDto>> Handle(GetAllPublicExercisesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllPublicExercisesQuery request, CancellationToken cancellationToken)
         {
-            var exercises = await _exerciseRepository.GetWhereAsync(x => !x.IsPrivate);
-            var exerciseDtos = _mapper.Map<IEnumerable<GetExerciseDto>>(exercises);
-            return exerciseDtos;
+            int loggedUserId = (int)_userContextService.GetUserId;
+            var exercises = await _exerciseRepository
+                .GetPaginatedResultAsync(x => !x.IsPrivate, request.PageNumber, request.PageSize, x => x.Creator);
+            return await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
         }
     }
 }

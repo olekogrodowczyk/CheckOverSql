@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Application.Common.Models;
 using Application.Common.Models.ExtenstionMethods;
+using Domain.Common;
 
 namespace Application.Exercises.Queries.GetAllCreated
 {

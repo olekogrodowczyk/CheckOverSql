@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Common.Models
+namespace Domain.Common
 {
     public class PaginatedList<T>
     {

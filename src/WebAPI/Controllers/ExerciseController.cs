@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Common.Models;
+using Domain.Common;
 
 namespace WebAPI.Controllers
 {
@@ -51,13 +52,13 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetExerciseDto>>))]
+        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<GetExerciseDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        [HttpGet("getallpublic")]
-        public async Task<IActionResult> GetAllPublic()
+        [HttpGet("GetAllPublic")]
+        public async Task<IActionResult> GetAllPublic([FromQuery] GetAllPublicExercisesQuery query)
         {
-            var result = await Mediator.Send(new GetAllPublicExercisesQuery());
-            return Ok(new Result<IEnumerable<GetExerciseDto>>(result, "All public exercises returned successfully"));
+            var result = await Mediator.Send(query);
+            return Ok(new Result<PaginatedList<GetExerciseDto>>(result, "All public exercises returned successfully"));
         }
 
         [HttpPost("assignexercise/{id}")]
