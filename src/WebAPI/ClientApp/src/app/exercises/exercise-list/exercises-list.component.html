@@ -1,0 +1,29 @@
+<div *ngIf="data" class="exercises-list">
+  <div
+    fxLayout="row wrap"
+    fxLayoutAlign="start start"
+    fxFlex
+    fxLayoutGap="16px grid"
+  >
+    <app-exercise-card
+      fxFlex-xl="0 1 25%"
+      fxFlex-lg="0 1 33.3%"
+      fxFlex.sm="0 1 100%"
+      fxFlex.xs="0 1 100%"
+      *ngFor="let exercise of data.items"
+      [model]="exercise"
+    >
+    </app-exercise-card>
+  </div>
+</div>
+<mat-spinner *ngIf="!data"></mat-spinner>
+
+<mat-paginator
+  *ngIf="data"
+  [length]="data.totalCount"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[8, 4]"
+  (page)="onPageChange($event)"
+  aria-label="Select page"
+>
+</mat-paginator>

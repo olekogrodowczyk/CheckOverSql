@@ -13,7 +13,7 @@ export class ExerciseCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.shortenedDescription = this.model.description?.slice(0, 125)!;
-    if (this.model.description?.length! > 125) {
+    if (this.model.description?.length! > 85) {
       this.shortenedDescription += '...';
     }
   }

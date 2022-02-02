@@ -1,14 +1,20 @@
 <mat-card class="exercise-card">
-  <mat-card-subtitle>#{{ model.id }}</mat-card-subtitle>
-  <mat-card-title>{{ model.title }}</mat-card-title>
-  <mat-card-content>
-    <p class="description">{{ shortenedDescription }}</p>
-  </mat-card-content>
+  <div fxLayout="row" class="header">
+    <div>#{{ model.id }}</div>
+    <div style="margin-left: auto">
+      <p>Max points: {{ model.maxPoints }}</p>
+    </div>
+  </div>
+
+  <div class="card-container">
+    <mat-card-title>{{ model.title }}</mat-card-title>
+    <mat-card-content>
+      <p class="description">{{ shortenedDescription }}</p>
+    </mat-card-content>
+  </div>
   <mat-divider></mat-divider>
   <mat-card-actions>
     <button class="solve-button" mat-flat-button color="primary">SOLVE</button>
   </mat-card-actions>
-  <mat-card-footer>
-    <p>Max points: {{ model.maxPoints }}</p>
-  </mat-card-footer>
+  <mat-card-footer> </mat-card-footer>
 </mat-card>

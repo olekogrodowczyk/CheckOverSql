@@ -1,5 +1,14 @@
 <mat-tab-group dynamicHeight>
-  <mat-tab label="Created Exercises"> <app-created> </app-created> </mat-tab>
-  <mat-tab label="Public Exercises"> Content 2 </mat-tab>
-  <mat-tab label="Third"> Content 3 </mat-tab>
+  <mat-tab label="Created Exercises">
+    <ng-template matTabContent
+      ><app-exercise-list [typeOfExercise]="getCreatedExercisesEnum">
+      </app-exercise-list
+    ></ng-template>
+  </mat-tab>
+  <mat-tab label="Public Exercises">
+    <ng-template matTabContent
+      ><app-exercise-list [typeOfExercise]="getPublicExercisesEnum">
+      </app-exercise-list
+    ></ng-template>
+  </mat-tab>
 </mat-tab-group>

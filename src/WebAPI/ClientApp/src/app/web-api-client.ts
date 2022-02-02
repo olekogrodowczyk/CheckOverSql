@@ -1150,14 +1150,24 @@ export class ExerciseClient {
   /**
    * @return Success
    */
-  getallpublic(): Observable<GetExerciseDtoIEnumerableResult> {
-    let url_ = this.baseUrl + '/api/Exercise/getallpublic';
+  getAllPublic(
+    pageNumber: number | undefined,
+    pageSize: number | undefined
+  ): Observable<GetExerciseDtoPaginatedListResult> {
+    let url_ = this.baseUrl + '/api/Exercise/GetAllPublic?';
+    if (pageNumber === null)
+      throw new Error("The parameter 'pageNumber' cannot be null.");
+    else if (pageNumber !== undefined)
+      url_ += 'PageNumber=' + encodeURIComponent('' + pageNumber) + '&';
+    if (pageSize === null)
+      throw new Error("The parameter 'pageSize' cannot be null.");
+    else if (pageSize !== undefined)
+      url_ += 'PageSize=' + encodeURIComponent('' + pageSize) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      withCredentials: true,
       headers: new HttpHeaders({
         Accept: 'text/plain',
       }),
@@ -1167,36 +1177,36 @@ export class ExerciseClient {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetallpublic(response_);
+          return this.processGetAllPublic(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetallpublic(<any>response_);
+              return this.processGetAllPublic(response_ as any);
             } catch (e) {
-              return <Observable<GetExerciseDtoIEnumerableResult>>(
-                (<any>_observableThrow(e))
-              );
+              return _observableThrow(
+                e
+              ) as any as Observable<GetExerciseDtoPaginatedListResult>;
             }
           } else
-            return <Observable<GetExerciseDtoIEnumerableResult>>(
-              (<any>_observableThrow(response_))
-            );
+            return _observableThrow(
+              response_
+            ) as any as Observable<GetExerciseDtoPaginatedListResult>;
         })
       );
   }
 
-  protected processGetallpublic(
+  protected processGetAllPublic(
     response: HttpResponseBase
-  ): Observable<GetExerciseDtoIEnumerableResult> {
+  ): Observable<GetExerciseDtoPaginatedListResult> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
         ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
+        : (response as any).error instanceof Blob
+        ? (response as any).error
         : undefined;
 
     let _headers: any = {};
@@ -1213,7 +1223,7 @@ export class ExerciseClient {
             _responseText === ''
               ? null
               : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = GetExerciseDtoIEnumerableResult.fromJS(resultData200);
+          result200 = GetExerciseDtoPaginatedListResult.fromJS(resultData200);
           return _observableOf(result200);
         })
       );
@@ -1247,7 +1257,7 @@ export class ExerciseClient {
         })
       );
     }
-    return _observableOf(<any>null);
+    return _observableOf(null as any);
   }
 
   /**

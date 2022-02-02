@@ -1,14 +1,22 @@
-.mat-card-footer {
-  display: flex;
-  margin-left: 0.2em;
-}
-
 .exercise-card {
+  width: 400px;
   max-width: 400px;
+  min-width: 400px;
+  height: 225px;
 }
 
 .mat-card-content {
-  height: 60px;
+  height: 70px;
+  margin-top: 20px;
+}
+
+.card-container {
+  height: 130px;
+}
+
+.header {
+  margin-bottom: 8px;
+  color: #ffffffb3;
 }
 
 .solve-button {
@@ -17,5 +25,10 @@
 }
 
 .description {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.mat-card-title {
   word-wrap: break-word;
 }
