@@ -29,7 +29,7 @@ export class SendQueryFormComponent implements OnInit {
   }
 
   getDatabaseNames() {
-    this.databaseClient.getdatabasenames().subscribe({
+    this.databaseClient.getDatabaseNames().subscribe({
       next: (result) => {
         this.databaseNames = result.value!;
       },
@@ -46,17 +46,15 @@ export class SendQueryFormComponent implements OnInit {
       return;
     }
     console.log(this.SendQueryAdminForm.value);
-    this.databaseClient
-      .sendQueryValueAdmin(this.SendQueryAdminForm.value)
-      .subscribe({
-        next: (result) => {
-          this.sendQueryService.queryResult = result.value!;
-          this.snackBar.openSnackBar('Query executed successfully');
-          this.router.navigateByUrl('send-query/query-result');
-        },
-        error: ({ message }) => {
-          this.snackBar.openSnackBar(message);
-        },
-      });
+    this.databaseClient.getQueryValue(this.SendQueryAdminForm.value).subscribe({
+      next: (result) => {
+        this.sendQueryService.queryResult = result.value!;
+        this.snackBar.openSnackBar('Query executed successfully');
+        this.router.navigateByUrl('send-query/query-result');
+      },
+      error: ({ message }) => {
+        this.snackBar.openSnackBar(message);
+      },
+    });
   }
 }

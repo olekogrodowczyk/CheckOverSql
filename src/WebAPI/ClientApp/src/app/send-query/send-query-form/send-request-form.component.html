@@ -1,5 +1,5 @@
 <div fxLayout class="form-container">
-  <div fxFlex="1 1 90%" fxFlex.lt-md="1 1 100%" class="form-wrapper">
+  <div fxFlex="1 1 auto" class="form-wrapper">
     <div class="form-header">Send Query</div>
     <form [formGroup]="SendQueryAdminForm" (ngSubmit)="onSubmit()" class="form">
       <mat-form-field appearance="fill">
@@ -16,7 +16,7 @@
         <mat-label>Type query</mat-label>
         <textarea rows="10" formControlName="query" matInput></textarea>
       </mat-form-field>
-      <button mat-flat-button color="primary">Submit</button>
+      <button mat-flat-button color="primary">Execute</button>
     </form>
   </div>
 </div>
