@@ -110,7 +110,6 @@ namespace WebAPI
                     IsPrivate = false,
                     Title = "Get all fields",
                     Description = "Get all field description",
-                    MaxPoints=1,
                 },
                 new Exercise()
                 {
@@ -120,7 +119,6 @@ namespace WebAPI
                     IsPrivate = false,
                     Title = "Get one field",
                     Description = "Get one field description",
-                    MaxPoints = 1,
                 },
                 new Exercise()
                 {
@@ -130,7 +128,6 @@ namespace WebAPI
                     IsPrivate = false,
                     Title = "Get two fields",
                     Description = "Get two fields description",
-                    MaxPoints = 1
                 },
             };
         }

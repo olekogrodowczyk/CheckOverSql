@@ -50,7 +50,6 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",
-                MaxPoints = 1,
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
                 IsPrivate = true,
@@ -71,7 +70,6 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 Database = "dsadwqdwq",
                 Description = "Opis2dsadsa",
-                MaxPoints = 0,
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers"
             }.ToJsonHttpContent();
@@ -91,7 +89,6 @@ namespace WebAPI.IntegrationTests.Controllers
             {
                 Database = "FootballLeague",
                 Description = "Opis2dsadsa",
-                MaxPoints = 1,
                 Title = "Zadanie2 title",
                 ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')",
                 IsPrivate = true,

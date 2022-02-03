@@ -89,7 +89,6 @@ namespace WebAPI.IntegrationTests
             {
                 DatabaseId = 1,
                 Description = "Opis2dsadsa",
-                MaxPoints = 1,
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
                 IsPrivate = isPrivate,
