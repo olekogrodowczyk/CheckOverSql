@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { QueryResultComponent } from './query-result/query-result.component';
 import { MatTableModule } from '@angular/material/table';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [HomeComponent, SendQueryFormComponent, QueryResultComponent],
@@ -23,6 +24,7 @@ import { MatTableModule } from '@angular/material/table';
     MatInputModule,
     MatButtonModule,
     MatTableModule,
+    FlexLayoutModule,
   ],
 })
 export class SendQueryModule {}
