@@ -25,18 +25,17 @@ namespace WebAPI.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        [HttpPost]
+        [HttpPost("SendQueryAdmin")]
         public async Task<IActionResult> SendQueryAdmin(SendQueryAdminCommand command)
         {
             var result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Query executed successfully, number of rows affected returned."));
         }
 
-        [Authorize(Roles ="Admin")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        [HttpPost("SendQueryValueAdmin")]
-        public async Task<IActionResult> GetQueryValueAdmin([FromBody] GetQueryValueAdminQuery query)
+        [HttpPost("GetQueryValue")]
+        public async Task<IActionResult> GetQueryValue([FromBody] GetQueryValue query)
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<IEnumerable<IEnumerable<string>>>(result, "Query executed successfully, data returned"));
@@ -45,7 +44,7 @@ namespace WebAPI.Controllers
         [Authorize]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<string>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        [HttpGet("getdatabasenames")]
+        [HttpGet("GetDatabaseNames")]
         public async Task<IActionResult> GetDatabaseNames()
         {
             var result = await Mediator.Send(new GetDatabaseNamesQuery());

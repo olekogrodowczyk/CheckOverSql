@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Application.Databases.Queries.GetQueryValueAdmin
 {
-    public class GetQueryValueAdminQuery : IRequest<IEnumerable<IEnumerable<string>>>
+    public class GetQueryValueAdmin : IRequest<IEnumerable<IEnumerable<string>>>
     {
         public string DatabaseName { get; set; }
         public string Query { get; set; }
     }
 
-    public class GetQueryValueAdminQueryHandler : IRequestHandler<GetQueryValueAdminQuery, IEnumerable<IEnumerable<string>>>
+    public class GetQueryValueAdminQueryHandler : IRequestHandler<GetQueryValueAdmin, IEnumerable<IEnumerable<string>>>
     {
         private readonly IDatabaseRepository _databaseRepository;
         private readonly IDatabaseService _databaseService;
@@ -28,7 +28,7 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
             _databaseService = databaseService;
         }
 
-        public async Task<IEnumerable<IEnumerable<string>>> Handle(GetQueryValueAdminQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IEnumerable<string>>> Handle(GetQueryValueAdmin request, CancellationToken cancellationToken)
         {
             var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName, false);
             return result;

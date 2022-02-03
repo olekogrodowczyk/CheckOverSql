@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
             _userContextService = userContextService;
         }
 
-        [HttpPost]
+        [HttpPost("CreateInvitation")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateInvitationCommand command)
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<int>(result, "Invitation sent successfully"));
         }
 
-        [HttpGet("getall")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetInvitationDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAll([FromQuery] string queryType)
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<IEnumerable<GetInvitationDto>>(result, "All Invitations returned successfully"));
         }
 
-        [HttpPatch("accept/{invitationId}")]
+        [HttpPatch("Accept/{invitationId}")]
         [ProducesResponseType(200, Type = typeof(Result))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Accept([FromRoute] int invitationId)
@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             return Ok(new Result("Invitation accepted successfully"));
         }
 
-        [HttpPatch("reject/{invitationId}")]
+        [HttpPatch("Reject/{invitationId}")]
         [ProducesResponseType(200, Type = typeof(Result))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Reject([FromRoute] int invitationId)

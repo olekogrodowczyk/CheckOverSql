@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             _userContextService = userContextService;
         }
 
-        [HttpPost]
+        [HttpPost("CreateExercise")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateExerciseCommand command)
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<PaginatedList<GetExerciseDto>>(result, "All public exercises returned successfully"));
         }
 
-        [HttpPost("assignexercise/{id}")]
+        [HttpPost("AssignExercise/{id}")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<int>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> AssignExerciseToUsersInGroup

@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             _userContextService = userContextService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllSolvingsAssignedToUser()
@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings returned successfully"));
         }
 
-        [HttpGet("getbyid/{solvingId}")]
+        [HttpGet("GetById/{solvingId}")]
         [ProducesResponseType(200, Type = typeof(Result<GetSolvingDto>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetUserSolvingById([FromRoute] int solvingId)
@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<GetSolvingDto>(result, "Solving returned successfully"));
         }
 
-        [HttpGet("getalltodo")]
+        [HttpGet("GetAllToDo")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()

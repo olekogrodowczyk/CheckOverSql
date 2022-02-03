@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
             _userContextService = userContextService;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("GetAll")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolutionDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllCreatedByUser()
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<IEnumerable<GetSolutionDto>>(result, "All solution returned successfully"));
         }
         
-        [HttpPost()]
+        [HttpPost("CreateSolution")]
         [ProducesResponseType(200, Type = typeof(Result<GetComparisonDto>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateSolutionCommand command)
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<GetComparisonDto>(result, "New solution added successfully and returned comparison"));
         }
 
-        [HttpGet("getquerydata/{solutionId}")]
+        [HttpGet("GetQueryData/{solutionId}")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetQueryData([FromQuery] int exerciseId, [FromRoute] int solutionId)

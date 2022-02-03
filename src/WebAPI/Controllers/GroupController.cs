@@ -26,7 +26,7 @@ namespace WebAPI.Controllers
         {
         }
         
-        [HttpPost]
+        [HttpPost("CreateGroup")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Create([FromBody] CreateGroupCommand command)
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             return Ok(new Result<int>(result, "Group created successfully"));
         }
 
-        [HttpGet("getusergroups")]
+        [HttpGet("GetUserGroups")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetGroupDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetUserGroups()
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers
             return Ok(new Result("Group deleted successfully"));
         }
 
-        [HttpGet("getallassignments/{groupId}")]
+        [HttpGet("GetAllAssignments/{groupId}")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetAssignmentDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllAssignmentsInGroup([FromRoute] int groupId)
