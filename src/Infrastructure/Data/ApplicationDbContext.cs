@@ -51,11 +51,11 @@ namespace Infrastructure.Data
 
             foreach (var entity in entries)
             {
-                ((AuditableEntity)entity.Entity).LastModified = DateTime.UtcNow;
+                ((AuditableEntity)entity.Entity).LastModified = DateTime.Now;
 
                 if(entity.State==EntityState.Added)
                 {
-                    ((AuditableEntity)entity.Entity).Created = DateTime.UtcNow;
+                    ((AuditableEntity)entity.Entity).Created = DateTime.Now;
                 }
             }
 
