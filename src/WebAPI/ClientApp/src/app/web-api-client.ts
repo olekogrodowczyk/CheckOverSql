@@ -2634,7 +2634,7 @@ export interface IAssignExerciseToUsersCommand {
 export class CreateExerciseCommand implements ICreateExerciseCommand {
   title?: string | undefined;
   description?: string | undefined;
-  database?: string | undefined;
+  databaseName?: string | undefined;
   validAnswer?: string | undefined;
   isPrivate?: boolean;
 
@@ -2678,7 +2678,7 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 export interface ICreateExerciseCommand {
   title?: string | undefined;
   description?: string | undefined;
-  database?: string | undefined;
+  databaseName?: string | undefined;
   validAnswer?: string | undefined;
   isPrivate?: boolean;
 }

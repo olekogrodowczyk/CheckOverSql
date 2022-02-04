@@ -17,7 +17,7 @@ namespace Application.Exercises.Commands.CreateExercise
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Database { get; set; }
+        public string DatabaseName { get; set; }
         public string ValidAnswer { get; set; }
         public bool IsPrivate { get; set; }
 
@@ -49,10 +49,10 @@ namespace Application.Exercises.Commands.CreateExercise
 
         public async Task<int> Handle(CreateExerciseCommand request, CancellationToken cancellationToken)
         {
-            await _databaseService.SendQueryNoData(request.ValidAnswer, request.Database);
+            await _databaseService.SendQueryNoData(request.ValidAnswer, request.DatabaseName);
             var exercise = _mapper.Map<Exercise>(request);
             exercise.CreatorId = (int)_userContextService.GetUserId;
-            exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(request.Database);
+            exercise.DatabaseId = await _databaseRepository.GetDatabaseIdByName(request.DatabaseName);
             exercise.IsPrivate = request.IsPrivate;
             await _exerciseRepository.AddAsync(exercise);
             return exercise.Id;

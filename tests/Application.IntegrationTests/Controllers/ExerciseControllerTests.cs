@@ -48,7 +48,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var httpContent = new CreateExerciseCommand
             {
-                Database = "FootballLeague",
+                DatabaseName = "FootballLeague",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
@@ -68,7 +68,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var httpContent = new CreateExerciseCommand
             {
-                Database = "dsadwqdwq",
+                DatabaseName = "dsadwqdwq",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers"
@@ -87,7 +87,7 @@ namespace WebAPI.IntegrationTests.Controllers
             //Arrange
             var httpContent = new CreateExerciseCommand
             {
-                Database = "FootballLeague",
+                DatabaseName = "FootballLeague",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
                 ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')",

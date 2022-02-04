@@ -45,7 +45,7 @@ namespace Application.Dto.CreateExerciseDto
                 .MinimumLength(10).WithMessage("Minimum length of valid answer is 5")
                 .MaximumLength(500).WithMessage("Maximum length of valid answer is 500");
 
-            RuleFor(x => x.Database)
+            RuleFor(x => x.DatabaseName)
                 .NotEmpty().WithMessage("Database hasn't been chosen")
                 .MaximumLength(25).WithMessage("Max length of chosen database is 25")
                 .MustAsync(containsDatabaseName)
