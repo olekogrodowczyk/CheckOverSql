@@ -1928,7 +1928,7 @@ export class SolutionClient {
     @Optional() @Inject(API_BASE_URL) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+    this.baseUrl = 'https://localhost:5001';
   }
 
   /**
@@ -2966,7 +2966,7 @@ export class GetComparisonDto implements IGetComparisonDto {
   solutionSolver?: string | undefined;
   exerciseId?: number;
   exerciseTitle?: string | undefined;
-  createdAt?: Date;
+  created?: Date;
   result?: boolean;
 
   constructor(data?: IGetComparisonDto) {
@@ -2984,7 +2984,7 @@ export class GetComparisonDto implements IGetComparisonDto {
       this.solutionSolver = _data['SolutionSolver'];
       this.exerciseId = _data['ExerciseId'];
       this.exerciseTitle = _data['ExerciseTitle'];
-      this.createdAt = _data['CreatedAt']
+      this.created = _data['CreatedAt']
         ? new Date(_data['CreatedAt'].toString())
         : <any>undefined;
       this.result = _data['Result'];
@@ -3004,8 +3004,8 @@ export class GetComparisonDto implements IGetComparisonDto {
     data['SolutionSolver'] = this.solutionSolver;
     data['ExerciseId'] = this.exerciseId;
     data['ExerciseTitle'] = this.exerciseTitle;
-    data['CreatedAt'] = this.createdAt
-      ? this.createdAt.toISOString()
+    data['CreatedAt'] = this.created
+      ? this.created.toISOString()
       : <any>undefined;
     data['Result'] = this.result;
     return data;
@@ -3017,7 +3017,7 @@ export interface IGetComparisonDto {
   solutionSolver?: string | undefined;
   exerciseId?: number;
   exerciseTitle?: string | undefined;
-  createdAt?: Date;
+  created?: Date;
   result?: boolean;
 }
 

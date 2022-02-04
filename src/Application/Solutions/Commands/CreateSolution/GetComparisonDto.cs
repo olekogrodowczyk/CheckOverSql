@@ -15,7 +15,7 @@ namespace Application.Solutions.Commands.CreateSolution
         public string SolutionSolver { get; set; }
         public int ExerciseId { get; set; }
         public string ExerciseTitle { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime Created { get; set; }
         public bool Result { get; set; }
 
         public void Mapping(Profile profile)
