@@ -14,7 +14,14 @@
   </div>
   <mat-divider></mat-divider>
   <mat-card-actions>
-    <button class="solve-button" mat-flat-button color="primary">SOLVE</button>
+    <button
+      (click)="openSolveDialog()"
+      class="solve-button"
+      mat-flat-button
+      color="primary"
+    >
+      SOLVE
+    </button>
   </mat-card-actions>
   <mat-card-footer> </mat-card-footer>
 </mat-card>

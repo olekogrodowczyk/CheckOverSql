@@ -1,0 +1,10 @@
+<h1>{{ data.title }}</h1>
+<p>{{ data.description }}</p>
+<br />
+<form fxLayout="column" [formGroup]="solveExerciseForm" (ngSubmit)="onSubmit()">
+  <mat-form-field color="accent" appearance="fill">
+    <mat-label>Answer</mat-label>
+    <textarea rows="10" formControlName="query" matInput></textarea>
+  </mat-form-field>
+  <button type="submit" mat-flat-button color="primary">Send</button>
+</form>
