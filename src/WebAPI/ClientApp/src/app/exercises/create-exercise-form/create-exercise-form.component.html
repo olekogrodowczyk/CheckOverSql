@@ -1,1 +1,43 @@
-<p>create-exercise-form works!</p>
+<div class="form-container">
+  <div class="form-wrapper">
+    <div class="form-header">Create Exercise</div>
+    <form [formGroup]="createExerciseForm" (ngSubmit)="onSubmit()" class="form">
+      <mat-form-field appearance="fill">
+        <mat-label>Select database</mat-label>
+        <mat-select formControlName="databaseName">
+          <mat-option
+            *ngFor="let database of databaseNames"
+            [value]="database"
+            >{{ database }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input formControlName="title" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Descriptiion</mat-label>
+        <textarea rows="8" formControlName="description" matInput></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Type a valid query</mat-label>
+        <textarea rows="8" formControlName="validAnswer" matInput></textarea>
+      </mat-form-field>
+      <mat-checkbox class="checkbox" formControlName="isPrivate"
+        >Is private</mat-checkbox
+      >
+
+      <button
+        type="submit"
+        class="create-button"
+        mat-flat-button
+        color="primary"
+      >
+        Create
+      </button>
+    </form>
+  </div>
+</div>
