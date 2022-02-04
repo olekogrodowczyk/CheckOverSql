@@ -2,7 +2,7 @@
   <div fxFlex="1 1 auto" class="form-wrapper">
     <div class="form-header">Send Query</div>
     <form [formGroup]="SendQueryAdminForm" (ngSubmit)="onSubmit()" class="form">
-      <mat-form-field appearance="fill">
+      <mat-form-field color="accent" appearance="fill">
         <mat-label>Select database</mat-label>
         <mat-select formControlName="databaseName">
           <mat-option
@@ -12,7 +12,7 @@
           >
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field color="accent" appearance="fill">
         <mat-label>Type query</mat-label>
         <textarea rows="10" formControlName="query" matInput></textarea>
       </mat-form-field>
