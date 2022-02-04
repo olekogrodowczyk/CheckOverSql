@@ -94,7 +94,15 @@ namespace Application.Services
             return comparison;
         }
 
-        
+        public async Task<bool> CheckIfUserPassedExercise(int exerciseId)
+        {
+            int? loggedUserId = _userContextService.GetUserId;
+            if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
+            var result = await _comparisonRepository.FirstOrDefaultAsync
+                (x => x.Solution.CreatorId == (int)loggedUserId && x.ExerciseId == exerciseId && x.Result == true, x=>x.Solution);
+            if(result is not null) { return true; }
+            return false;            
+        }
 
     }
 }

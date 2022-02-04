@@ -27,13 +27,15 @@ namespace Application.Exercises.Queries.GetAllCreated
         private readonly IUserContextService _userContextService;
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IMapper _mapper;
+        private readonly ISolutionService _solutionService;
 
         public GetAllCreatedQueryHandler(IUserContextService userContextService, IExerciseRepository exerciseRepository
-            ,IMapper mapper)
+            ,IMapper mapper, ISolutionService solutionService)
         {
             _userContextService = userContextService;
             _exerciseRepository = exerciseRepository;
             _mapper = mapper;
+            _solutionService = solutionService;
         }
 
         public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllCreatedExercisesQuery request, CancellationToken cancellationToken)
@@ -41,8 +43,12 @@ namespace Application.Exercises.Queries.GetAllCreated
             int loggedUserId = (int)_userContextService.GetUserId;
             var exercises = await _exerciseRepository
                 .GetPaginatedResultAsync(x => x.CreatorId == loggedUserId, request.PageNumber, request.PageSize, x => x.Creator);
-            return await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
-            
+            var exercisesDto = await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
+            foreach (var item in exercisesDto.Items)
+            {
+                item.Passed = await _solutionService.CheckIfUserPassedExercise(item.Id);
+            }
+            return exercisesDto;
         }
     }
 }

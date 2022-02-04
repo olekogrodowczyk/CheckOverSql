@@ -18,6 +18,7 @@ namespace Application.Exercises.Queries
         public int DatabaseId { get; set; }
         public string ValidAnswer { get; set; }
         public string CreationTime { get; set; }
+        public bool Passed { get; set; }
 
         public void Mapping(Profile profile)
         {

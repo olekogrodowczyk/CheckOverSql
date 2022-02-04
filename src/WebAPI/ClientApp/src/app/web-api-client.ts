@@ -3075,6 +3075,7 @@ export class GetExerciseDto implements IGetExerciseDto {
   creator?: string | undefined;
   databaseId?: number;
   validAnswer?: string | undefined;
+  passed?: boolean | undefined;
 
   constructor(data?: IGetExerciseDto) {
     if (data) {
@@ -3095,6 +3096,7 @@ export class GetExerciseDto implements IGetExerciseDto {
       this.databaseId = _data['DatabaseId'];
       this.validAnswer = _data['ValidAnswer'];
       this.creationTime = _data['CreationTime'];
+      this.passed = _data['Passed'];
     }
   }
 
@@ -3114,6 +3116,7 @@ export class GetExerciseDto implements IGetExerciseDto {
     data['Creator'] = this.creator;
     data['DatabaseId'] = this.databaseId;
     data['ValidAnswer'] = this.validAnswer;
+    data['Passed'] = this.validAnswer;
     return data;
   }
 }

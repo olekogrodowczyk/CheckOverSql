@@ -10,6 +10,7 @@ namespace Application.Interfaces
 {
     public interface ISolutionService
     {
+        Task<bool> CheckIfUserPassedExercise(int exerciseId);
         Task<bool> Compare(int solutionId, string query);
         Task<Comparison> CreateComparison(int solutionId, int exerciseId);
         Task HandlePossibleSolvingToDo(int exerciseId, Solution solution);
