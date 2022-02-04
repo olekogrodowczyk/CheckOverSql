@@ -3071,7 +3071,7 @@ export class GetExerciseDto implements IGetExerciseDto {
   id?: number;
   title?: string | undefined;
   description?: string | undefined;
-  maxPoints?: number;
+  creationTime?: string | undefined;
   creator?: string | undefined;
   databaseId?: number;
   validAnswer?: string | undefined;
@@ -3094,6 +3094,7 @@ export class GetExerciseDto implements IGetExerciseDto {
       this.creator = _data['Creator'];
       this.databaseId = _data['DatabaseId'];
       this.validAnswer = _data['ValidAnswer'];
+      this.creationTime = _data['CreationTime'];
     }
   }
 
@@ -3121,7 +3122,7 @@ export interface IGetExerciseDto {
   id?: number;
   title?: string | undefined;
   description?: string | undefined;
-  maxPoints?: number;
+  creationTime?: string | undefined;
   creator?: string | undefined;
   databaseId?: number;
   validAnswer?: string | undefined;

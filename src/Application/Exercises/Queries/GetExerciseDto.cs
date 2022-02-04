@@ -14,15 +14,16 @@ namespace Application.Exercises.Queries
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int MaxPoints { get; set; }
         public string Creator { get; set; }
         public int DatabaseId { get; set; }
         public string ValidAnswer { get; set; }
+        public string CreationTime { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Exercise, GetExerciseDto>()
-                .ForMember(x => x.Creator, y => y.MapFrom(z => z.Creator.FirstName + " " + z.Creator.LastName));
+                .ForMember(x => x.Creator, opt => opt.MapFrom(y => y.Creator.FirstName + " " + y.Creator.LastName))
+                .ForMember(x => x.CreationTime, opt => opt.MapFrom(y => y.Created.ToString()));
         }
     }
 }
