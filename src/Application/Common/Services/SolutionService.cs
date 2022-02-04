@@ -94,12 +94,7 @@ namespace Application.Services
             return comparison;
         }
 
-        public async Task<int> GetComparisonResult(int exerciseId, int solutionId)
-        {
-            var comparison = await _comparisonRepository.SingleOrDefaultAsync(x=>x.ExerciseId == exerciseId && x.SolutionId == solutionId);
-            if(comparison is null) { throw new NotFoundException("Unexpected error occurred"); }
-            return comparison.Id;
-        }
+        
 
     }
 }
