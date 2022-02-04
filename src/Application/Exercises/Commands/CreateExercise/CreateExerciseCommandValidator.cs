@@ -52,7 +52,7 @@ namespace Application.Dto.CreateExerciseDto
                 .WithMessage($"Defined database doesn't exist, available databases: [{string.Join(',', databaseNames)}]");
 
             RuleFor(x => x.IsPrivate)
-                .NotEmpty().WithMessage("Exercise visibility hasn't been defined");
+                .NotNull().WithMessage("Exercise visibility hasn't been defined");
         }
     }
 }
