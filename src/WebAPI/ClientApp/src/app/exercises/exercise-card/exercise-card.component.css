@@ -11,12 +11,13 @@
 }
 
 .card-container {
-  height: 130px;
+  height: 145px;
 }
 
 .header {
   margin-bottom: 8px;
   color: #ffffffb3;
+  height: 20px;
 }
 
 .solve-button {

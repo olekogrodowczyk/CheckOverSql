@@ -18,7 +18,7 @@ export class ExerciseCardComponent implements OnInit {
   }
 
   sliceDescription() {
-    this.shortenedDescription = this.model.description?.slice(0, 125)!;
+    this.shortenedDescription = this.model.description?.slice(0, 200)!;
     if (this.model.description?.length! > 85) {
       this.shortenedDescription += '...';
     }
