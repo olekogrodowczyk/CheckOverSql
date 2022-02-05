@@ -14,6 +14,14 @@
   height: 145px;
 }
 
+.passed {
+  margin-left: auto;
+  margin-top: 0.4em;
+  color: #4db6ac;
+  margin-right: 0.5em;
+  font-size: 1.2em;
+}
+
 .header {
   margin-bottom: 8px;
   color: #ffffffb3;
