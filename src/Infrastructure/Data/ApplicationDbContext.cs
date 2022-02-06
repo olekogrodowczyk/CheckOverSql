@@ -27,6 +27,7 @@ namespace Infrastructure.Data
         public DbSet<Database> Databases { get; set; }
         public DbSet<Solution> Solutions { get; set; }
         public DbSet<Comparison> Comparisons { get; set; }
+        public DbSet<Query> Queries { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
