@@ -128,6 +128,12 @@ namespace Infrastructure.Data
                 .WithMany(x => x.Queries)
                 .HasForeignKey(x => x.CreatorId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Query>()
+                .HasOne<Database>(x => x.Database)
+                .WithMany(x => x.Queries)
+                .HasForeignKey(x => x.DatabaseId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         
     }

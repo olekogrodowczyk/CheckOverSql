@@ -13,10 +13,13 @@ namespace Application.Databases.Queries.GetQueryHistory
     {
         public string QueryValue { get; set; }
         public DateTime Created { get; set; }
+        public int DatabaseId { get; set; }
+        public string DatabaseName { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Query, QueryHistoryDto>();
+            profile.CreateMap<Query, QueryHistoryDto>()
+                .ForMember(x=>x.DatabaseName, opt=>opt.MapFrom(y=>y.Database));
         }
     }
 }
