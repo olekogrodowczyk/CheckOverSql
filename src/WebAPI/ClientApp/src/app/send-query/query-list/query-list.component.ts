@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { DatabaseClient, QueryDto } from 'src/app/web-api-client';
 
@@ -10,7 +11,7 @@ import { DatabaseClient, QueryDto } from 'src/app/web-api-client';
 export class QueryListComponent implements OnInit {
   queryModels!: QueryDto[];
   pageSize = 9;
-  totalPages!: number;
+  totalCount!: number;
 
   constructor(
     private databaseClient: DatabaseClient,
@@ -25,11 +26,15 @@ export class QueryListComponent implements OnInit {
     this.databaseClient.getQueryHistory(pageNumber, pageSize).subscribe({
       next: (response) => {
         this.queryModels = response.value?.items!;
-        this.totalPages = response.value?.totalPages!;
+        this.totalCount = response.value?.totalCount!;
       },
       error: ({ message }) => {
         this.snackBar.openSnackBar(message);
       },
     });
+  }
+
+  onPageChange(event: PageEvent) {
+    this.getQueryHistory(event.pageIndex + 1, this.pageSize);
   }
 }

@@ -12,9 +12,10 @@
 </div>
 
 <mat-paginator
-  [length]="totalPages"
+  [length]="totalCount"
   [pageSize]="pageSize"
   [pageSizeOptions]="[5, 10]"
+  (page)="onPageChange($event)"
   aria-label="Select page"
 >
 </mat-paginator>

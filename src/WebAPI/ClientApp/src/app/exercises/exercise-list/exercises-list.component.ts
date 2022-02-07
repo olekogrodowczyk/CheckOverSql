@@ -28,7 +28,6 @@ export class ExerciseListComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    console.log(event.pageIndex);
     this.getExercises(this.typeOfExercise, event.pageIndex + 1, this.pageSize);
   }
 
