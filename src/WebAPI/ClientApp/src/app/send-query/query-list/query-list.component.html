@@ -1,0 +1,17 @@
+<div class="query-list" fxLayout="row">
+  <app-query-card
+    fxFlex.gt-sm="1 1 50%"
+    fxFlex.lt-md="1 1 100%"
+    [query]="query"
+    *ngFor="let query of queries"
+  >
+  </app-query-card>
+</div>
+
+<mat-paginator
+  [length]="totalPages"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10]"
+  aria-label="Select page"
+>
+</mat-paginator>

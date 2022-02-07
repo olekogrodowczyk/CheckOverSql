@@ -11,9 +11,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { QueryResultComponent } from './query-result/query-result.component';
 import { MatTableModule } from '@angular/material/table';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { QueryCardComponent } from './query-card/query-card.component';
+import { QueryListComponent } from './query-list/query-list.component';
 
 @NgModule({
-  declarations: [HomeComponent, SendQueryFormComponent, QueryResultComponent],
+  declarations: [
+    HomeComponent,
+    SendQueryFormComponent,
+    QueryResultComponent,
+    QueryCardComponent,
+    QueryListComponent,
+  ],
   imports: [
     CommonModule,
     SendRequestRoutingModule,
@@ -25,6 +35,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatButtonModule,
     MatTableModule,
     FlexLayoutModule,
+    MatCardModule,
+    MatPaginatorModule,
   ],
 })
 export class SendQueryModule {}

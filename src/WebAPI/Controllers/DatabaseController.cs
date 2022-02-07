@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<GetQueryHistoryQuery>>))]
+        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<QueryHistoryDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         [HttpGet("GetQueryHistory")]
         public async Task<IActionResult> GetQueryHistory([FromQuery] GetQueryHistoryQuery query)

@@ -4125,39 +4125,6 @@ export interface IQueryHistoryDtoPaginatedListResult {
   value?: QueryHistoryDtoPaginatedList;
 }
 
-export class RegisterUserCommand implements IRegisterUserCommand {
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  login?: string | undefined;
-  email?: string | undefined;
-  password?: string | undefined;
-  confirmPassword?: string | undefined;
-  dateOfBirth?: Date;
-
-  constructor(data?: IRegisterUserCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.firstName = _data['FirstName'];
-      this.lastName = _data['LastName'];
-      this.login = _data['Login'];
-      this.email = _data['Email'];
-      this.password = _data['Password'];
-      this.confirmPassword = _data['ConfirmPassword'];
-      this.dateOfBirth = _data['DateOfBirth']
-        ? new Date(_data['DateOfBirth'].toString())
-        : <any>undefined;
-    }
-  }
-}
-
 export interface IInt32Result {
   message?: string | undefined;
   success?: boolean;

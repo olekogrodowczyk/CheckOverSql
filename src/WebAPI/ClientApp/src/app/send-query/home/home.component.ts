@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SendQueryAdminCommand } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-home',
