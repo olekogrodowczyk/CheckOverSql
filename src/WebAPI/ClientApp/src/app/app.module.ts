@@ -14,6 +14,7 @@ import {
 } from './web-api-client';
 import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthModule } from './auth/auth.module';
+import { BaseUrlInterceptor } from './base-url.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { AuthModule } from './auth/auth.module';
     ExerciseClient,
     SolutionClient,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
   exports: [],
