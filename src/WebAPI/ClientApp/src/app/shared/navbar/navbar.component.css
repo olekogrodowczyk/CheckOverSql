@@ -16,6 +16,10 @@
   background-color: #03383d;
 }
 
+.login-button {
+  margin-right: 1em;
+}
+
 .menu-button {
   font-size: 1.1rem;
   margin-left: 5px;
@@ -32,12 +36,6 @@
   max-width: 75%;
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.mat-button-base {
-  height: 40px;
-  padding-top: 2px;
-  font-size: 1.2rem;
 }
 
 a {

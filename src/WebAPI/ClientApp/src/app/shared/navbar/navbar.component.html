@@ -13,7 +13,7 @@
     color="primary"
     [routerLink]="['send-query']"
   >
-    Send query
+    Execute Query
   </a>
   <a
     *ngIf="authService.signedIn$ | async"
@@ -27,19 +27,14 @@
 
   <span class="spacer"></span>
   <ng-container *ngIf="!(authService.signedIn$ | async)">
-    <a
-      routerLink="/login"
-      class="register-button navbar-button"
-      mat-flat-button
-      color="primary"
-    >
+    <a routerLink="/login" class="login-button" mat-flat-button color="accent">
       Sign In
     </a>
     <a
       routerLink="/register"
-      class="login-button navbar-button"
+      class="login-button"
       mat-flat-button
-      color="primary"
+      color="accent"
       >Sign Up</a
     >
   </ng-container>
@@ -49,9 +44,9 @@
     </p>
     <button
       (click)="logout()"
-      class="login-button navbar-button"
+      class="login-button"
       mat-flat-button
-      color="primary"
+      color="accent"
     >
       Sign out
     </button>
