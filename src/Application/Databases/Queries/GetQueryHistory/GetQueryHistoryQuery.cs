@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace Application.Databases.Queries.GetQueryHistory
 {
-    public class GetQueryHistoryQuery : IRequest<PaginatedList<QueryHistoryDto>>
+    public class GetQueryHistoryQuery : IRequest<PaginatedList<QueryDto>>
     {
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }
 
-    public class GetQueryHistoryQueryHandler : IRequestHandler<GetQueryHistoryQuery, PaginatedList<QueryHistoryDto>>
+    public class GetQueryHistoryQueryHandler : IRequestHandler<GetQueryHistoryQuery, PaginatedList<QueryDto>>
     {
         private readonly IRepository<Query> _queryRepository;
         private readonly IUserContextService _userContextService;
@@ -34,13 +34,13 @@ namespace Application.Databases.Queries.GetQueryHistory
             _mapper = mapper;
         }
 
-        public async Task<PaginatedList<QueryHistoryDto>> Handle(GetQueryHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<QueryDto>> Handle(GetQueryHistoryQuery request, CancellationToken cancellationToken)
         {
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
             var queriesCreatedByUser = await _queryRepository
                 .GetPaginatedResultAsync(x => x.CreatorId == (int)loggedUserId, request.PageNumber, request.PageSize);
-            return await queriesCreatedByUser.MapPaginatedList<QueryHistoryDto, Query>(_mapper);
+            return await queriesCreatedByUser.MapPaginatedList<QueryDto, Query>(_mapper);
         }
     }
 }

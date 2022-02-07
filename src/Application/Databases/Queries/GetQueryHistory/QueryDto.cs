@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Databases.Queries.GetQueryHistory
 {
-    public class QueryHistoryDto : IMap
+    public class QueryDto : IMap
     {
         public string QueryValue { get; set; }
         public DateTime Created { get; set; }
@@ -18,7 +18,7 @@ namespace Application.Databases.Queries.GetQueryHistory
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Query, QueryHistoryDto>()
+            profile.CreateMap<Query, QueryDto>()
                 .ForMember(x=>x.DatabaseName, opt=>opt.MapFrom(y=>y.Database));
         }
     }

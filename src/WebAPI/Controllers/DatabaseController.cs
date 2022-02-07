@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         [HttpPost("GetQueryValue")]
-        public async Task<IActionResult> GetQueryValue([FromBody] GetQueryValue query)
+        public async Task<IActionResult> GetQueryValue([FromBody] GetQueryValueQuery query)
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<IEnumerable<IEnumerable<string>>>(result, "Query executed successfully, data returned"));
@@ -55,13 +55,13 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<QueryHistoryDto>>))]
+        [ProducesResponseType(200, Type = typeof(Result<PaginatedList<QueryDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         [HttpGet("GetQueryHistory")]
         public async Task<IActionResult> GetQueryHistory([FromQuery] GetQueryHistoryQuery query)
         {
             var result = await Mediator.Send(query);
-            return Ok(new Result<PaginatedList<QueryHistoryDto>>(result, "History of queries returned successfully"));
+            return Ok(new Result<PaginatedList<QueryDto>>(result, "History of queries returned successfully"));
         }
     }
 }

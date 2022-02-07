@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Application.Databases.Queries.GetQueryValueAdmin
 {
-    public class GetQueryValue : IRequest<IEnumerable<IEnumerable<string>>>
+    public class GetQueryValueQuery : IRequest<IEnumerable<IEnumerable<string>>>
     {
         public string DatabaseName { get; set; }
         public string Query { get; set; }
     }
 
-    public class GetQueryValueAdminQueryHandler : IRequestHandler<GetQueryValue, IEnumerable<IEnumerable<string>>>
+    public class GetQueryValueAdminQueryHandler : IRequestHandler<GetQueryValueQuery, IEnumerable<IEnumerable<string>>>
     {
         private readonly IDatabaseRepository _databaseRepository;
         private readonly IDatabaseService _databaseService;
@@ -34,7 +34,7 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
             _queryRepository = queryRepository;
         }
 
-        public async Task<IEnumerable<IEnumerable<string>>> Handle(GetQueryValue request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<IEnumerable<string>>> Handle(GetQueryValueQuery request, CancellationToken cancellationToken)
         {
             int? loggedUserId = _userContextService.GetUserId;
             if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
