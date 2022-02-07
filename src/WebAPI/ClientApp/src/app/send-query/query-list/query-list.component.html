@@ -1,11 +1,14 @@
-<div class="query-list" fxLayout="row">
-  <app-query-card
-    fxFlex.gt-sm="1 1 50%"
-    fxFlex.lt-md="1 1 100%"
-    [query]="query"
-    *ngFor="let query of queries"
-  >
-  </app-query-card>
+<div class="query-list">
+  <div fxLayoutGap="16px grid" fxLayout="row wrap">
+    <app-query-card
+      fxFlex.xl="1 1 33%"
+      fxFlex.lt-xl="1 1 50%"
+      fxFlex.lt-md="1 1 100%"
+      [queryModel]="query"
+      *ngFor="let query of queryModels"
+    >
+    </app-query-card>
+  </div>
 </div>
 
 <mat-paginator

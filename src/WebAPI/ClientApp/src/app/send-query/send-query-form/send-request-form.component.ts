@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { DatabaseClient } from 'src/app/web-api-client';
+import { DatabaseClient, GetQueryValueQuery } from 'src/app/web-api-client';
 import { SendQueryService } from '../send-query.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class SendQueryFormComponent implements OnInit {
     private databaseClient: DatabaseClient,
     private snackBar: SnackbarService,
     private sendQueryService: SendQueryService,
-    private router: Router
+    private router: Router,
+    private dialogRef: MatDialogRef<SendQueryFormComponent>
   ) {}
 
   ngOnInit(): void {
@@ -45,16 +47,11 @@ export class SendQueryFormComponent implements OnInit {
     if (this.SendQueryAdminForm.invalid) {
       return;
     }
-    console.log(this.SendQueryAdminForm.value);
-    this.databaseClient.getQueryValue(this.SendQueryAdminForm.value).subscribe({
-      next: (result) => {
-        this.sendQueryService.queryResult = result.value!;
-        this.snackBar.openSnackBar('Query executed successfully');
-        this.router.navigateByUrl('send-query/query-result');
-      },
-      error: ({ message }) => {
-        this.snackBar.openSnackBar(message);
-      },
+    this.sendQueryService.sendQuery(<GetQueryValueQuery>{
+      databaseName: this.SendQueryAdminForm.get('databaseName')?.value,
+      query: this.SendQueryAdminForm.get('query')?.value,
+      toQueryHistory: true,
     });
+    this.dialogRef.close();
   }
 }

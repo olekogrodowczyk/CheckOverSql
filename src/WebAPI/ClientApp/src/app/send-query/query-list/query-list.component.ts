@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { DatabaseClient, QueryHistoryDto } from 'src/app/web-api-client';
+import { DatabaseClient, QueryDto } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-query-list',
@@ -8,8 +8,8 @@ import { DatabaseClient, QueryHistoryDto } from 'src/app/web-api-client';
   styleUrls: ['./query-list.component.css'],
 })
 export class QueryListComponent implements OnInit {
-  queries!: QueryHistoryDto[];
-  pageSize = 10;
+  queryModels!: QueryDto[];
+  pageSize = 9;
   totalPages!: number;
 
   constructor(
@@ -24,7 +24,7 @@ export class QueryListComponent implements OnInit {
   getQueryHistory(pageNumber: number, pageSize: number) {
     this.databaseClient.getQueryHistory(pageNumber, pageSize).subscribe({
       next: (response) => {
-        this.queries = response.value?.items!;
+        this.queryModels = response.value?.items!;
         this.totalPages = response.value?.totalPages!;
       },
       error: ({ message }) => {

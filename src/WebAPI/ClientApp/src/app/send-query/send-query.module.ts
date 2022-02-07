@@ -15,6 +15,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { QueryCardComponent } from './query-card/query-card.component';
 import { QueryListComponent } from './query-list/query-list.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { QueryListComponent } from './query-list/query-list.component';
     FlexLayoutModule,
     MatCardModule,
     MatPaginatorModule,
+    MatDialogModule,
+    MatDividerModule,
   ],
 })
 export class SendQueryModule {}

@@ -1,8 +1,15 @@
 <mat-card>
-  <mat-card-title-group>
-    <mat-card-subtitle>{{ query.created | date: "medium" }}</mat-card-subtitle>
-  </mat-card-title-group>
+  <mat-card-subtitle fxLayout="row"
+    ><p>{{ queryModel.created | date: "medium" }}</p>
+    <p style="margin-left: auto">
+      {{ queryModel.databaseName }}
+    </p></mat-card-subtitle
+  >
   <mat-card-content>
-    {{ query.queryValue }}
+    {{ queryModel.queryValue }}
   </mat-card-content>
+  <mat-divider></mat-divider>
+  <mat-card-actions>
+    <button (click)="executeQuery()" mat-flat-button>Execute</button>
+  </mat-card-actions>
 </mat-card>
