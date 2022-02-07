@@ -25,7 +25,7 @@ import {
   HttpResponseBase,
 } from '@angular/common/http';
 
-export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
+export const baseUrl = new InjectionToken<string>('https://localhost:5001');
 
 @Injectable()
 export class AccountClient {
@@ -36,10 +36,10 @@ export class AccountClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -251,7 +251,9 @@ export class AccountClient {
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class DatabaseClient {
   private http: HttpClient;
   private baseUrl: string;
@@ -260,122 +262,16 @@ export class DatabaseClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
-  getQueryHistory(
-    pageNumber: number | undefined,
-    pageSize: number | undefined
-  ): Observable<QueryHistoryDtoPaginatedListResult> {
-    let url_ = this.baseUrl + '/api/Database/GetQueryHistory?';
-    if (pageNumber === null)
-      throw new Error("The parameter 'pageNumber' cannot be null.");
-    else if (pageNumber !== undefined)
-      url_ += 'PageNumber=' + encodeURIComponent('' + pageNumber) + '&';
-    if (pageSize === null)
-      throw new Error("The parameter 'pageSize' cannot be null.");
-    else if (pageSize !== undefined)
-      url_ += 'PageSize=' + encodeURIComponent('' + pageSize) + '&';
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'text/plain',
-      }),
-    };
-
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGetQueryHistory(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGetQueryHistory(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<QueryHistoryDtoPaginatedListResult>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<QueryHistoryDtoPaginatedListResult>;
-        })
-      );
-  }
-
-  protected processGetQueryHistory(
-    response: HttpResponseBase
-  ): Observable<QueryHistoryDtoPaginatedListResult> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = QueryHistoryDtoPaginatedListResult.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result400: any = null;
-          let resultData400 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result400 = ErrorResult.fromJS(resultData400);
-          return throwException(
-            'Bad Request',
-            status,
-            _responseText,
-            _headers,
-            result400
-          );
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(null as any);
-  }
-
+  /**
+   * @param body (optional)
+   * @return Success
+   */
   sendQueryAdmin(
     body: SendQueryAdminCommand | undefined
   ): Observable<Int32Result> {
@@ -484,7 +380,7 @@ export class DatabaseClient {
    * @return Success
    */
   getQueryValue(
-    body: GetQueryValueAdmin | undefined
+    body: GetQueryValueQuery | undefined
   ): Observable<StringIEnumerableIEnumerableResult> {
     let url_ = this.baseUrl + '/api/Database/GetQueryValue';
     url_ = url_.replace(/[?&]$/, '');
@@ -689,6 +585,121 @@ export class DatabaseClient {
     }
     return _observableOf(null as any);
   }
+
+  /**
+   * @param pageNumber (optional)
+   * @param pageSize (optional)
+   * @return Success
+   */
+  getQueryHistory(
+    pageNumber: number | undefined,
+    pageSize: number | undefined
+  ): Observable<QueryDtoPaginatedListResult> {
+    let url_ = this.baseUrl + '/api/Database/GetQueryHistory?';
+    if (pageNumber === null)
+      throw new Error("The parameter 'pageNumber' cannot be null.");
+    else if (pageNumber !== undefined)
+      url_ += 'PageNumber=' + encodeURIComponent('' + pageNumber) + '&';
+    if (pageSize === null)
+      throw new Error("The parameter 'pageSize' cannot be null.");
+    else if (pageSize !== undefined)
+      url_ += 'PageSize=' + encodeURIComponent('' + pageSize) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetQueryHistory(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetQueryHistory(response_ as any);
+            } catch (e) {
+              return _observableThrow(
+                e
+              ) as any as Observable<QueryDtoPaginatedListResult>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<QueryDtoPaginatedListResult>;
+        })
+      );
+  }
+
+  protected processGetQueryHistory(
+    response: HttpResponseBase
+  ): Observable<QueryDtoPaginatedListResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = QueryDtoPaginatedListResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
 }
 
 @Injectable()
@@ -700,10 +711,10 @@ export class ExerciseClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -1166,7 +1177,7 @@ export class GroupClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
     this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
@@ -1595,7 +1606,7 @@ export class InvitationClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
     this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
@@ -2031,10 +2042,10 @@ export class SolutionClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
-    this.baseUrl = 'https://localhost:5001';
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
   }
 
   /**
@@ -2371,7 +2382,7 @@ export class SolvingClient {
 
   constructor(
     @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    @Optional() @Inject(baseUrl) baseUrl?: string
   ) {
     this.http = http;
     this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
@@ -2690,9 +2701,9 @@ export class SolvingClient {
 export class AssignExerciseToUsersCommand
   implements IAssignExerciseToUsersCommand
 {
-  exerciseId?: number;
-  groupId?: number;
-  deadLine?: Date;
+  exerciseId!: number;
+  groupId!: number;
+  deadLine!: Date;
 
   constructor(data?: IAssignExerciseToUsersCommand) {
     if (data) {
@@ -2732,17 +2743,17 @@ export class AssignExerciseToUsersCommand
 }
 
 export interface IAssignExerciseToUsersCommand {
-  exerciseId?: number;
-  groupId?: number;
-  deadLine?: Date;
+  exerciseId: number;
+  groupId: number;
+  deadLine: Date;
 }
 
 export class CreateExerciseCommand implements ICreateExerciseCommand {
-  title?: string | undefined;
-  description?: string | undefined;
-  databaseName?: string | undefined;
-  validAnswer?: string | undefined;
-  isPrivate?: boolean;
+  title!: string | undefined;
+  description!: string | undefined;
+  databaseName!: string | undefined;
+  validAnswer!: string | undefined;
+  isPrivate!: boolean;
 
   constructor(data?: ICreateExerciseCommand) {
     if (data) {
@@ -2757,7 +2768,7 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
     if (_data) {
       this.title = _data['Title'];
       this.description = _data['Description'];
-      this.database = _data['Database'];
+      this.databaseName = _data['DatabaseName'];
       this.validAnswer = _data['ValidAnswer'];
       this.isPrivate = _data['IsPrivate'];
     }
@@ -2774,7 +2785,7 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
     data = typeof data === 'object' ? data : {};
     data['Title'] = this.title;
     data['Description'] = this.description;
-    data['Database'] = this.database;
+    data['DatabaseName'] = this.databaseName;
     data['ValidAnswer'] = this.validAnswer;
     data['IsPrivate'] = this.isPrivate;
     return data;
@@ -2782,15 +2793,15 @@ export class CreateExerciseCommand implements ICreateExerciseCommand {
 }
 
 export interface ICreateExerciseCommand {
-  title?: string | undefined;
-  description?: string | undefined;
-  databaseName?: string | undefined;
-  validAnswer?: string | undefined;
-  isPrivate?: boolean;
+  title: string | undefined;
+  description: string | undefined;
+  databaseName: string | undefined;
+  validAnswer: string | undefined;
+  isPrivate: boolean;
 }
 
 export class CreateGroupCommand implements ICreateGroupCommand {
-  name?: string | undefined;
+  name!: string | undefined;
 
   constructor(data?: ICreateGroupCommand) {
     if (data) {
@@ -2822,13 +2833,13 @@ export class CreateGroupCommand implements ICreateGroupCommand {
 }
 
 export interface ICreateGroupCommand {
-  name?: string | undefined;
+  name: string | undefined;
 }
 
 export class CreateInvitationCommand implements ICreateInvitationCommand {
-  receiverEmail?: string | undefined;
-  roleName?: string | undefined;
-  groupId?: number;
+  receiverEmail!: string | undefined;
+  roleName!: string | undefined;
+  groupId!: number;
 
   constructor(data?: ICreateInvitationCommand) {
     if (data) {
@@ -2864,14 +2875,14 @@ export class CreateInvitationCommand implements ICreateInvitationCommand {
 }
 
 export interface ICreateInvitationCommand {
-  receiverEmail?: string | undefined;
-  roleName?: string | undefined;
-  groupId?: number;
+  receiverEmail: string | undefined;
+  roleName: string | undefined;
+  groupId: number;
 }
 
 export class CreateSolutionCommand implements ICreateSolutionCommand {
-  query?: string | undefined;
-  exerciseId?: number;
+  query!: string | undefined;
+  exerciseId!: number;
 
   constructor(data?: ICreateSolutionCommand) {
     if (data) {
@@ -2905,14 +2916,14 @@ export class CreateSolutionCommand implements ICreateSolutionCommand {
 }
 
 export interface ICreateSolutionCommand {
-  query?: string | undefined;
-  exerciseId?: number;
+  query: string | undefined;
+  exerciseId: number;
 }
 
 export class ErrorResult implements IErrorResult {
-  message?: string | undefined;
-  errors?: { [key: string]: string[] } | undefined;
-  success?: boolean;
+  message!: string | undefined;
+  errors!: { [key: string]: string[] } | undefined;
+  success!: boolean;
 
   constructor(data?: IErrorResult) {
     if (data) {
@@ -2961,15 +2972,15 @@ export class ErrorResult implements IErrorResult {
 }
 
 export interface IErrorResult {
-  message?: string | undefined;
-  errors?: { [key: string]: string[] } | undefined;
-  success?: boolean;
+  message: string | undefined;
+  errors: { [key: string]: string[] } | undefined;
+  success: boolean;
 }
 
 export class GetAssignmentDto implements IGetAssignmentDto {
-  user?: GetUserDto;
-  role?: string | undefined;
-  joined?: Date | undefined;
+  user!: GetUserDto;
+  role!: string | undefined;
+  joined!: Date | undefined;
 
   constructor(data?: IGetAssignmentDto) {
     if (data) {
@@ -3009,17 +3020,17 @@ export class GetAssignmentDto implements IGetAssignmentDto {
 }
 
 export interface IGetAssignmentDto {
-  user?: GetUserDto;
-  role?: string | undefined;
-  joined?: Date | undefined;
+  user: GetUserDto;
+  role: string | undefined;
+  joined: Date | undefined;
 }
 
 export class GetAssignmentDtoIEnumerableResult
   implements IGetAssignmentDtoIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetAssignmentDto[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetAssignmentDto[] | undefined;
 
   constructor(data?: IGetAssignmentDtoIEnumerableResult) {
     if (data) {
@@ -3062,18 +3073,18 @@ export class GetAssignmentDtoIEnumerableResult
 }
 
 export interface IGetAssignmentDtoIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetAssignmentDto[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: GetAssignmentDto[] | undefined;
 }
 
 export class GetComparisonDto implements IGetComparisonDto {
-  solutionId?: number;
-  solutionSolver?: string | undefined;
-  exerciseId?: number;
-  exerciseTitle?: string | undefined;
-  created?: Date;
-  result?: boolean;
+  solutionId!: number;
+  solutionSolver!: string | undefined;
+  exerciseId!: number;
+  exerciseTitle!: string | undefined;
+  created!: Date;
+  result!: boolean;
 
   constructor(data?: IGetComparisonDto) {
     if (data) {
@@ -3090,8 +3101,8 @@ export class GetComparisonDto implements IGetComparisonDto {
       this.solutionSolver = _data['SolutionSolver'];
       this.exerciseId = _data['ExerciseId'];
       this.exerciseTitle = _data['ExerciseTitle'];
-      this.created = _data['CreatedAt']
-        ? new Date(_data['CreatedAt'].toString())
+      this.created = _data['Created']
+        ? new Date(_data['Created'].toString())
         : <any>undefined;
       this.result = _data['Result'];
     }
@@ -3110,7 +3121,7 @@ export class GetComparisonDto implements IGetComparisonDto {
     data['SolutionSolver'] = this.solutionSolver;
     data['ExerciseId'] = this.exerciseId;
     data['ExerciseTitle'] = this.exerciseTitle;
-    data['CreatedAt'] = this.created
+    data['Created'] = this.created
       ? this.created.toISOString()
       : <any>undefined;
     data['Result'] = this.result;
@@ -3119,18 +3130,18 @@ export class GetComparisonDto implements IGetComparisonDto {
 }
 
 export interface IGetComparisonDto {
-  solutionId?: number;
-  solutionSolver?: string | undefined;
-  exerciseId?: number;
-  exerciseTitle?: string | undefined;
-  created?: Date;
-  result?: boolean;
+  solutionId: number;
+  solutionSolver: string | undefined;
+  exerciseId: number;
+  exerciseTitle: string | undefined;
+  created: Date;
+  result: boolean;
 }
 
 export class GetComparisonDtoResult implements IGetComparisonDtoResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetComparisonDto;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetComparisonDto;
 
   constructor(data?: IGetComparisonDtoResult) {
     if (data) {
@@ -3168,20 +3179,20 @@ export class GetComparisonDtoResult implements IGetComparisonDtoResult {
 }
 
 export interface IGetComparisonDtoResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetComparisonDto;
+  message: string | undefined;
+  success: boolean;
+  value: GetComparisonDto;
 }
 
 export class GetExerciseDto implements IGetExerciseDto {
-  id?: number;
-  title?: string | undefined;
-  description?: string | undefined;
-  creationTime?: string | undefined;
-  creator?: string | undefined;
-  databaseId?: number;
-  validAnswer?: string | undefined;
-  passed?: boolean | undefined;
+  id!: number;
+  title!: string | undefined;
+  description!: string | undefined;
+  creator!: string | undefined;
+  databaseId!: number;
+  validAnswer!: string | undefined;
+  creationTime!: string | undefined;
+  passed!: boolean;
 
   constructor(data?: IGetExerciseDto) {
     if (data) {
@@ -3197,7 +3208,6 @@ export class GetExerciseDto implements IGetExerciseDto {
       this.id = _data['Id'];
       this.title = _data['Title'];
       this.description = _data['Description'];
-      this.maxPoints = _data['MaxPoints'];
       this.creator = _data['Creator'];
       this.databaseId = _data['DatabaseId'];
       this.validAnswer = _data['ValidAnswer'];
@@ -3218,34 +3228,35 @@ export class GetExerciseDto implements IGetExerciseDto {
     data['Id'] = this.id;
     data['Title'] = this.title;
     data['Description'] = this.description;
-    data['MaxPoints'] = this.maxPoints;
     data['Creator'] = this.creator;
     data['DatabaseId'] = this.databaseId;
     data['ValidAnswer'] = this.validAnswer;
-    data['Passed'] = this.validAnswer;
+    data['CreationTime'] = this.creationTime;
+    data['Passed'] = this.passed;
     return data;
   }
 }
 
 export interface IGetExerciseDto {
-  id?: number;
-  title?: string | undefined;
-  description?: string | undefined;
-  creationTime?: string | undefined;
-  creator?: string | undefined;
-  databaseId?: number;
-  validAnswer?: string | undefined;
+  id: number;
+  title: string | undefined;
+  description: string | undefined;
+  creator: string | undefined;
+  databaseId: number;
+  validAnswer: string | undefined;
+  creationTime: string | undefined;
+  passed: boolean;
 }
 
 export class GetExerciseDtoPaginatedList
   implements IGetExerciseDtoPaginatedList
 {
-  items?: GetExerciseDto[] | undefined;
-  pageNumber?: number;
-  totalPages?: number;
-  totalCount?: number;
-  readonly hasPreviousPage?: boolean;
-  readonly hasNextPage?: boolean;
+  items!: GetExerciseDto[] | undefined;
+  pageNumber!: number;
+  totalPages!: number;
+  totalCount!: number;
+  readonly hasPreviousPage!: boolean;
+  readonly hasNextPage!: boolean;
 
   constructor(data?: IGetExerciseDtoPaginatedList) {
     if (data) {
@@ -3294,20 +3305,20 @@ export class GetExerciseDtoPaginatedList
 }
 
 export interface IGetExerciseDtoPaginatedList {
-  items?: GetExerciseDto[] | undefined;
-  pageNumber?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
+  items: GetExerciseDto[] | undefined;
+  pageNumber: number;
+  totalPages: number;
+  totalCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 
 export class GetExerciseDtoPaginatedListResult
   implements IGetExerciseDtoPaginatedListResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetExerciseDtoPaginatedList;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetExerciseDtoPaginatedList;
 
   constructor(data?: IGetExerciseDtoPaginatedListResult) {
     if (data) {
@@ -3345,14 +3356,14 @@ export class GetExerciseDtoPaginatedListResult
 }
 
 export interface IGetExerciseDtoPaginatedListResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetExerciseDtoPaginatedList;
+  message: string | undefined;
+  success: boolean;
+  value: GetExerciseDtoPaginatedList;
 }
 
 export class GetGroupDto implements IGetGroupDto {
-  id?: number;
-  name?: string | undefined;
+  id!: number;
+  name!: string | undefined;
 
   constructor(data?: IGetGroupDto) {
     if (data) {
@@ -3386,16 +3397,16 @@ export class GetGroupDto implements IGetGroupDto {
 }
 
 export interface IGetGroupDto {
-  id?: number;
-  name?: string | undefined;
+  id: number;
+  name: string | undefined;
 }
 
 export class GetGroupDtoIEnumerableResult
   implements IGetGroupDtoIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetGroupDto[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetGroupDto[] | undefined;
 
   constructor(data?: IGetGroupDtoIEnumerableResult) {
     if (data) {
@@ -3438,20 +3449,20 @@ export class GetGroupDtoIEnumerableResult
 }
 
 export interface IGetGroupDtoIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetGroupDto[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: GetGroupDto[] | undefined;
 }
 
 export class GetInvitationDto implements IGetInvitationDto {
-  id?: number;
-  groupName?: string | undefined;
-  sender?: string | undefined;
-  receiver?: string | undefined;
-  status?: string | undefined;
-  roleName?: string | undefined;
-  sentAt?: Date;
-  answeredAt?: Date;
+  id!: number;
+  groupName!: string | undefined;
+  sender!: string | undefined;
+  receiver!: string | undefined;
+  status!: string | undefined;
+  roleName!: string | undefined;
+  sentAt!: Date;
+  answeredAt!: Date;
 
   constructor(data?: IGetInvitationDto) {
     if (data) {
@@ -3503,22 +3514,22 @@ export class GetInvitationDto implements IGetInvitationDto {
 }
 
 export interface IGetInvitationDto {
-  id?: number;
-  groupName?: string | undefined;
-  sender?: string | undefined;
-  receiver?: string | undefined;
-  status?: string | undefined;
-  roleName?: string | undefined;
-  sentAt?: Date;
-  answeredAt?: Date;
+  id: number;
+  groupName: string | undefined;
+  sender: string | undefined;
+  receiver: string | undefined;
+  status: string | undefined;
+  roleName: string | undefined;
+  sentAt: Date;
+  answeredAt: Date;
 }
 
 export class GetInvitationDtoIEnumerableResult
   implements IGetInvitationDtoIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetInvitationDto[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetInvitationDto[] | undefined;
 
   constructor(data?: IGetInvitationDtoIEnumerableResult) {
     if (data) {
@@ -3561,16 +3572,16 @@ export class GetInvitationDtoIEnumerableResult
 }
 
 export interface IGetInvitationDtoIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetInvitationDto[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: GetInvitationDto[] | undefined;
 }
 
-export class GetQueryValueAdmin implements IGetQueryValueAdmin {
-  databaseName?: string | undefined;
-  query?: string | undefined;
+export class GetQueryValueQuery implements IGetQueryValueQuery {
+  databaseName!: string | undefined;
+  query!: string | undefined;
 
-  constructor(data?: IGetQueryValueAdmin) {
+  constructor(data?: IGetQueryValueQuery) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -3586,9 +3597,9 @@ export class GetQueryValueAdmin implements IGetQueryValueAdmin {
     }
   }
 
-  static fromJS(data: any): GetQueryValueAdmin {
+  static fromJS(data: any): GetQueryValueQuery {
     data = typeof data === 'object' ? data : {};
-    let result = new GetQueryValueAdmin();
+    let result = new GetQueryValueQuery();
     result.init(data);
     return result;
   }
@@ -3601,17 +3612,17 @@ export class GetQueryValueAdmin implements IGetQueryValueAdmin {
   }
 }
 
-export interface IGetQueryValueAdmin {
-  databaseName?: string | undefined;
-  query?: string | undefined;
+export interface IGetQueryValueQuery {
+  databaseName: string | undefined;
+  query: string | undefined;
 }
 
 export class GetSolutionDto implements IGetSolutionDto {
-  id?: number;
-  dialect?: string | undefined;
-  query?: string | undefined;
-  creator?: string | undefined;
-  exercise?: GetExerciseDto;
+  id!: number;
+  dialect!: string | undefined;
+  query!: string | undefined;
+  creator!: string | undefined;
+  exercise!: GetExerciseDto;
 
   constructor(data?: IGetSolutionDto) {
     if (data) {
@@ -3653,19 +3664,19 @@ export class GetSolutionDto implements IGetSolutionDto {
 }
 
 export interface IGetSolutionDto {
-  id?: number;
-  dialect?: string | undefined;
-  query?: string | undefined;
-  creator?: string | undefined;
-  exercise?: GetExerciseDto;
+  id: number;
+  dialect: string | undefined;
+  query: string | undefined;
+  creator: string | undefined;
+  exercise: GetExerciseDto;
 }
 
 export class GetSolutionDtoIEnumerableResult
   implements IGetSolutionDtoIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolutionDto[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetSolutionDto[] | undefined;
 
   constructor(data?: IGetSolutionDtoIEnumerableResult) {
     if (data) {
@@ -3708,19 +3719,19 @@ export class GetSolutionDtoIEnumerableResult
 }
 
 export interface IGetSolutionDtoIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolutionDto[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: GetSolutionDto[] | undefined;
 }
 
 export class GetSolvingDto implements IGetSolvingDto {
-  assignedBy?: string | undefined;
-  solver?: string | undefined;
-  assignedAt?: Date;
-  sentAt?: Date | undefined;
-  deadLine?: Date | undefined;
-  status?: string | undefined;
-  exercise?: GetExerciseDto;
+  assignedBy!: string | undefined;
+  solver!: string | undefined;
+  assignedAt!: Date;
+  sentAt!: Date | undefined;
+  deadLine!: Date | undefined;
+  status!: string | undefined;
+  exercise!: GetExerciseDto;
 
   constructor(data?: IGetSolvingDto) {
     if (data) {
@@ -3776,21 +3787,21 @@ export class GetSolvingDto implements IGetSolvingDto {
 }
 
 export interface IGetSolvingDto {
-  assignedBy?: string | undefined;
-  solver?: string | undefined;
-  assignedAt?: Date;
-  sentAt?: Date | undefined;
-  deadLine?: Date | undefined;
-  status?: string | undefined;
-  exercise?: GetExerciseDto;
+  assignedBy: string | undefined;
+  solver: string | undefined;
+  assignedAt: Date;
+  sentAt: Date | undefined;
+  deadLine: Date | undefined;
+  status: string | undefined;
+  exercise: GetExerciseDto;
 }
 
 export class GetSolvingDtoIEnumerableResult
   implements IGetSolvingDtoIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolvingDto[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetSolvingDto[] | undefined;
 
   constructor(data?: IGetSolvingDtoIEnumerableResult) {
     if (data) {
@@ -3833,15 +3844,15 @@ export class GetSolvingDtoIEnumerableResult
 }
 
 export interface IGetSolvingDtoIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolvingDto[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: GetSolvingDto[] | undefined;
 }
 
 export class GetSolvingDtoResult implements IGetSolvingDtoResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolvingDto;
+  message!: string | undefined;
+  success!: boolean;
+  value!: GetSolvingDto;
 
   constructor(data?: IGetSolvingDtoResult) {
     if (data) {
@@ -3879,14 +3890,14 @@ export class GetSolvingDtoResult implements IGetSolvingDtoResult {
 }
 
 export interface IGetSolvingDtoResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: GetSolvingDto;
+  message: string | undefined;
+  success: boolean;
+  value: GetSolvingDto;
 }
 
 export class GetUserDto implements IGetUserDto {
-  id?: number;
-  name?: string | undefined;
+  id!: number;
+  name!: string | undefined;
 
   constructor(data?: IGetUserDto) {
     if (data) {
@@ -3920,14 +3931,14 @@ export class GetUserDto implements IGetUserDto {
 }
 
 export interface IGetUserDto {
-  id?: number;
-  name?: string | undefined;
+  id: number;
+  name: string | undefined;
 }
 
 export class Int32IEnumerableResult implements IInt32IEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: number[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: number[] | undefined;
 
   constructor(data?: IInt32IEnumerableResult) {
     if (data) {
@@ -3968,123 +3979,18 @@ export class Int32IEnumerableResult implements IInt32IEnumerableResult {
   }
 }
 
-export class QueryHistoryDto implements IQueryHistoryDto {
-  queryValue?: string | undefined;
-  created?: Date;
-
-  constructor(data?: IQueryHistoryDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.queryValue = _data['QueryValue'];
-      this.created = _data['Created']
-        ? new Date(_data['Created'].toString())
-        : <any>undefined;
-    }
-  }
-
-  static fromJS(data: any): QueryHistoryDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new QueryHistoryDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['QueryValue'] = this.queryValue;
-    data['Created'] = this.created
-      ? this.created.toISOString()
-      : <any>undefined;
-    return data;
-  }
+export interface IInt32IEnumerableResult {
+  message: string | undefined;
+  success: boolean;
+  value: number[] | undefined;
 }
 
-export interface IQueryHistoryDto {
-  queryValue?: string | undefined;
-  created?: Date;
-}
+export class Int32Result implements IInt32Result {
+  message!: string | undefined;
+  success!: boolean;
+  value!: number;
 
-export class QueryHistoryDtoPaginatedList
-  implements IQueryHistoryDtoPaginatedList
-{
-  items?: QueryHistoryDto[] | undefined;
-  pageNumber?: number;
-  totalPages?: number;
-  totalCount?: number;
-  readonly hasPreviousPage?: boolean;
-  readonly hasNextPage?: boolean;
-
-  constructor(data?: IQueryHistoryDtoPaginatedList) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data['Items'])) {
-        this.items = [] as any;
-        for (let item of _data['Items'])
-          this.items!.push(QueryHistoryDto.fromJS(item));
-      }
-      this.pageNumber = _data['PageNumber'];
-      this.totalPages = _data['TotalPages'];
-      this.totalCount = _data['TotalCount'];
-      (<any>this).hasPreviousPage = _data['HasPreviousPage'];
-      (<any>this).hasNextPage = _data['HasNextPage'];
-    }
-  }
-
-  static fromJS(data: any): QueryHistoryDtoPaginatedList {
-    data = typeof data === 'object' ? data : {};
-    let result = new QueryHistoryDtoPaginatedList();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    if (Array.isArray(this.items)) {
-      data['Items'] = [];
-      for (let item of this.items) data['Items'].push(item.toJSON());
-    }
-    data['PageNumber'] = this.pageNumber;
-    data['TotalPages'] = this.totalPages;
-    data['TotalCount'] = this.totalCount;
-    data['HasPreviousPage'] = this.hasPreviousPage;
-    data['HasNextPage'] = this.hasNextPage;
-    return data;
-  }
-}
-
-export interface IQueryHistoryDtoPaginatedList {
-  items?: QueryHistoryDto[] | undefined;
-  pageNumber?: number;
-  totalPages?: number;
-  totalCount?: number;
-  hasPreviousPage?: boolean;
-  hasNextPage?: boolean;
-}
-
-export class QueryHistoryDtoPaginatedListResult
-  implements IQueryHistoryDtoPaginatedListResult
-{
-  message?: string | undefined;
-  success?: boolean;
-  value?: QueryHistoryDtoPaginatedList;
-
-  constructor(data?: IQueryHistoryDtoPaginatedListResult) {
+  constructor(data?: IInt32Result) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -4097,15 +4003,13 @@ export class QueryHistoryDtoPaginatedListResult
     if (_data) {
       this.message = _data['Message'];
       this.success = _data['Success'];
-      this.value = _data['Value']
-        ? QueryHistoryDtoPaginatedList.fromJS(_data['Value'])
-        : <any>undefined;
+      this.value = _data['Value'];
     }
   }
 
-  static fromJS(data: any): QueryHistoryDtoPaginatedListResult {
+  static fromJS(data: any): Int32Result {
     data = typeof data === 'object' ? data : {};
-    let result = new QueryHistoryDtoPaginatedListResult();
+    let result = new Int32Result();
     result.init(data);
     return result;
   }
@@ -4114,26 +4018,20 @@ export class QueryHistoryDtoPaginatedListResult
     data = typeof data === 'object' ? data : {};
     data['Message'] = this.message;
     data['Success'] = this.success;
-    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
+    data['Value'] = this.value;
     return data;
   }
 }
 
-export interface IQueryHistoryDtoPaginatedListResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: QueryHistoryDtoPaginatedList;
-}
-
 export interface IInt32Result {
-  message?: string | undefined;
-  success?: boolean;
-  value?: number;
+  message: string | undefined;
+  success: boolean;
+  value: number;
 }
 
 export class LoginUserCommand implements ILoginUserCommand {
-  email?: string | undefined;
-  password?: string | undefined;
+  email!: string | undefined;
+  password!: string | undefined;
 
   constructor(data?: ILoginUserCommand) {
     if (data) {
@@ -4167,18 +4065,181 @@ export class LoginUserCommand implements ILoginUserCommand {
 }
 
 export interface ILoginUserCommand {
-  email?: string | undefined;
-  password?: string | undefined;
+  email: string | undefined;
+  password: string | undefined;
+}
+
+export class QueryDto implements IQueryDto {
+  queryValue!: string | undefined;
+  created!: Date;
+  databaseId!: number;
+  databaseName!: string | undefined;
+
+  constructor(data?: IQueryDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.queryValue = _data['QueryValue'];
+      this.created = _data['Created']
+        ? new Date(_data['Created'].toString())
+        : <any>undefined;
+      this.databaseId = _data['DatabaseId'];
+      this.databaseName = _data['DatabaseName'];
+    }
+  }
+
+  static fromJS(data: any): QueryDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueryDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['QueryValue'] = this.queryValue;
+    data['Created'] = this.created
+      ? this.created.toISOString()
+      : <any>undefined;
+    data['DatabaseId'] = this.databaseId;
+    data['DatabaseName'] = this.databaseName;
+    return data;
+  }
+}
+
+export interface IQueryDto {
+  queryValue: string | undefined;
+  created: Date;
+  databaseId: number;
+  databaseName: string | undefined;
+}
+
+export class QueryDtoPaginatedList implements IQueryDtoPaginatedList {
+  items!: QueryDto[] | undefined;
+  pageNumber!: number;
+  totalPages!: number;
+  totalCount!: number;
+  readonly hasPreviousPage!: boolean;
+  readonly hasNextPage!: boolean;
+
+  constructor(data?: IQueryDtoPaginatedList) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data['Items'])) {
+        this.items = [] as any;
+        for (let item of _data['Items'])
+          this.items!.push(QueryDto.fromJS(item));
+      }
+      this.pageNumber = _data['PageNumber'];
+      this.totalPages = _data['TotalPages'];
+      this.totalCount = _data['TotalCount'];
+      (<any>this).hasPreviousPage = _data['HasPreviousPage'];
+      (<any>this).hasNextPage = _data['HasNextPage'];
+    }
+  }
+
+  static fromJS(data: any): QueryDtoPaginatedList {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueryDtoPaginatedList();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.items)) {
+      data['Items'] = [];
+      for (let item of this.items) data['Items'].push(item.toJSON());
+    }
+    data['PageNumber'] = this.pageNumber;
+    data['TotalPages'] = this.totalPages;
+    data['TotalCount'] = this.totalCount;
+    data['HasPreviousPage'] = this.hasPreviousPage;
+    data['HasNextPage'] = this.hasNextPage;
+    return data;
+  }
+}
+
+export interface IQueryDtoPaginatedList {
+  items: QueryDto[] | undefined;
+  pageNumber: number;
+  totalPages: number;
+  totalCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export class QueryDtoPaginatedListResult
+  implements IQueryDtoPaginatedListResult
+{
+  message!: string | undefined;
+  success!: boolean;
+  value!: QueryDtoPaginatedList;
+
+  constructor(data?: IQueryDtoPaginatedListResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value']
+        ? QueryDtoPaginatedList.fromJS(_data['Value'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): QueryDtoPaginatedListResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueryDtoPaginatedListResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IQueryDtoPaginatedListResult {
+  message: string | undefined;
+  success: boolean;
+  value: QueryDtoPaginatedList;
 }
 
 export class RegisterUserCommand implements IRegisterUserCommand {
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  login?: string | undefined;
-  email?: string | undefined;
-  password?: string | undefined;
-  confirmPassword?: string | undefined;
-  dateOfBirth?: Date;
+  firstName!: string | undefined;
+  lastName!: string | undefined;
+  login!: string | undefined;
+  email!: string | undefined;
+  password!: string | undefined;
+  confirmPassword!: string | undefined;
+  dateOfBirth!: Date;
 
   constructor(data?: IRegisterUserCommand) {
     if (data) {
@@ -4226,18 +4287,18 @@ export class RegisterUserCommand implements IRegisterUserCommand {
 }
 
 export interface IRegisterUserCommand {
-  firstName?: string | undefined;
-  lastName?: string | undefined;
-  login?: string | undefined;
-  email?: string | undefined;
-  password?: string | undefined;
-  confirmPassword?: string | undefined;
-  dateOfBirth?: Date;
+  firstName: string | undefined;
+  lastName: string | undefined;
+  login: string | undefined;
+  email: string | undefined;
+  password: string | undefined;
+  confirmPassword: string | undefined;
+  dateOfBirth: Date;
 }
 
 export class Result implements IResult {
-  message?: string | undefined;
-  success?: boolean;
+  message!: string | undefined;
+  success!: boolean;
 
   constructor(data?: IResult) {
     if (data) {
@@ -4271,13 +4332,13 @@ export class Result implements IResult {
 }
 
 export interface IResult {
-  message?: string | undefined;
-  success?: boolean;
+  message: string | undefined;
+  success: boolean;
 }
 
 export class SendQueryAdminCommand implements ISendQueryAdminCommand {
-  query?: string | undefined;
-  database?: string | undefined;
+  query!: string | undefined;
+  database!: string | undefined;
 
   constructor(data?: ISendQueryAdminCommand) {
     if (data) {
@@ -4311,16 +4372,16 @@ export class SendQueryAdminCommand implements ISendQueryAdminCommand {
 }
 
 export interface ISendQueryAdminCommand {
-  query?: string | undefined;
-  database?: string | undefined;
+  query: string | undefined;
+  database: string | undefined;
 }
 
 export class StringIEnumerableIEnumerableResult
   implements IStringIEnumerableIEnumerableResult
 {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string[][] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: string[][] | undefined;
 
   constructor(data?: IStringIEnumerableIEnumerableResult) {
     if (data) {
@@ -4362,15 +4423,15 @@ export class StringIEnumerableIEnumerableResult
 }
 
 export interface IStringIEnumerableIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string[][] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: string[][] | undefined;
 }
 
 export class StringIEnumerableResult implements IStringIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string[] | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: string[] | undefined;
 
   constructor(data?: IStringIEnumerableResult) {
     if (data) {
@@ -4412,15 +4473,15 @@ export class StringIEnumerableResult implements IStringIEnumerableResult {
 }
 
 export interface IStringIEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string[] | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: string[] | undefined;
 }
 
 export class StringResult implements IStringResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string | undefined;
+  message!: string | undefined;
+  success!: boolean;
+  value!: string | undefined;
 
   constructor(data?: IStringResult) {
     if (data) {
@@ -4456,9 +4517,9 @@ export class StringResult implements IStringResult {
 }
 
 export interface IStringResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: string | undefined;
+  message: string | undefined;
+  success: boolean;
+  value: string | undefined;
 }
 
 export class ApiException extends Error {
