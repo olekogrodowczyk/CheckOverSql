@@ -266,10 +266,116 @@ export class DatabaseClient {
     this.baseUrl = 'https://localhost:5001';
   }
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
+  getQueryHistory(
+    pageNumber: number | undefined,
+    pageSize: number | undefined
+  ): Observable<QueryHistoryDtoPaginatedListResult> {
+    let url_ = this.baseUrl + '/api/Database/GetQueryHistory?';
+    if (pageNumber === null)
+      throw new Error("The parameter 'pageNumber' cannot be null.");
+    else if (pageNumber !== undefined)
+      url_ += 'PageNumber=' + encodeURIComponent('' + pageNumber) + '&';
+    if (pageSize === null)
+      throw new Error("The parameter 'pageSize' cannot be null.");
+    else if (pageSize !== undefined)
+      url_ += 'PageSize=' + encodeURIComponent('' + pageSize) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetQueryHistory(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetQueryHistory(response_ as any);
+            } catch (e) {
+              return _observableThrow(
+                e
+              ) as any as Observable<QueryHistoryDtoPaginatedListResult>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<QueryHistoryDtoPaginatedListResult>;
+        })
+      );
+  }
+
+  protected processGetQueryHistory(
+    response: HttpResponseBase
+  ): Observable<QueryHistoryDtoPaginatedListResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = QueryHistoryDtoPaginatedListResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
   sendQueryAdmin(
     body: SendQueryAdminCommand | undefined
   ): Observable<Int32Result> {
@@ -3862,18 +3968,123 @@ export class Int32IEnumerableResult implements IInt32IEnumerableResult {
   }
 }
 
-export interface IInt32IEnumerableResult {
-  message?: string | undefined;
-  success?: boolean;
-  value?: number[] | undefined;
+export class QueryHistoryDto implements IQueryHistoryDto {
+  queryValue?: string | undefined;
+  created?: Date;
+
+  constructor(data?: IQueryHistoryDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.queryValue = _data['QueryValue'];
+      this.created = _data['Created']
+        ? new Date(_data['Created'].toString())
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): QueryHistoryDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueryHistoryDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['QueryValue'] = this.queryValue;
+    data['Created'] = this.created
+      ? this.created.toISOString()
+      : <any>undefined;
+    return data;
+  }
 }
 
-export class Int32Result implements IInt32Result {
+export interface IQueryHistoryDto {
+  queryValue?: string | undefined;
+  created?: Date;
+}
+
+export class QueryHistoryDtoPaginatedList
+  implements IQueryHistoryDtoPaginatedList
+{
+  items?: QueryHistoryDto[] | undefined;
+  pageNumber?: number;
+  totalPages?: number;
+  totalCount?: number;
+  readonly hasPreviousPage?: boolean;
+  readonly hasNextPage?: boolean;
+
+  constructor(data?: IQueryHistoryDtoPaginatedList) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data['Items'])) {
+        this.items = [] as any;
+        for (let item of _data['Items'])
+          this.items!.push(QueryHistoryDto.fromJS(item));
+      }
+      this.pageNumber = _data['PageNumber'];
+      this.totalPages = _data['TotalPages'];
+      this.totalCount = _data['TotalCount'];
+      (<any>this).hasPreviousPage = _data['HasPreviousPage'];
+      (<any>this).hasNextPage = _data['HasNextPage'];
+    }
+  }
+
+  static fromJS(data: any): QueryHistoryDtoPaginatedList {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueryHistoryDtoPaginatedList();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.items)) {
+      data['Items'] = [];
+      for (let item of this.items) data['Items'].push(item.toJSON());
+    }
+    data['PageNumber'] = this.pageNumber;
+    data['TotalPages'] = this.totalPages;
+    data['TotalCount'] = this.totalCount;
+    data['HasPreviousPage'] = this.hasPreviousPage;
+    data['HasNextPage'] = this.hasNextPage;
+    return data;
+  }
+}
+
+export interface IQueryHistoryDtoPaginatedList {
+  items?: QueryHistoryDto[] | undefined;
+  pageNumber?: number;
+  totalPages?: number;
+  totalCount?: number;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+}
+
+export class QueryHistoryDtoPaginatedListResult
+  implements IQueryHistoryDtoPaginatedListResult
+{
   message?: string | undefined;
   success?: boolean;
-  value?: number;
+  value?: QueryHistoryDtoPaginatedList;
 
-  constructor(data?: IInt32Result) {
+  constructor(data?: IQueryHistoryDtoPaginatedListResult) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -3886,13 +4097,15 @@ export class Int32Result implements IInt32Result {
     if (_data) {
       this.message = _data['Message'];
       this.success = _data['Success'];
-      this.value = _data['Value'];
+      this.value = _data['Value']
+        ? QueryHistoryDtoPaginatedList.fromJS(_data['Value'])
+        : <any>undefined;
     }
   }
 
-  static fromJS(data: any): Int32Result {
+  static fromJS(data: any): QueryHistoryDtoPaginatedListResult {
     data = typeof data === 'object' ? data : {};
-    let result = new Int32Result();
+    let result = new QueryHistoryDtoPaginatedListResult();
     result.init(data);
     return result;
   }
@@ -3901,8 +4114,47 @@ export class Int32Result implements IInt32Result {
     data = typeof data === 'object' ? data : {};
     data['Message'] = this.message;
     data['Success'] = this.success;
-    data['Value'] = this.value;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
     return data;
+  }
+}
+
+export interface IQueryHistoryDtoPaginatedListResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: QueryHistoryDtoPaginatedList;
+}
+
+export class RegisterUserCommand implements IRegisterUserCommand {
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  login?: string | undefined;
+  email?: string | undefined;
+  password?: string | undefined;
+  confirmPassword?: string | undefined;
+  dateOfBirth?: Date;
+
+  constructor(data?: IRegisterUserCommand) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.firstName = _data['FirstName'];
+      this.lastName = _data['LastName'];
+      this.login = _data['Login'];
+      this.email = _data['Email'];
+      this.password = _data['Password'];
+      this.confirmPassword = _data['ConfirmPassword'];
+      this.dateOfBirth = _data['DateOfBirth']
+        ? new Date(_data['DateOfBirth'].toString())
+        : <any>undefined;
+    }
   }
 }
 

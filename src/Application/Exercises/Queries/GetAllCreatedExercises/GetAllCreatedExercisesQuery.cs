@@ -40,9 +40,11 @@ namespace Application.Exercises.Queries.GetAllCreated
 
         public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllCreatedExercisesQuery request, CancellationToken cancellationToken)
         {
-            int loggedUserId = (int)_userContextService.GetUserId;
+            int? loggedUserId = _userContextService.GetUserId;
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
+
             var exercises = await _exerciseRepository
-                .GetPaginatedResultAsync(x => x.CreatorId == loggedUserId, request.PageNumber, request.PageSize, x => x.Creator);
+                .GetPaginatedResultAsync(x => x.CreatorId == (int)loggedUserId, request.PageNumber, request.PageSize, x => x.Creator);
             var exercisesDto = await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
             foreach (var item in exercisesDto.Items)
             {
