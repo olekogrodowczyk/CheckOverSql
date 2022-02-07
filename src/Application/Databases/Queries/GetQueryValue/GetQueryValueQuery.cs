@@ -16,6 +16,7 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
     {
         public string DatabaseName { get; set; }
         public string Query { get; set; }
+        public bool ToQueryHistory { get; set; } = false;
     }
 
     public class GetQueryValueAdminQueryHandler : IRequestHandler<GetQueryValueQuery, IEnumerable<IEnumerable<string>>>
@@ -41,8 +42,11 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
             int databaseId = await _databaseRepository.GetDatabaseIdByName(request.DatabaseName);
 
             var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName, false);
-            Query query = new Query { CreatorId = (int)loggedUserId, DatabaseId = databaseId, QueryValue = request.Query };
-            await _queryRepository.AddAsync(query);
+            if(request.ToQueryHistory)
+            {
+                Query query = new Query { CreatorId = (int)loggedUserId, DatabaseId = databaseId, QueryValue = request.Query };
+                await _queryRepository.AddAsync(query);
+            }            
             return result;
         }
     }

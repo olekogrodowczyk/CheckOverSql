@@ -25,7 +25,7 @@ import {
   HttpResponseBase,
 } from '@angular/common/http';
 
-export const baseUrl = new InjectionToken<string>('https://localhost:5001');
+export const baseUrl = new InjectionToken<string>('baseUrl');
 
 @Injectable()
 export class AccountClient {
@@ -251,9 +251,7 @@ export class AccountClient {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DatabaseClient {
   private http: HttpClient;
   private baseUrl: string;
@@ -3580,6 +3578,7 @@ export interface IGetInvitationDtoIEnumerableResult {
 export class GetQueryValueQuery implements IGetQueryValueQuery {
   databaseName!: string | undefined;
   query!: string | undefined;
+  toQueryHistory!: boolean;
 
   constructor(data?: IGetQueryValueQuery) {
     if (data) {
@@ -3594,6 +3593,7 @@ export class GetQueryValueQuery implements IGetQueryValueQuery {
     if (_data) {
       this.databaseName = _data['DatabaseName'];
       this.query = _data['Query'];
+      this.toQueryHistory = _data['ToQueryHistory'];
     }
   }
 
@@ -3608,6 +3608,7 @@ export class GetQueryValueQuery implements IGetQueryValueQuery {
     data = typeof data === 'object' ? data : {};
     data['DatabaseName'] = this.databaseName;
     data['Query'] = this.query;
+    data['ToQueryHistory'] = this.toQueryHistory;
     return data;
   }
 }
@@ -3615,6 +3616,7 @@ export class GetQueryValueQuery implements IGetQueryValueQuery {
 export interface IGetQueryValueQuery {
   databaseName: string | undefined;
   query: string | undefined;
+  toQueryHistory: boolean;
 }
 
 export class GetSolutionDto implements IGetSolutionDto {
