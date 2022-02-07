@@ -39,7 +39,7 @@ namespace Application.Databases.Queries.GetQueryHistory
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
             var queriesCreatedByUser = await _queryRepository
-                .GetPaginatedResultAsync(x => x.CreatorId == (int)loggedUserId, request.PageNumber, request.PageSize);
+                .GetPaginatedResultAsync(x => x.CreatorId == (int)loggedUserId, request.PageNumber, request.PageSize, x=>x.Database);
             return await queriesCreatedByUser.MapPaginatedList<QueryDto, Query>(_mapper);
         }
     }

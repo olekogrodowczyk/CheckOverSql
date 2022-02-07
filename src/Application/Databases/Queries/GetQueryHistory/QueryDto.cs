@@ -19,7 +19,7 @@ namespace Application.Databases.Queries.GetQueryHistory
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Query, QueryDto>()
-                .ForMember(x=>x.DatabaseName, opt=>opt.MapFrom(y=>y.Database));
+                .ForMember(x=>x.DatabaseName, opt=>opt.MapFrom(y=>y.Database.Name));
         }
     }
 }
