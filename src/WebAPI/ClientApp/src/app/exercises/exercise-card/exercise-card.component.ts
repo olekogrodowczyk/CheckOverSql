@@ -10,11 +10,13 @@ import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercis
 })
 export class ExerciseCardComponent implements OnInit {
   shortenedDescription: string = '';
+  buttonText!: string;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
   constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.sliceDescription();
+    this.buttonText = this.model.passed ? 'SOLVED' : 'SOLVE';
   }
 
   sliceDescription() {

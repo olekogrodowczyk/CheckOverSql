@@ -2,7 +2,6 @@
   width: 400px;
   max-width: 400px;
   min-width: 400px;
-  height: 225px;
 }
 
 .mat-card-content {
@@ -26,11 +25,6 @@
   margin-bottom: 8px;
   color: #ffffffb3;
   height: 20px;
-}
-
-.solve-button {
-  margin-left: 0.6em;
-  margin-top: 0.5em;
 }
 
 .description {

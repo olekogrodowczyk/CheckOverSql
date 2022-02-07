@@ -14,23 +14,9 @@
   </div>
   <mat-divider></mat-divider>
 
-  <mat-card-actions fxLayout="row">
-    <button
-      fxflex="5 1 auto"
-      fxFlexAlign="center"
-      (click)="openSolveDialog()"
-      class="solve-button"
-      mat-flat-button
-      color="primary"
-    >
-      SOLVE
+  <mat-card-actions>
+    <button [disabled]="model.passed" (click)="openSolveDialog()" mat-button>
+      {{ buttonText }}
     </button>
-    <span
-      *ngIf="model.passed"
-      class="passed"
-      fxflex="1 1 auto"
-      fxFlexAlign="center"
-      >Passed</span
-    >
   </mat-card-actions>
 </mat-card>
