@@ -69,7 +69,8 @@ namespace Application.Services
         public async Task<bool> Compare(int exerciseId, string query)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
-            string databaseName = await _databaseRepository.GetDatabaseNameById(exercise.DatabaseId);
+            if(exercise.DatabaseId is null) { throw new NotFoundException("Defined exercises doesn't have an assigned database"); }
+            string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
 
             var list1 = await _databaseService.SendQueryWithData(query, databaseName);
             var list2 = await _databaseService.SendQueryWithData(exercise.ValidAnswer, databaseName);

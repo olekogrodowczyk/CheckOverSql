@@ -13,5 +13,6 @@ namespace Domain.Entities
         public string ConnectionString { get; set; }
         public string ConnectionStringAdmin { get; set; }
         public virtual ICollection<Query> Queries { get; set; }
+        public virtual ICollection<Exercise> Exercises { get; set; }
     }
 }

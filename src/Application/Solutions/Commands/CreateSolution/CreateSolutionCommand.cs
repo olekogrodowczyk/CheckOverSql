@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Mappings;
+using Application.Common.Exceptions;
 
 namespace Application.Solutions.Commands.CreateSolution
 {
@@ -54,12 +55,13 @@ namespace Application.Solutions.Commands.CreateSolution
         public async Task<GetComparisonDto> Handle(CreateSolutionCommand command, CancellationToken cancellationToken)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(command.ExerciseId);
-
+            if (exercise.DatabaseId is null) { throw new NotFoundException("Defined exercises doesn't have an assigned database"); }
+           
             Solution solution = _mapper.Map<Solution>(command);
             solution.Creator = _userContextService.User;
             await _solutionRepository.AddAsync(solution);
 
-            string databaseName = await _databaseRepository.GetDatabaseNameById(exercise.DatabaseId);
+            string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
             solution.Checked = true; solution.IsValid = false;
             await _databaseService.SendQueryNoData(command.Query, databaseName);
             solution.IsValid = true;

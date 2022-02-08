@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Application.Databases.Queries.GetQueryHistory
 {
     public class GetQueryHistoryQueryValidator : AbstractValidator<GetQueryHistoryQuery>
-    {
+    { 
         public GetQueryHistoryQueryValidator()
         {
             RuleFor(x => x.PageNumber).GreaterThan(0).WithMessage("Page number has to best at least or equal 1");

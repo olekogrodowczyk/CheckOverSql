@@ -133,7 +133,13 @@ namespace Infrastructure.Data
                 .HasOne<Database>(x => x.Database)
                 .WithMany(x => x.Queries)
                 .HasForeignKey(x => x.DatabaseId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Exercise>()
+                .HasOne<Database>(X => X.Database)
+                .WithMany(x => x.Exercises)
+                .HasForeignKey(x => x.DatabaseId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
         
     }

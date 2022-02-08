@@ -11,7 +11,7 @@ namespace Domain.Entities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int DatabaseId { get; set; }
+        public int? DatabaseId { get; set; }
         public virtual Database Database { get; set; }
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
