@@ -9,6 +9,6 @@ namespace Application.Interfaces
     public interface IDatabaseService
     {
         Task<int> SendQueryNoData(string query, string databaseName, bool isAdmin=false);
-        Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false);
+        Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin = false, int? numberOfRows = null);
     }
 }

@@ -31,8 +31,9 @@ namespace Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString)
+        public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows)
         {    
+            if(numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
             SqlConnection connection = new SqlConnection(connectionString);
 
             connection.Open();
@@ -48,6 +49,12 @@ namespace Infrastructure.Repositories
             return queryResult;
         }
 
+        private string limitQueryResult(string query, int numberOfRows)
+        {
+            query = query.TrimEnd().TrimEnd(';');
+            return $"SELECT TOP({numberOfRows}) * FROM({query}) data;";
+        }
+
         private async Task<List<List<string>>> getDataInMatrix(SqlCommand command)
         {
             List<List<string>> values = new List<List<string>>();
@@ -58,7 +65,7 @@ namespace Infrastructure.Repositories
                     List<string> RowValues = new List<string>();
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        string value = reader[i].ToString();
+                        string value = reader.IsDBNull(i) ? "NULL" : reader[i].ToString();
                         RowValues.Add(value);
                     }
                     values.Add(RowValues);

@@ -41,7 +41,7 @@ namespace Application.Databases.Queries.GetQueryValueAdmin
             if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
             int databaseId = await _databaseRepository.GetDatabaseIdByName(request.DatabaseName);
 
-            var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName, false);
+            var result = await _databaseService.SendQueryWithData(request.Query, request.DatabaseName, false, 1000);
             if(request.ToQueryHistory)
             {
                 Query query = new Query { CreatorId = (int)loggedUserId, DatabaseId = databaseId, QueryValue = request.Query };

@@ -20,10 +20,10 @@ namespace Application.Services
             _databaseRepository = databaseRepository;
         }
        
-        public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false)
+        public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false, int? numberOfRows = null)
         {
             string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
-            var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString.Replace("\\\\", "\\"));
+            var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString.Replace("\\\\", "\\"), numberOfRows);
             return result;
         }
 
