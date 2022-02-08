@@ -43,8 +43,8 @@ namespace Application.Exercises.Queries.GetAllCreated
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
 
-            var exercises = await _exerciseRepository
-                .GetPaginatedResultAsync(x => x.CreatorId == (int)loggedUserId, request.PageNumber, request.PageSize, x => x.Creator);
+            var exercises = await _exerciseRepository.GetPaginatedResultAsync
+                (x => x.CreatorId == (int)loggedUserId && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator);
             var exercisesDto = await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
             foreach (var item in exercisesDto.Items)
             {

@@ -39,7 +39,7 @@ namespace Application.Exercises.Queries.GetAllPublicExercises
         public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllPublicExercisesQuery request, CancellationToken cancellationToken)
         {
             var exercises = await _exerciseRepository
-                .GetPaginatedResultAsync(x => !x.IsPrivate, request.PageNumber, request.PageSize, x => x.Creator);
+                .GetPaginatedResultAsync(x => !x.IsPrivate && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator);
             return await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
         }
     }
