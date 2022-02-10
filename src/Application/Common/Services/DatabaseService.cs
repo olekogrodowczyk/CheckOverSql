@@ -23,14 +23,14 @@ namespace Application.Services
         public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false, int? numberOfRows = null)
         {
             string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
-            var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString.Replace("\\\\", "\\"), numberOfRows);
+            var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString, numberOfRows);
             return result;
         }
 
         public async Task<int> SendQueryNoData(string query, string databaseName, bool isAdmin=false)
         {
             string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
-            var result = await _databaseQuery.ExecuteQueryNoData(query, connectionString.Replace("\\\\","\\"));
+            var result = await _databaseQuery.ExecuteQueryNoData(query, connectionString);
             return result;
         }
   

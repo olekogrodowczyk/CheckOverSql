@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Common.Exceptions;
+using Application.Common.QueryEvaluation;
 
 namespace Application.Services
 {
@@ -26,11 +27,12 @@ namespace Application.Services
         private readonly IComparisonRepository _comparisonRepository;
         private readonly ISolvingRepository _solvingRepository;
         private readonly IDatabaseRepository _databaseRepository;
+        private readonly IQueryEvaluatorDriver _queryEvaluatorDriver;
 
         public SolutionService(IMapper mapper, ISolutionRepository solutionRepository, IUserContextService userContextService
             ,IDatabaseQuery databaseQuery, IExerciseRepository exerciseRepository, IDatabaseService databaseService
             ,IDataComparerService dataComparer, IComparisonRepository comparisonRepository, ISolvingRepository solvingRepository
-            ,IDatabaseRepository databaseRepository)
+            ,IDatabaseRepository databaseRepository, IQueryEvaluatorDriver queryEvaluatorDriver)
         {
             _mapper = mapper;
             _solutionRepository = solutionRepository;
@@ -42,6 +44,7 @@ namespace Application.Services
             _comparisonRepository = comparisonRepository;
             _solvingRepository = solvingRepository;
             _databaseRepository = databaseRepository;
+            _queryEvaluatorDriver = queryEvaluatorDriver;
         }
 
         
@@ -71,12 +74,13 @@ namespace Application.Services
             var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
             if(exercise.DatabaseId is null) { throw new NotFoundException("Defined exercises doesn't have an assigned database"); }
             string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
+            string databaseConnectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
+            bool comparisonResult = await _queryEvaluatorDriver.Evaluate(query, exercise.ValidAnswer, databaseConnectionString);
+            //var list1 = await _databaseService.SendQueryWithData(query, databaseName);
+            //var list2 = await _databaseService.SendQueryWithData(exercise.ValidAnswer, databaseName);
 
-            var list1 = await _databaseService.SendQueryWithData(query, databaseName);
-            var list2 = await _databaseService.SendQueryWithData(exercise.ValidAnswer, databaseName);
-
-            bool result = await _dataComparer.compareValues(list1, list2);
-            return result;
+            //bool result = await _dataComparer.compareValues(list1, list2);
+            return comparisonResult;
         }
 
         public async Task<Comparison> CreateComparison(int solutionId, int exerciseId)

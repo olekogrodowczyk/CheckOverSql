@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
 
         public async Task<int> ExecuteQueryNoData(string query, string connectionString)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
+            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
             var result = await command.ExecuteNonQueryAsync();
@@ -31,16 +31,50 @@ namespace Infrastructure.Repositories
             return result;
         }
 
+        public async Task<int> ExecuteQueryGetOneIntValue(string query, string connectionString)
+        {
+            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
+            connection.Open();
+            int result = 0;
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                var dr = await command.ExecuteReaderAsync();
+                result = await dr.ReadAsync() ? dr.GetInt32(0) : -1;
+            }
+            connection.Close();
+            return result;
+        }
+
+        public async Task<List<string>> ExecuteQueryGetOneRow(string query, string connectionString)
+        {
+            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
+            connection.Open();
+            List<string> values = new List<string>();
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                var reader = await command.ExecuteReaderAsync();
+                await reader.ReadAsync();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    string value = reader.IsDBNull(i) ? "NULL" : reader[i].ToString();
+                    values.Add(value);
+                }
+            }
+            connection.Close();
+            return values;
+        }
+
+
         public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows)
         {    
             if(numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
-            SqlConnection connection = new SqlConnection(connectionString);
+            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
 
             connection.Open();
 
             SqlCommand command = new SqlCommand(query, connection);            
             var queryResult =  await getDataInMatrix(command);
-            var columnNames = await getColumnNames(command);
+            var columnNames = await GetColumnNames(query, connectionString);
             queryResult.Insert(0, columnNames);
 
             await command.DisposeAsync();
@@ -74,19 +108,24 @@ namespace Infrastructure.Repositories
             return values;
         }
 
-        private async Task<List<string>> getColumnNames(SqlCommand command)
+        public async Task<List<string>> GetColumnNames(string query, string connectionString)
         {
+            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
+            connection.Open();
             DataTable dataTable = null;
-            using(SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SchemaOnly))
-            {
-                dataTable = await reader.GetSchemaTableAsync();
-            }
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {               
+                using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SchemaOnly))
+                {
+                    dataTable = await reader.GetSchemaTableAsync();
+                }
+            }              
             List<string> columnNames = new List<string>();
             dataTable?.Rows?.Cast<DataRow>().ToList().ForEach(row =>
             {
                 columnNames.Add(row.ItemArray[0].ToString());
             });         
-               
+            connection.Close();
             return columnNames;
         }
     }

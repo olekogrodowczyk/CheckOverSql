@@ -35,7 +35,7 @@ namespace Application.UnitTests.Services
             
             //Act
             DataComparerSercice dataComparer = new DataComparerSercice();
-            bool result = await dataComparer.compareValues(list,list2);
+            bool result = await dataComparer.compareMatrixValues(list,list2);
 
             //Assert
             Assert.Equal(expectedResult, result);          
@@ -63,7 +63,7 @@ namespace Application.UnitTests.Services
 
             //Act
             DataComparerSercice dataComparer = new DataComparerSercice();
-            bool result = await dataComparer.compareValues(list, list2);
+            bool result = await dataComparer.compareMatrixValues(list, list2);
 
             //Assert
             Assert.Equal(expectedResult, result);

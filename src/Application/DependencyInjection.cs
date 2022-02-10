@@ -17,6 +17,7 @@ using MediatR;
 using Application.Common.Behaviours;
 using FluentValidation;
 using Infrastructure.Authorization;
+using Application.Common.QueryEvaluation;
 
 namespace Application
 {
@@ -33,10 +34,11 @@ namespace Application
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerSercice>();
+            services.AddScoped<IQueryEvaluator, QueryEvaluator>();
+            services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriver>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
-
             return services;
         }
     }
