@@ -1,4 +1,5 @@
 ﻿using Application.Databases.Commands.SendQueryAdmin;
+using Application.Databases.Queries;
 using Application.Databases.Queries.GetDatabaseNames;
 using Application.Databases.Queries.GetQueryHistory;
 using Application.Databases.Queries.GetQueryValueAdmin;

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Solutions.Queries.GetLastQueryInExercise;
 
 namespace WebAPI.Controllers
 {
@@ -57,7 +58,16 @@ namespace WebAPI.Controllers
             return Ok(new Result<IEnumerable<IEnumerable<string>>>(result, "Query executed successfully"));
         }
 
-            
+        [HttpGet("GetLastSolutionSentIntoExercise")]
+        [ProducesResponseType(200, Type = typeof(Result<GetSolutionDto>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetLastSolutionSentIntoExercise([FromQuery] GetLastSolutionSentIntoExerciseQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return Ok(new Result<GetSolutionDto>(result, "Solution returned successfully"));
+        }
+
+
 
 
     }

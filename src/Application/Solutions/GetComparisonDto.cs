@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Solutions.Commands.CreateSolution
+namespace Application.Solutions
 {
     public class GetComparisonDto : IMap
     {
