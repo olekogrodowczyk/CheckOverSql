@@ -33,7 +33,7 @@ namespace Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<ISolutionService , SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
-            services.AddScoped<IDataComparerService, DataComparerSercice>();
+            services.AddScoped<IDataComparerService, DataComparerService>();
             services.AddScoped<IQueryEvaluator, QueryEvaluator>();
             services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriverOptimized>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));

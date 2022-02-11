@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class DataComparerSercice : IDataComparerService
+    public class DataComparerService : IDataComparerService
     {
         public Task<bool> compareValues(List<List<string>> values1, List<List<string>> values2)
         {
