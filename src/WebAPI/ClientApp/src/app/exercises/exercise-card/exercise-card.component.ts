@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GetExerciseDto } from 'src/app/web-api-client';
+import { GetExerciseDto, QueryDto } from 'src/app/web-api-client';
+import { ShowSolutionDialogComponent } from '../show-solution-dialog/show-solution-dialog.component';
 import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercise-form.component';
 
 @Component({
@@ -34,6 +35,15 @@ export class ExerciseCardComponent implements OnInit {
         exerciseId: this.model.id,
         title: this.model.title,
         description: this.model.description,
+      },
+    });
+  }
+
+  openLastQueryDialog() {
+    const dialogRef = this.dialog.open(ShowSolutionDialogComponent, {
+      width: innerWidth > 992 ? '40%' : '75%',
+      data: {
+        exerciseId: this.model.id,
       },
     });
   }

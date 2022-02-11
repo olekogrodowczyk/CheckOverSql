@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SolveExerciseFormComponent } from './solve-exercise-form/solve-exercise-form.component';
+import { ShowSolutionDialogComponent } from './show-solution-dialog/show-solution-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { SolveExerciseFormComponent } from './solve-exercise-form/solve-exercise
     ExerciseCardComponent,
     ExerciseListComponent,
     SolveExerciseFormComponent,
+    ShowSolutionDialogComponent,
   ],
   imports: [
     CommonModule,

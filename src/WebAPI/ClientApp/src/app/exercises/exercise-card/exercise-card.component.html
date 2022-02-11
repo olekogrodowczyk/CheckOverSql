@@ -2,7 +2,7 @@
   <div fxLayout="row" class="header">
     <div *ngIf="model.creationTime">Created: {{ model.creationTime }}</div>
     <div style="margin-left: auto">
-      <p>#{{ model.id }}</p>
+      <p>{{ model.databaseName }}</p>
     </div>
   </div>
 
@@ -17,6 +17,13 @@
   <mat-card-actions>
     <button [disabled]="model.passed" (click)="openSolveDialog()" mat-button>
       {{ buttonText }}
+    </button>
+    <button
+      [disabled]="!model.lastAnswer"
+      (click)="openLastQueryDialog()"
+      mat-button
+    >
+      Last Answer
     </button>
   </mat-card-actions>
 </mat-card>

@@ -1,0 +1,20 @@
+<div *ngIf="model" fxLayout="column" fxLayoutGap="8px">
+  <div fxLayout="row">
+    <p class="header-text">Sent: {{ model.creationTime | date: "medium" }}</p>
+    <div style="margin-left: auto">
+      <p class="header-text">
+        Status: {{ model.outcome == "True" ? "Passed" : "Not passed" }}
+      </p>
+    </div>
+  </div>
+
+  {{ model.query }}
+  <button
+    class="execute-query-button"
+    fxFlexAlign="end"
+    mat-flat-button="primary"
+    color="primary"
+  >
+    Execute query
+  </button>
+</div>
