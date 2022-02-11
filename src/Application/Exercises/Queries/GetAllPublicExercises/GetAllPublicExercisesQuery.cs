@@ -46,7 +46,7 @@ namespace Application.Exercises.Queries.GetAllPublicExercises
             foreach (var item in exercisesDto.Items)
             {
                 item.Passed = await _solutionService.CheckIfUserPassedExercise(item.Id);
-                item.LastAnswer = await _solutionService.GetLastExecutedQueryByUserInExercise(item.Id);
+                item.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(item.Id);
             }
             return exercisesDto;
         }

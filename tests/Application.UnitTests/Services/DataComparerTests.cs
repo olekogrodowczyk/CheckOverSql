@@ -34,8 +34,8 @@ namespace Application.UnitTests.Services
             }
             
             //Act
-            DataComparerSercice dataComparer = new DataComparerSercice();
-            bool result = await dataComparer.compareMatrixValues(list,list2);
+            DataComparerService dataComparer = new DataComparerService();
+            bool result = await dataComparer.compareValues(list,list2);
 
             //Assert
             Assert.Equal(expectedResult, result);          
@@ -62,8 +62,8 @@ namespace Application.UnitTests.Services
             }
 
             //Act
-            DataComparerSercice dataComparer = new DataComparerSercice();
-            bool result = await dataComparer.compareMatrixValues(list, list2);
+            DataComparerService dataComparer = new DataComparerService();
+            bool result = await dataComparer.compareValues(list, list2);
 
             //Assert
             Assert.Equal(expectedResult, result);

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Databases.Queries.GetQueryHistory
+namespace Application.Databases.Queries
 {
     public class QueryDto : IMap
     {

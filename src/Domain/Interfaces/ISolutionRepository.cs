@@ -11,5 +11,6 @@ namespace Domain.Interfaces
     {
         Task<IEnumerable<Solution>> GetAllCreatedByUser(int exerciseId);
         Task<string> GetDatabaseName(int solutionId);
+        Task<Solution> GetLatestSolutionSentByUserInExercise(int exerciseId, int userId);
     }
 }

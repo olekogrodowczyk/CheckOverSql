@@ -31,15 +31,5 @@ namespace Infrastructure.Repositories
             if(comparison == null) { throw new NotFoundException($"Comparison with id: {comparisonId} cannot be found"); }
             return comparison;
         }
-
-        public async Task<Comparison> GetLatestComparisonInExercise(int exerciseId)
-        {
-            var comparison = await _context.Comparisons
-                .Where(x=>x.ExerciseId == exerciseId)
-                .OrderByDescending(x => x.Created)
-                .Include(x=>x.Solution)
-                .FirstOrDefaultAsync();
-            return comparison;
-        }
     }
 }

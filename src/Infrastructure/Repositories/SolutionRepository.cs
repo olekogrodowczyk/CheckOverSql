@@ -44,5 +44,14 @@ namespace Infrastructure.Repositories
             if (result == null) { throw new NotFoundException($"Result is not found with exerciseId:{exerciseId}, or user is not logged in"); }
             return result;
         }
+
+        public async Task<Solution> GetLatestSolutionSentByUserInExercise(int exerciseId, int userId)
+        {
+            var solution = await _context.Solutions
+                .Where(x => x.ExerciseId == exerciseId && x.CreatorId == userId)
+                .OrderByDescending(x => x.Created)
+                .FirstOrDefaultAsync();
+            return solution;
+        }
     }
 }

@@ -19,7 +19,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
-
+using Application.Solutions;
 
 namespace WebAPI.IntegrationTests.Controllers
 {

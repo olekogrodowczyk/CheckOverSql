@@ -106,12 +106,12 @@ namespace Application.Services
             return false;            
         }
 
-        public async Task<string> GetLastExecutedQueryByUserInExercise(int exerciseId)
+        public async Task<string> GetLatestSolutionQuerySentIntoExercise(int exerciseId)
         {
             int? loggedUserId = _userContextService.GetUserId;
             if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
-            string query = (await _comparisonRepository.GetLatestComparisonInExercise(exerciseId))?.Solution?.Query;
-            return query;
+            var result = await _solutionRepository.GetLatestSolutionSentByUserInExercise(exerciseId, (int)loggedUserId);
+            return result?.Query;
         }
 
     }

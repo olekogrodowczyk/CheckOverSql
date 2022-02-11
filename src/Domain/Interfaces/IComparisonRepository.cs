@@ -10,6 +10,5 @@ namespace Domain.Interfaces
     public interface IComparisonRepository : IRepository<Comparison>
     {
         Task<Comparison> GetComparisonWithIncludes(int comparisonId);
-        Task<Comparison> GetLatestComparisonInExercise(int exerciseId);
     }
 }
