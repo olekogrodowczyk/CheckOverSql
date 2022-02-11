@@ -67,7 +67,12 @@ namespace Application.Solutions.Commands.CreateSolution
             solution.IsValid = true;
 
             Comparison comparison = await _solutionService.CreateComparison(solution.Id, command.ExerciseId);
-            if (comparison.Result) { await _solutionService.HandlePossibleSolvingToDo(command.ExerciseId, solution); }
+            if (comparison.Result) 
+            { 
+                await _solutionService.HandlePossibleSolvingToDo(command.ExerciseId, solution);
+                solution.Outcome = true;
+                await _solutionRepository.UpdateAsync(solution);
+            }
 
             comparison = await _comparisonRepository.GetComparisonWithIncludes(comparison.Id);
             var comparisonDto = _mapper.Map<GetComparisonDto>(comparison);
