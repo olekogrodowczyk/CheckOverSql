@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Common.QueryEvaluation
 {
-    public class QueryEvaluatorDriver : IQueryEvaluatorDriver
+    public class QueryEvaluatorDriverOptimized : IQueryEvaluatorDriver
     {
         private readonly IQueryEvaluator _queryEvaluator;
         private readonly IDataComparerService _dataComparerService;
@@ -15,7 +15,7 @@ namespace Application.Common.QueryEvaluation
         private int query1Count = 0;
         private int query2Count = 0;
 
-        public QueryEvaluatorDriver(IQueryEvaluator queryEvaluator, IDataComparerService dataComparerService)
+        public QueryEvaluatorDriverOptimized(IQueryEvaluator queryEvaluator, IDataComparerService dataComparerService)
         {
             _queryEvaluator = queryEvaluator;
             _dataComparerService = dataComparerService;

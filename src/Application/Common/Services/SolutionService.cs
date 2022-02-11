@@ -76,10 +76,7 @@ namespace Application.Services
             string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
             string databaseConnectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             bool comparisonResult = await _queryEvaluatorDriver.Evaluate(query, exercise.ValidAnswer, databaseConnectionString);
-            //var list1 = await _databaseService.SendQueryWithData(query, databaseName);
-            //var list2 = await _databaseService.SendQueryWithData(exercise.ValidAnswer, databaseName);
-
-            //bool result = await _dataComparer.compareValues(list1, list2);
+            
             return comparisonResult;
         }
 
