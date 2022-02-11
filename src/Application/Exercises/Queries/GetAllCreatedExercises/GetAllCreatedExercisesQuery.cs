@@ -44,11 +44,12 @@ namespace Application.Exercises.Queries.GetAllCreated
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
 
             var exercises = await _exerciseRepository.GetPaginatedResultAsync
-                (x => x.CreatorId == (int)loggedUserId && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator);
+                (x => x.CreatorId == (int)loggedUserId && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator, x=>x.Database);
             var exercisesDto = await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
             foreach (var item in exercisesDto.Items)
             {
                 item.Passed = await _solutionService.CheckIfUserPassedExercise(item.Id);
+                item.LastAnswer = await _solutionService.GetLastExecutedQueryByUserInExercise(item.Id);
             }
             return exercisesDto;
         }

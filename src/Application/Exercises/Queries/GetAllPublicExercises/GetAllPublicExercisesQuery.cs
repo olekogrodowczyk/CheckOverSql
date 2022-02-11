@@ -27,20 +27,28 @@ namespace Application.Exercises.Queries.GetAllPublicExercises
         private readonly IMapper _mapper;
         private readonly IExerciseRepository _exerciseRepository;
         private readonly IUserContextService _userContextService;
+        private readonly ISolutionService _solutionService;
 
         public GetAllPublicExercisesQueryHandler(IMapper mapper, IExerciseRepository exerciseRepository
-            , IUserContextService userContextService )
+            , IUserContextService userContextService, ISolutionService solutionService)
         {
             _mapper = mapper;
             _exerciseRepository = exerciseRepository;
             _userContextService = userContextService;
+            _solutionService = solutionService;
         }
 
         public async Task<PaginatedList<GetExerciseDto>> Handle(GetAllPublicExercisesQuery request, CancellationToken cancellationToken)
         {
             var exercises = await _exerciseRepository
-                .GetPaginatedResultAsync(x => !x.IsPrivate && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator);
-            return await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
+                .GetPaginatedResultAsync(x => !x.IsPrivate && x.DatabaseId != null, request.PageNumber, request.PageSize, x => x.Creator, x=>x.Database);
+            var exercisesDto = await exercises.MapPaginatedList<GetExerciseDto, Exercise>(_mapper);
+            foreach (var item in exercisesDto.Items)
+            {
+                item.Passed = await _solutionService.CheckIfUserPassedExercise(item.Id);
+                item.LastAnswer = await _solutionService.GetLastExecutedQueryByUserInExercise(item.Id);
+            }
+            return exercisesDto;
         }
     }
 }
