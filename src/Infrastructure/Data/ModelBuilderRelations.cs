@@ -105,10 +105,10 @@ namespace Infrastructure.Data
                 .WithMany(x => x.Solutions)
                 .HasForeignKey(x => x.CreatorId);
 
-            modelBuilder.Entity<Comparison>()
-                .HasOne<Solution>(x => x.Solution)
-                .WithMany(x => x.Comparisons)
-                .HasForeignKey(x => x.SolutionId)
+            modelBuilder.Entity<Solution>()
+                .HasOne<Comparison>(x => x.Comparison)
+                .WithOne(x => x.Solution)
+                .HasForeignKey<Comparison>(x=>x.SolutionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Comparison>()
