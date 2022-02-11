@@ -4554,7 +4554,7 @@ export class StringIEnumerableIEnumerableResult
 {
   message?: string | undefined;
   success?: boolean;
-  value?: string[][] | undefined;
+  value!: string[][];
 
   constructor(data?: IStringIEnumerableIEnumerableResult) {
     if (data) {

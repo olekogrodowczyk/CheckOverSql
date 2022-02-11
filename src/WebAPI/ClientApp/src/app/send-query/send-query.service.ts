@@ -11,6 +11,7 @@ import {
 })
 export class SendQueryService {
   queryResult: string[][] = [];
+  model!: GetQueryValueQuery;
   constructor(
     private databaseClient: DatabaseClient,
     private snackBar: SnackbarService,

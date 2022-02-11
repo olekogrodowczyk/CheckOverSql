@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { GetQueryValueQuery, QueryDto } from 'src/app/web-api-client';
 import { SendQueryService } from '../send-query.service';
 
@@ -9,14 +10,18 @@ import { SendQueryService } from '../send-query.service';
 })
 export class QueryCardComponent implements OnInit {
   @Input() queryModel!: QueryDto;
-  constructor(private sendQueryService: SendQueryService) {}
+  constructor(
+    private sendQueryService: SendQueryService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {}
 
   executeQuery() {
-    this.sendQueryService.sendQuery(<GetQueryValueQuery>{
-      query: this.queryModel.queryValue,
+    this.sendQueryService.model = <GetQueryValueQuery>{
       databaseName: this.queryModel.databaseName,
-    });
+      query: this.queryModel.queryValue,
+    };
+    this.router.navigateByUrl('send-query/query-result');
   }
 }

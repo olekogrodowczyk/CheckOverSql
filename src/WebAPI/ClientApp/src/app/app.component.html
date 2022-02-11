@@ -1,5 +1,10 @@
 <app-navbar></app-navbar>
-
+<mat-progress-bar
+  mode="indeterminate"
+  color="accent"
+  *ngIf="isLoading$ | async"
+  style="position: absolute"
+></mat-progress-bar>
 <div class="container">
   <router-outlet></router-outlet>
 </div>

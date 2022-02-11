@@ -47,11 +47,13 @@ export class SendQueryFormComponent implements OnInit {
     if (this.SendQueryAdminForm.invalid) {
       return;
     }
-    this.sendQueryService.sendQuery(<GetQueryValueQuery>{
+    this.sendQueryService.model = <GetQueryValueQuery>{
       databaseName: this.SendQueryAdminForm.get('databaseName')?.value,
       query: this.SendQueryAdminForm.get('query')?.value,
       toQueryHistory: true,
-    });
+    };
+    this.router.navigateByUrl('send-query/query-result');
+
     this.dialogRef.close();
   }
 }

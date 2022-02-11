@@ -15,6 +15,7 @@ import {
 import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { BaseUrlInterceptor } from './base-url.interceptor';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +26,7 @@ import { BaseUrlInterceptor } from './base-url.interceptor';
     SharedModule,
     HttpClientModule,
     AuthModule,
+    MatProgressBarModule,
   ],
   providers: [
     AccountClient,

@@ -12,11 +12,10 @@ export class QueryResultComponent implements OnInit {
   dataSource: object[] = [];
   constructor(private sendQueryService: SendQueryService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.queryResult = this.sendQueryService.queryResult;
     this.assignColumnNames();
     this.dataSource = this.getData();
-    console.log(this.dataSource);
   }
 
   getData() {
