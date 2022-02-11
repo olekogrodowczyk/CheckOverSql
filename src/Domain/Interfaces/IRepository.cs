@@ -16,7 +16,7 @@ namespace Domain.Interfaces
         Task DeleteAsync(int id);
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties);
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includeProperties);
         Task<int> GetCount(Expression<Func<T, bool>> predicate);        
         Task<PaginatedList<T>> GetPaginatedResultAsync(Expression<Func<T, bool>> predicate, int pageNumber, int pageSize, params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetWhereAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);

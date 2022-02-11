@@ -55,8 +55,11 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includeProperties)
         {
+            var query = _context.Set<T>().AsQueryable();
+            query = includeProperties?.Aggregate(query, (current, include) => current.Include(include));
+
             var result = await _context.Set<T>().FindAsync(id);
             if (result == null) { throw new NotFoundException($"Result is not found with id:{id} with given type: {typeof(T)}"); }
             return result;
