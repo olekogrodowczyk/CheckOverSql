@@ -43,8 +43,13 @@ export class SolveExerciseFormComponent implements OnInit {
         query: this.solveExerciseForm.get('query')?.value,
       })
       .subscribe({
-        next: (value) => {
-          console.log(value);
+        next: ({ value }) => {
+          if (value?.result) {
+            this.snackBar.openSnackBar("You've passed the exercise");
+            this.ngOnInit();
+          } else {
+            this.snackBar.openSnackBar("You haven't passed the exercise");
+          }
         },
         error: ({ message }) => {
           this.snackBar.openSnackBar(message);
