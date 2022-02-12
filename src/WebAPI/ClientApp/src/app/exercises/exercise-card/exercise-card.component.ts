@@ -44,6 +44,7 @@ export class ExerciseCardComponent implements OnInit {
       width: innerWidth > 992 ? '40%' : '75%',
       data: {
         exerciseId: this.model.id,
+        databaseName: this.model.databaseName,
       },
     });
   }

@@ -23,6 +23,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SolveExerciseFormComponent } from './solve-exercise-form/solve-exercise-form.component';
 import { ShowSolutionDialogComponent } from './show-solution-dialog/show-solution-dialog.component';
+import { SendQueryModule } from '../send-query/send-query.module';
+import { SendQueryService } from '../send-query/send-query.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { ShowSolutionDialogComponent } from './show-solution-dialog/show-solutio
     MatInputModule,
     MatCheckboxModule,
     MatDialogModule,
+    SendQueryModule,
   ],
 })
 export class ExercisesModule {}

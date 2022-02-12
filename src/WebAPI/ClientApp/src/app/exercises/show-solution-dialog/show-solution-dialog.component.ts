@@ -1,7 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { delay } from 'rxjs';
+import { SendQueryService } from 'src/app/send-query/send-query.service';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { GetSolutionDto, SolutionClient } from 'src/app/web-api-client';
+import {
+  GetQueryValueQuery,
+  GetSolutionDto,
+  SolutionClient,
+} from 'src/app/web-api-client';
 import {
   DialogData,
   SolveExerciseFormComponent,
@@ -18,7 +25,10 @@ export class ShowSolutionDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<ShowSolutionDialogComponent>,
     private solutionClient: SolutionClient,
     private snackBar: SnackbarService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private sendQueryService: SendQueryService,
+    private router: Router,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { exerciseId: number; databaseName: string }
   ) {}
 
   ngOnInit(): void {
@@ -36,5 +46,14 @@ export class ShowSolutionDialogComponent implements OnInit {
           this.snackBar.openSnackBar(message);
         },
       });
+  }
+
+  executeQuery() {
+    this.sendQueryService.model = <GetQueryValueQuery>{
+      databaseName: this.data.databaseName,
+      query: this.model.query,
+    };
+    this.router.navigateByUrl('send-query/query-result');
+    this.dialogRef.close();
   }
 }

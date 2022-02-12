@@ -5,14 +5,14 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { delay, map, Observable, of, pluck } from 'rxjs';
+import { delay, map, Observable, of, pluck, take, tap } from 'rxjs';
 import { DatabaseClient } from '../web-api-client';
 import { SendQueryService } from './send-query.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class QueryResultResolver implements Resolve<string[][]> {
+export class QueryResultResolver implements Resolve<string[][] | undefined> {
   constructor(
     private sendQueryService: SendQueryService,
     private databaseClient: DatabaseClient
@@ -21,8 +21,6 @@ export class QueryResultResolver implements Resolve<string[][]> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<string[][]> | Observable<string[][]> | string[][] {
-    console.log('Dajmosinkapsinka');
-
     return this.databaseClient.getQueryValue(this.sendQueryService.model).pipe(
       pluck('value'),
       map((data) => (this.sendQueryService.queryResult = data))
