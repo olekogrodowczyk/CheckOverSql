@@ -1,0 +1,9 @@
+.group-card {
+  width: 200px;
+}
+
+.mat-card-image {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}

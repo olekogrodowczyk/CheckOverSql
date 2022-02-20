@@ -13,11 +13,12 @@ namespace Application.Groups.Queries
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ImagePath { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<GetGroupDto, Group>()
-                .ReverseMap();
+            profile.CreateMap<Group, GetGroupDto>()
+                .ForMember(x => x.ImagePath, opt => opt.MapFrom(y => $"images/groups/{y.ImageName}"));
         }
     }
 }

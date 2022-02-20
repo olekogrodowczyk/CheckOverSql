@@ -3455,6 +3455,7 @@ export interface IGetExerciseDtoPaginatedListResult {
 export class GetGroupDto implements IGetGroupDto {
   id?: number;
   name?: string | undefined;
+  ImagePath?: string | undefined;
 
   constructor(data?: IGetGroupDto) {
     if (data) {
@@ -3469,6 +3470,7 @@ export class GetGroupDto implements IGetGroupDto {
     if (_data) {
       this.id = _data['Id'];
       this.name = _data['Name'];
+      this.ImagePath = _data['ImagePath'];
     }
   }
 
@@ -3483,6 +3485,7 @@ export class GetGroupDto implements IGetGroupDto {
     data = typeof data === 'object' ? data : {};
     data['Id'] = this.id;
     data['Name'] = this.name;
+    data['ImagePath'] = this.ImagePath;
     return data;
   }
 }
@@ -3490,6 +3493,7 @@ export class GetGroupDto implements IGetGroupDto {
 export interface IGetGroupDto {
   id?: number;
   name?: string | undefined;
+  imagePath?: string | undefined;
 }
 
 export class GetGroupDtoIEnumerableResult

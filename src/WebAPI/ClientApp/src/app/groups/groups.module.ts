@@ -11,9 +11,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SharedModule } from '../shared/shared.module';
+import { GroupsListComponent } from './groups-list/groups-list.component';
+import { GroupCardComponent } from './group-card/group-card.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [HomeComponent, CreateGroupFormComponent],
+  declarations: [
+    HomeComponent,
+    CreateGroupFormComponent,
+    GroupsListComponent,
+    GroupCardComponent,
+  ],
   imports: [
     CommonModule,
     GroupsRoutingModule,
@@ -24,6 +33,8 @@ import { SharedModule } from '../shared/shared.module';
     MatInputModule,
     FlexLayoutModule,
     SharedModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class GroupsModule {}
