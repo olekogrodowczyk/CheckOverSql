@@ -1,4 +1,4 @@
-<div class="query-list">
+<div class="query-list" *ngIf="queryModels">
   <div fxLayoutGap="16px grid" fxLayout="row wrap">
     <app-query-card
       fxFlex.xl="1 1 33%"
@@ -10,6 +10,8 @@
     </app-query-card>
   </div>
 </div>
+<mat-spinner style="margin-left: auto; margin-right: auto" *ngIf="!queryModels">
+</mat-spinner>
 <mat-paginator
   [length]="totalCount"
   [pageSize]="pageSize"
