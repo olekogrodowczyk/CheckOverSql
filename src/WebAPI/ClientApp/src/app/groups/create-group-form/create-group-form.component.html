@@ -1,0 +1,32 @@
+<form [formGroup]="createGroupForm" fxLayout="column" (ngSubmit)="onSubmit()">
+  <mat-form-field color="accent" appearance="fill">
+    <mat-label>Name</mat-label>
+    <input formControlName="name" matInput />
+  </mat-form-field>
+  <button
+    type="button"
+    mat-stroked-button
+    color="accent"
+    (click)="fileInput.click()"
+  >
+    Choose Image
+  </button>
+  <input
+    hidden
+    (change)="onFileSelected($event)"
+    #fileInput
+    type="file"
+    accept=".jpg,.jpeg,.png"
+  />
+  <p style="margin-top: 0.5em" *ngIf="image">{{ image.name }}</p>
+
+  <button
+    style="margin-top: 3em"
+    mat-flat-button
+    color="primary"
+    type="submit"
+    class="input-style"
+  >
+    Submit
+  </button>
+</form>

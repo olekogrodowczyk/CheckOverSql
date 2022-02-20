@@ -10,6 +10,7 @@ import {
   AccountClient,
   DatabaseClient,
   ExerciseClient,
+  GroupClient,
   SolutionClient,
 } from './web-api-client';
 import { TokenInterceptor } from './auth/token.interceptor';
@@ -33,6 +34,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     DatabaseClient,
     ExerciseClient,
     SolutionClient,
+    GroupClient,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
   ],

@@ -1182,21 +1182,35 @@ export class GroupClient {
   }
 
   /**
-   * @param body (optional)
+   * @param name (optional)
+   * @param image (optional)
    * @return Success
    */
-  createGroup(body: CreateGroupCommand | undefined): Observable<Int32Result> {
+  createGroup(
+    name: string | undefined,
+    image: FileParameter | undefined
+  ): Observable<Int32Result> {
     let url_ = this.baseUrl + '/api/Group/CreateGroup';
     url_ = url_.replace(/[?&]$/, '');
 
-    const content_ = JSON.stringify(body);
+    const content_ = new FormData();
+    if (name === null || name === undefined)
+      throw new Error("The parameter 'name' cannot be null.");
+    else content_.append('Name', name.toString());
+    if (image === null || image === undefined)
+      throw new Error("The parameter 'image' cannot be null.");
+    else
+      content_.append(
+        'Image',
+        image.data,
+        image.fileName ? image.fileName : 'Image'
+      );
 
     let options_: any = {
       body: content_,
       observe: 'response',
       responseType: 'blob',
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
         Accept: 'text/plain',
       }),
     };
@@ -2909,42 +2923,6 @@ export interface ICreateExerciseCommand {
   isPrivate?: boolean;
 }
 
-export class CreateGroupCommand implements ICreateGroupCommand {
-  name?: string | undefined;
-
-  constructor(data?: ICreateGroupCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.name = _data['Name'];
-    }
-  }
-
-  static fromJS(data: any): CreateGroupCommand {
-    data = typeof data === 'object' ? data : {};
-    let result = new CreateGroupCommand();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['Name'] = this.name;
-    return data;
-  }
-}
-
-export interface ICreateGroupCommand {
-  name?: string | undefined;
-}
-
 export class CreateInvitationCommand implements ICreateInvitationCommand {
   receiverEmail?: string | undefined;
   roleName?: string | undefined;
@@ -4598,7 +4576,7 @@ export class StringIEnumerableIEnumerableResult
 export interface IStringIEnumerableIEnumerableResult {
   message?: string | undefined;
   success?: boolean;
-  value?: string[][] | undefined;
+  value: string[][];
 }
 
 export class StringIEnumerableResult implements IStringIEnumerableResult {
@@ -4693,6 +4671,11 @@ export interface IStringResult {
   message?: string | undefined;
   success?: boolean;
   value?: string | undefined;
+}
+
+export interface FileParameter {
+  data: any;
+  fileName: string;
 }
 
 export class ApiException extends Error {

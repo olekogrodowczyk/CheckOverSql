@@ -1,9 +1,12 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Interfaces;
+using Application.Interfaces;
 using Application.Mappings;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +19,7 @@ namespace Application.Groups.Commands.CreateGroup
     public class CreateGroupCommand : IMap, IRequest<int>
     {
         public string Name { get; set; }
+        public IFormFile Image { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -30,16 +34,18 @@ namespace Application.Groups.Commands.CreateGroup
         private readonly IUserContextService _userContextService;
         private readonly IGroupRepository _groupRepository;
         private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IUploadFileService _uploadFileService;
 
         public CreateGroupCommandHandler(IMapper mapper, IGroupRoleRepository groupRoleRepository,
             IUserContextService userContextService, IGroupRepository groupRepository,
-            IAssignmentRepository assignmentRepository)
+            IAssignmentRepository assignmentRepository, IUploadFileService uploadFileService)
         {
             _mapper = mapper;
             _groupRoleRepository = groupRoleRepository;
             _userContextService = userContextService;
             _groupRepository = groupRepository;
             _assignmentRepository = assignmentRepository;
+            _uploadFileService = uploadFileService;
         }
 
         public async Task<int> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
@@ -47,7 +53,8 @@ namespace Application.Groups.Commands.CreateGroup
             var group = _mapper.Map<Group>(request);
             group.CreatorId = (int)_userContextService.GetUserId;
 
-            var newRole = await _groupRoleRepository.GetByName("Owner");
+            var newRole = await _groupRoleRepository.GetByName("Owner");   
+            group.ImageName = await _uploadFileService.UploadFile(request.Image, "groups");
 
             var newAssignment = new Assignment
             {

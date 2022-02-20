@@ -366,3 +366,4 @@ FodyWeavers.xsd
 src/WebAPI/appsettings.json
 src/WebAPI/appsettings.Development.json
 /tests/Application.IntegrationTests/appsettingstests.json
+src/WebAPI/wwwroot/images/groups

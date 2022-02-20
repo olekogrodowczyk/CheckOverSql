@@ -18,6 +18,8 @@ using Application.Common.Behaviours;
 using FluentValidation;
 using Infrastructure.Authorization;
 using Application.Common.QueryEvaluation;
+using Application.Common.Services;
+using Application.Common.Interfaces;
 
 namespace Application
 {
@@ -36,6 +38,7 @@ namespace Application
             services.AddScoped<IDataComparerService, DataComparerService>();
             services.AddScoped<IQueryEvaluator, QueryEvaluator>();
             services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriverOptimized>();
+            services.AddScoped<IUploadFileService, UploadFileService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));

@@ -27,9 +27,10 @@ namespace WebAPI.Controllers
         }
         
         [HttpPost("CreateGroup")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        public async Task<IActionResult> Create([FromBody] CreateGroupCommand command)
+        public async Task<IActionResult> Create([FromForm] CreateGroupCommand command)
         {
             var result = await Mediator.Send(command);
             return Ok(new Result<int>(result, "Group created successfully"));
