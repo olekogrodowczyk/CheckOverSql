@@ -11,18 +11,18 @@ namespace Application.Common.Services
 {
     public class UploadFileService : IUploadFileService
     {
-        public async Task<string> UploadFile(IFormFile file, string folderName)
+        public Task<string> UploadFile(IFormFile file, string path)
         {
             if(file != null && file.Length > 0)
             {
                 string rootPath = Directory.GetCurrentDirectory();
                 string fileName = Guid.NewGuid().ToString() + ".jpg";
-                string fullPath = $"{rootPath}/wwwroot/images/{folderName}/{fileName}";
+                string fullPath = $"{rootPath}/{path}/{fileName}";
                 using(var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     file.CopyTo(stream);
                 }
-                return await Task.FromResult(fileName);
+                return Task.FromResult(fileName);
             }
             throw new InvalidDataException("Problem with file has occurred");
         }

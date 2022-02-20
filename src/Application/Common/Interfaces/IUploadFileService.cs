@@ -9,6 +9,6 @@ namespace Application.Common.Interfaces
 {
     public interface IUploadFileService
     {
-        Task<string> UploadFile(IFormFile file, string folderName);
+        Task<string> UploadFile(IFormFile file, string path);
     }
 }
