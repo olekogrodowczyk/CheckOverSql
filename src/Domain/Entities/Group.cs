@@ -10,6 +10,7 @@ namespace Domain.Entities
     public class Group : AuditableEntity
     {
         public string Name { get; set; }
+        public string ImageName { get; set; }
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
         public virtual ICollection<Assignment> Assignments { get; set; }
