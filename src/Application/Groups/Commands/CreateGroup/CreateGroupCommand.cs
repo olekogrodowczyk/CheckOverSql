@@ -54,7 +54,7 @@ namespace Application.Groups.Commands.CreateGroup
             group.CreatorId = (int)_userContextService.GetUserId;
 
             var newRole = await _groupRoleRepository.GetByName("Owner");   
-            group.ImageName = await _uploadFileService.UploadFile(request.Image, "groups");
+            group.ImageName = await _uploadFileService.UploadFile(request.Image, "wwwroot/images/groups");
 
             var newAssignment = new Assignment
             {
