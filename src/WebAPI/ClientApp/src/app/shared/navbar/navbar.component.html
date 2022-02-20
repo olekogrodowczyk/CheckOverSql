@@ -24,6 +24,15 @@
     [routerLink]="['exercises']"
     >Exercises</a
   >
+  <a
+    *ngIf="authService.signedIn$ | async"
+    routerLinkActive="isButtonActive"
+    class="menu-button"
+    mat-flat-button
+    color="primary"
+    [routerLink]="['groups']"
+    >Groups</a
+  >
 
   <span class="spacer"></span>
   <ng-container *ngIf="!(authService.signedIn$ | async)">

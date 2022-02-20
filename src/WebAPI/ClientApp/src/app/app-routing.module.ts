@@ -30,6 +30,12 @@ const routes: Routes = [
         (mod) => mod.SendQueryModule
       ),
   },
+  {
+    path: 'groups',
+    canLoad: [AuthGuard],
+    loadChildren: () =>
+      import('./groups/groups.module').then((mod) => mod.GroupsModule),
+  },
 ];
 
 @NgModule({
