@@ -6,6 +6,7 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { GlobalVariables } from '../app/global';
 
 @Injectable()
 export class BaseUrlInterceptor implements HttpInterceptor {
@@ -16,7 +17,7 @@ export class BaseUrlInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     let nextRequest = request.clone({
-      url: `https:localhost:5001${request.url}`,
+      url: `${GlobalVariables.BASE_API_URL}${request.url}`,
     });
 
     return next.handle(nextRequest);
