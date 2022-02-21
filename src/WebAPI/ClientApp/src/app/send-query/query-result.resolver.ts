@@ -23,7 +23,7 @@ export class QueryResultResolver implements Resolve<string[][] | undefined> {
   ): Promise<string[][]> | Observable<string[][]> | string[][] {
     return this.databaseClient.getQueryValue(this.sendQueryService.model).pipe(
       pluck('value'),
-      map((data) => (this.sendQueryService.queryResult = data))
+      map((data) => (this.sendQueryService.queryResult = data!))
     );
   }
 }
