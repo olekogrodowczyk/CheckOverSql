@@ -1,4 +1,22 @@
-<button (click)="openCreateGroupDialog()" mat-flat-button color="primary">
-  Create a group
-</button>
-<app-groups-list [groups]="groups"></app-groups-list>
+<div
+  class="groups-module-container"
+  fxLayout="row wrap"
+  fxLayoutAlign="start start"
+  fxFlex
+  fxLayoutGap="16px grid"
+>
+  <div class="groups-container" fxFlex.gt-sm="1 1 75%" fxFlex.lt-sm="1 1 100%">
+    <h1>Groups</h1>
+    <button (click)="openCreateGroupDialog()" mat-flat-button color="primary">
+      Create a group
+    </button>
+    <app-groups-list [groups]="groups"></app-groups-list>
+  </div>
+  <div
+    class="invitations-container"
+    fxFlex.gt-sm="1 1 25%"
+    fxFlex.lt-sm="1 1 100%"
+  >
+    <h1>Invitations</h1>
+  </div>
+</div>

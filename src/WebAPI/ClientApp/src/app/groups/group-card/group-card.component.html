@@ -5,7 +5,7 @@
   <mat-card-content> </mat-card-content>
   <img mat-card-image [src]="imagePath" alt="Photo of a group" />
   <mat-card-actions>
-    <button mat-button>Show</button>
+    <a mat-button [routerLink]="['/groups', model.id]">Show</a>
     <button mat-button>Delete</button>
   </mat-card-actions>
 </mat-card>

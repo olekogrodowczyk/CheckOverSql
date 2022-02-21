@@ -15,6 +15,7 @@ import { GroupsListComponent } from './groups-list/groups-list.component';
 import { GroupCardComponent } from './group-card/group-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GroupComponent } from './group/group.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CreateGroupFormComponent,
     GroupsListComponent,
     GroupCardComponent,
+    GroupComponent,
   ],
   imports: [
     CommonModule,
