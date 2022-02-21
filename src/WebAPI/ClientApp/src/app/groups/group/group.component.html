@@ -1,1 +1,45 @@
-{{ groupId }}
+<div fxLayout="row" fxLayoutGap="0.8rem">
+  <button mat-flat-button color="primary">Invite</button>
+  <button mat-flat-button color="warn">Delete</button>
+</div>
+<div class="group-container" fxLayout="row wrap">
+  <div
+    class="assignments-container border"
+    fxFlex.gt-sm="1 1 40%"
+    fxFlex.lt-md="1 1 100%"
+    fxLayout="column"
+  >
+    <h1>Users</h1>
+    <mat-selection-list #users>
+      <mat-list-option
+        *ngFor="let assignment of assignments"
+        [value]="assignment"
+      >
+        <p>{{ assignment.user?.name }}</p>
+        <p>{{ assignment.role }}</p>
+      </mat-list-option>
+    </mat-selection-list>
+    <div fxLayout="row" fxLayoutGap="1em">
+      <button
+        [disabled]="!users.selectedOptions.selected[0]?.value.user?.name"
+        mat-flat-button
+        style="width: 100px"
+      >
+        Delete
+      </button>
+      <button
+        [disabled]="!users.selectedOptions.selected[0]?.value.user?.name"
+        mat-flat-button
+        style="width: 100px"
+      >
+        Change role
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="exercises-assigned border"
+    fxFlex.gt-sm="1 1 60%"
+    fxFlex.lt-md="1 1 100%"
+  ></div>
+</div>

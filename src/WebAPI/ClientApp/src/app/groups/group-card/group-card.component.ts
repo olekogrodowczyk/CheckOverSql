@@ -13,6 +13,6 @@ export class GroupCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.imagePath = `${GlobalVariables.BASE_API_URL}/${this.model.ImagePath}`;
+    this.imagePath = `${GlobalVariables.BASE_API_URL}/${this.model.imagePath}`;
   }
 }

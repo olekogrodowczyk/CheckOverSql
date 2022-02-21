@@ -16,6 +16,8 @@ import { GroupCardComponent } from './group-card/group-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GroupComponent } from './group/group.component';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { GroupComponent } from './group/group.component';
     SharedModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatListModule,
+    MatTableModule,
   ],
 })
 export class GroupsModule {}
