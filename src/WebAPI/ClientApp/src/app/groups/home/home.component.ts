@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { GetGroupDto, GroupClient } from 'src/app/web-api-client';
+import {
+  ExerciseClient,
+  GetGroupDto,
+  GroupClient,
+} from 'src/app/web-api-client';
 import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
 
 @Component({
@@ -13,6 +17,7 @@ import { CreateGroupFormComponent } from '../create-group-form/create-group-form
 export class HomeComponent implements OnInit {
   groups!: GetGroupDto[];
   refreshSubject: Subject<boolean> = new Subject<boolean>();
+
   constructor(
     private dialog: MatDialog,
     private groupClient: GroupClient,

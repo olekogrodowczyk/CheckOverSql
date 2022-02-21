@@ -7,7 +7,11 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { GetGroupDto, GroupClient } from 'src/app/web-api-client';
+import {
+  ExerciseClient,
+  GetGroupDto,
+  GroupClient,
+} from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-groups-list',
