@@ -12,6 +12,7 @@ import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercis
 export class ExerciseCardComponent implements OnInit {
   shortenedDescription: string = '';
   buttonText!: string;
+  @Input() canAssign!: boolean;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
   constructor(private dialog: MatDialog) {}
 

@@ -12,6 +12,7 @@
       fxFlex.xs="0 1 100%"
       *ngFor="let exercise of data.items"
       [model]="exercise"
+      [canAssign]="canAssign"
     >
     </app-exercise-card>
   </div>

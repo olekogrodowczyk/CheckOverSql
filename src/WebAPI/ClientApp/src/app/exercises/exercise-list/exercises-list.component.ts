@@ -15,6 +15,7 @@ import { TypeOfExercise } from '../home/home.component';
 })
 export class ExerciseListComponent implements OnInit {
   @Input() typeOfExercise!: TypeOfExercise;
+  canAssign!: boolean;
   data!: GetExerciseDtoPaginatedList;
   pageSize: number = 8;
   isBusy: boolean = false;
@@ -25,6 +26,7 @@ export class ExerciseListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getExercises(this.typeOfExercise, 1, this.pageSize);
+    this.checkIfUserCanAssignAtLeastOneExercise();
   }
 
   onPageChange(event: PageEvent) {
@@ -46,6 +48,14 @@ export class ExerciseListComponent implements OnInit {
         break;
       }
     }
+  }
+
+  checkIfUserCanAssignAtLeastOneExercise() {
+    this.exerciseClient.checkIfUserCanAssignExercise().subscribe({
+      next: ({ value }) => {
+        this.canAssign = value!;
+      },
+    });
   }
 
   getAllCreatedExercises(pageNumber: number, pageSize: number) {

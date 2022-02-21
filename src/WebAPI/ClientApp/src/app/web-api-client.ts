@@ -1164,6 +1164,106 @@ export class ExerciseClient {
     }
     return _observableOf(null as any);
   }
+
+  /**
+   * @return Success
+   */
+  checkIfUserCanAssignExercise(): Observable<BooleanResult> {
+    let url_ = this.baseUrl + '/api/Exercise/CheckIfUserCanAssignExercise';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processCheckIfUserCanAssignExercise(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processCheckIfUserCanAssignExercise(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<BooleanResult>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<BooleanResult>;
+        })
+      );
+  }
+
+  protected processCheckIfUserCanAssignExercise(
+    response: HttpResponseBase
+  ): Observable<BooleanResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = BooleanResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
 }
 
 @Injectable()
@@ -2972,6 +3072,50 @@ export interface IAssignExerciseToUsersCommand {
   exerciseId?: number;
   groupId?: number;
   deadLine?: Date;
+}
+
+export class BooleanResult implements IBooleanResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: boolean;
+
+  constructor(data?: IBooleanResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value'];
+    }
+  }
+
+  static fromJS(data: any): BooleanResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new BooleanResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value;
+    return data;
+  }
+}
+
+export interface IBooleanResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: boolean;
 }
 
 export class CreateExerciseCommand implements ICreateExerciseCommand {

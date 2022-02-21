@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Common.Models;
 using Domain.Common;
+using Application.Exercises.Queries.CheckIfUserCanAssigneExercise;
 
 namespace WebAPI.Controllers
 {
@@ -70,6 +71,15 @@ namespace WebAPI.Controllers
             if(id != command.ExerciseId) { return BadRequest(); }
             var result = await Mediator.Send(command);   
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
+        }
+
+        [HttpGet("CheckIfUserCanAssignExercise")]
+        [ProducesResponseType(200, Type = typeof(Result<bool>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> CheckIfUserCanAssignExercise()
+        {
+            var result = await Mediator.Send(new CheckIfUserCanAssignExerciseQuery());
+            return Ok(new Result<bool>(result, "Query result has been returned successfully"));
         }
     }
 }

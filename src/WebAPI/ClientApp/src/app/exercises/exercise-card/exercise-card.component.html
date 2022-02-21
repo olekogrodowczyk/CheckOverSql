@@ -18,6 +18,7 @@
     <button [disabled]="model.passed" (click)="openSolveDialog()" mat-button>
       {{ buttonText }}
     </button>
+    <button *ngIf="canAssign" mat-button>Assign</button>
     <button
       [disabled]="!model.lastAnswer"
       (click)="openLastQueryDialog()"
