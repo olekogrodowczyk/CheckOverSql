@@ -13,6 +13,7 @@ using Application.Groups.Queries.GetUserGroups;
 using Application.Groups.Queries;
 using Application.Groups.Commands.DeleteGroup;
 using Application.Groups.Queries.GetAllAssignmentsInGroup;
+using Application.Groups.Queries.GetUserGroupRole;
 
 namespace WebAPI.Controllers
 {
@@ -61,6 +62,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(new GetAllAssignmentsInGroupQuery { GroupId = groupId });
             return Ok(new Result<IEnumerable<GetAssignmentDto>>(result, "All assignments returned successfully"));
+        }
+
+        [HttpGet("GetUserRoleGroup/{groupId}")]
+        [ProducesResponseType(200, Type = typeof(Result<string>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetUserRoleGroup([FromRoute] int groupId)
+        {
+            var result = await Mediator.Send(new GetUserGroupRoleQuery { GroupId= groupId });
+            return Ok(new Result<string>(result, "User's group role returned successfully"));
         }
     }
 }
