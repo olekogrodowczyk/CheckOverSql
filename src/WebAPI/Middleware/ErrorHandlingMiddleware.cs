@@ -50,7 +50,7 @@ namespace WebAPI.Middleware
                         result = notFoundException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
                     case BadRequestException badRequestException:
-                        code = HttpStatusCode.Forbidden;
+                        code = HttpStatusCode.BadRequest;
                         result = badRequestException.IsPublic ? new ErrorResult(e.Message) : new ErrorResult(globalMessage);
                         break;
                     case ForbidException forbidException:
