@@ -14,6 +14,7 @@ namespace Domain.Enums
         AssigningExercises,
         CheckingExercises,
         GettingAssignments,
+        DoingExercises,
     }
 
     public static class GetPermissionByEnum
@@ -28,6 +29,7 @@ namespace Domain.Enums
                 case PermissionNames.AssigningExercises: return "Assigning Exercises";
                 case PermissionNames.CheckingExercises: return "Checking Exercises";
                 case PermissionNames.GettingAssignments: return "Getting Assignments";
+                case PermissionNames.DoingExercises: return "Doing Exercises";
                 default: throw new ArgumentException("Error in getPermissionByEnum");
             }
         }

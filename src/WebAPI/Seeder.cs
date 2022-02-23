@@ -192,6 +192,11 @@ namespace WebAPI
                 {
                     Title = GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments),
                     Description = "This permission lets a user to get assignments in group"
+                },
+                new Permission()
+                {
+                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises),
+                    Description = "This permission lets a user to do an exercise",
                 }
             };
         }
@@ -222,7 +227,8 @@ namespace WebAPI
                 getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
                 getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
                 getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
-                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments))
+                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
+                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises))
             };
         }
     }
