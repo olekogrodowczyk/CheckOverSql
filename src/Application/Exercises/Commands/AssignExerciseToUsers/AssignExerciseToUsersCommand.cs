@@ -42,6 +42,7 @@ namespace Application.Dto.AssignExerciseToUsersTo
             var solvingsIds = new List<int>();
             foreach (Assignment assignment in assignmentsChosenToGetExercise)
             {
+                if(!(await checkIfAssignmentCanDoExercise(assignment))) { continue; }
                 var solving = new Solving
                 {
                     ExerciseId = request.ExerciseId,
@@ -54,6 +55,12 @@ namespace Application.Dto.AssignExerciseToUsersTo
                 solvingsIds.Add(solving.Id);
             }
             return solvingsIds;
+        }
+
+        private async Task<bool> checkIfAssignmentCanDoExercise(Assignment assignment)
+        {
+            return await _assignmentRepository.CheckIfAssignmentHasPermission
+                (assignment.Id, GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises));
         }
     }
 }

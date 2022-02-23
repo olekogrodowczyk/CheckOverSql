@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GetExerciseDto, QueryDto } from 'src/app/web-api-client';
+import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { GetExerciseDto, GroupClient, QueryDto } from 'src/app/web-api-client';
 import { ShowSolutionDialogComponent } from '../show-solution-dialog/show-solution-dialog.component';
 import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercise-form.component';
 
@@ -14,7 +15,11 @@ export class ExerciseCardComponent implements OnInit {
   buttonText!: string;
   @Input() canAssign!: boolean;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private groupClient: GroupClient,
+    private snackBar: SnackbarService
+  ) {}
 
   ngOnInit(): void {
     this.sliceDescription();
@@ -26,6 +31,19 @@ export class ExerciseCardComponent implements OnInit {
     if (this.model.description?.length! > 85) {
       this.shortenedDescription += '...';
     }
+  }
+
+  getAllAssignableGroups() {
+    this.groupClient.getAllAssignableGroups().subscribe({
+      next: ({ value }) => {
+        console.log(value);
+      },
+      error: () => {
+        this.snackBar.openSnackBar(
+          'Unexpected error has occurred while getting groups'
+        );
+      },
+    });
   }
 
   openSolveDialog() {

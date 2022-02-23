@@ -18,7 +18,12 @@
     <button [disabled]="model.passed" (click)="openSolveDialog()" mat-button>
       {{ buttonText }}
     </button>
-    <button *ngIf="canAssign" mat-button>Assign</button>
+    <a
+      *ngIf="canAssign"
+      mat-button
+      [routerLink]="['/exercises/assign', model.id]"
+      >Assign</a
+    >
     <button
       [disabled]="!model.lastAnswer"
       (click)="openLastQueryDialog()"

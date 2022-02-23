@@ -12,6 +12,13 @@
       class="button-width"
       >Show</a
     >
-    <button class="button-width" mat-button *ngIf="toAssign">Assign</button>
+    <button
+      (click)="openAssignDialog()"
+      class="button-width"
+      mat-button
+      *ngIf="toAssign"
+    >
+      Assign
+    </button>
   </mat-card-actions>
 </mat-card>

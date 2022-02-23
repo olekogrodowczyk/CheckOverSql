@@ -25,6 +25,11 @@ import { SolveExerciseFormComponent } from './solve-exercise-form/solve-exercise
 import { ShowSolutionDialogComponent } from './show-solution-dialog/show-solution-dialog.component';
 import { SendQueryModule } from '../send-query/send-query.module';
 import { SendQueryService } from '../send-query/send-query.service';
+import { AssignComponent } from './assign/assign.component';
+import { GroupsModule } from '../groups/groups.module';
+import { AssignDialogComponent } from './assign-dialog/assign-dialog.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -34,6 +39,8 @@ import { SendQueryService } from '../send-query/send-query.service';
     ExerciseListComponent,
     SolveExerciseFormComponent,
     ShowSolutionDialogComponent,
+    AssignComponent,
+    AssignDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -54,6 +61,10 @@ import { SendQueryService } from '../send-query/send-query.service';
     MatCheckboxModule,
     MatDialogModule,
     SendQueryModule,
+    GroupsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
+  exports: [AssignDialogComponent],
 })
 export class ExercisesModule {}

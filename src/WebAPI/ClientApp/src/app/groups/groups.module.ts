@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GroupComponent } from './group/group.component';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { ExercisesModule } from '../exercises/exercises.module';
 
 @NgModule({
   declarations: [

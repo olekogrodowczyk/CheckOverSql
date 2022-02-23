@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetAssignmentDto, GroupClient } from 'src/app/web-api-client';
