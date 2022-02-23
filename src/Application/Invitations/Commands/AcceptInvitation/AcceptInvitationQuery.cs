@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
@@ -21,11 +22,14 @@ namespace Application.Invitations.Commands.AcceptInvitation
     {
         private readonly IInvitationRepository _invitationRepository;
         private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IUserContextService _userContextService;
 
-        public AcceptInvitationQueryHandler(IInvitationRepository invitationRepository, IAssignmentRepository assignmentRepository)
+        public AcceptInvitationQueryHandler(IInvitationRepository invitationRepository, IAssignmentRepository assignmentRepository
+            ,IUserContextService userContextService)
         {
             _invitationRepository = invitationRepository;
             _assignmentRepository = assignmentRepository;
+            _userContextService = userContextService;
         }
 
         public async Task<Unit> Handle(AcceptInvitationQuery request, CancellationToken cancellationToken)
@@ -35,6 +39,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
+            checkForLoggedUser(invitation);
 
             await _assignmentRepository.AddAsync(new Assignment
             {
@@ -46,6 +51,16 @@ namespace Application.Invitations.Commands.AcceptInvitation
             invitation.Status = InvitationStatusEnum.Accepted.ToString();
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
+        }
+
+        private void checkForLoggedUser(Invitation invitation)
+        {
+            int? loggedUserId = _userContextService.GetUserId;
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
+            if (invitation.ReceiverId != (int)loggedUserId)
+            {
+                throw new BadRequestException("You cannot accept this invitation", true);
+            }
         }
     }
 }

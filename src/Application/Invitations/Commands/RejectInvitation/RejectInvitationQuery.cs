@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Interfaces;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
 using MediatR;
@@ -19,10 +21,12 @@ namespace Application.Invitations.Commands.RejectInvitation
     public class RejectInvitationQueryHandler : IRequestHandler<RejectInvitationQuery>
     {
         private readonly IInvitationRepository _invitationRepository;
+        private readonly IUserContextService _userContextService;
 
-        public RejectInvitationQueryHandler(IInvitationRepository invitationRepository)
+        public RejectInvitationQueryHandler(IInvitationRepository invitationRepository, IUserContextService userContextService)
         {
             _invitationRepository = invitationRepository;
+            _userContextService = userContextService;
         }
 
         public async Task<Unit> Handle(RejectInvitationQuery request, CancellationToken cancellationToken)
@@ -32,10 +36,21 @@ namespace Application.Invitations.Commands.RejectInvitation
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
+            checkForLoggedUser(invitation);
 
             invitation.Status = InvitationStatusEnum.Rejected.ToString();
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
+        }
+
+        private void checkForLoggedUser(Invitation invitation)
+        {
+            int? loggedUserId = _userContextService.GetUserId;
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
+            if (invitation.ReceiverId != (int)loggedUserId)
+            {
+                throw new BadRequestException("You cannot reject this invitation", true);
+            }
         }
     }
 }
