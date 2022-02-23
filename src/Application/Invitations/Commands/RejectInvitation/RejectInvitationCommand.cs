@@ -11,28 +11,25 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Invitations.Commands.AcceptInvitation
+namespace Application.Invitations.Commands.RejectInvitation
 {
-    public class AcceptInvitationQuery : IRequest
+    public class RejectInvitationCommand : IRequest
     {
         public int InvitationId { get; set; }
     }
 
-    public class AcceptInvitationQueryHandler : IRequestHandler<AcceptInvitationQuery>
+    public class RejectInvitationQueryHandler : IRequestHandler<RejectInvitationCommand>
     {
         private readonly IInvitationRepository _invitationRepository;
-        private readonly IAssignmentRepository _assignmentRepository;
         private readonly IUserContextService _userContextService;
 
-        public AcceptInvitationQueryHandler(IInvitationRepository invitationRepository, IAssignmentRepository assignmentRepository
-            ,IUserContextService userContextService)
+        public RejectInvitationQueryHandler(IInvitationRepository invitationRepository, IUserContextService userContextService)
         {
             _invitationRepository = invitationRepository;
-            _assignmentRepository = assignmentRepository;
             _userContextService = userContextService;
         }
 
-        public async Task<Unit> Handle(AcceptInvitationQuery request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RejectInvitationCommand request, CancellationToken cancellationToken)
         {
             var invitation = await _invitationRepository.GetByIdAsync(request.InvitationId);
             if (invitation.Status != InvitationStatusEnum.Sent.ToString())
@@ -41,14 +38,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
             }
             checkForLoggedUser(invitation);
 
-            await _assignmentRepository.AddAsync(new Assignment
-            {
-                GroupId = (int)invitation.GroupId,
-                GroupRoleId = invitation.GroupRoleId,
-                UserId = invitation.ReceiverId,
-            });
-
-            invitation.Status = InvitationStatusEnum.Accepted.ToString();
+            invitation.Status = InvitationStatusEnum.Rejected.ToString();
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
         }
@@ -59,7 +49,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
             if (invitation.ReceiverId != (int)loggedUserId)
             {
-                throw new BadRequestException("You cannot accept this invitation", true);
+                throw new BadRequestException("You cannot reject this invitation", true);
             }
         }
     }

@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Accept([FromRoute] int invitationId)
         {
-            await Mediator.Send(new AcceptInvitationQuery { InvitationId = invitationId });
+            await Mediator.Send(new AcceptInvitationCommand { InvitationId = invitationId });
             return Ok(new Result("Invitation accepted successfully"));
         }
 
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> Reject([FromRoute] int invitationId)
         {
-            await Mediator.Send(new RejectInvitationQuery { InvitationId = invitationId });
+            await Mediator.Send(new RejectInvitationCommand { InvitationId = invitationId });
             return Ok(new Result("Invitation accepted successfully"));
         }
 
