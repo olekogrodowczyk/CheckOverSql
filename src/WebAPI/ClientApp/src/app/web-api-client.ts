@@ -1911,6 +1911,124 @@ export class GroupClient {
 }
 
 @Injectable()
+export class GroupRoleClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
+  }
+
+  /**
+   * @return Success
+   */
+  getAll(): Observable<GroupRoleDtoIEnumerableResult> {
+    let url_ = this.baseUrl + '/api/GroupRole/GetAll';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetAll(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetAll(response_ as any);
+            } catch (e) {
+              return _observableThrow(
+                e
+              ) as any as Observable<GroupRoleDtoIEnumerableResult>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<GroupRoleDtoIEnumerableResult>;
+        })
+      );
+  }
+
+  protected processGetAll(
+    response: HttpResponseBase
+  ): Observable<GroupRoleDtoIEnumerableResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GroupRoleDtoIEnumerableResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+}
+
+@Injectable()
 export class InvitationClient {
   private http: HttpClient;
   private baseUrl: string;
@@ -4433,6 +4551,99 @@ export class GetUserDto implements IGetUserDto {
 export interface IGetUserDto {
   id?: number;
   name?: string | undefined;
+}
+
+export class GroupRoleDto implements IGroupRoleDto {
+  id?: number;
+  name?: string | undefined;
+
+  constructor(data?: IGroupRoleDto) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.id = _data['Id'];
+      this.name = _data['Name'];
+    }
+  }
+
+  static fromJS(data: any): GroupRoleDto {
+    data = typeof data === 'object' ? data : {};
+    let result = new GroupRoleDto();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    return data;
+  }
+}
+
+export interface IGroupRoleDto {
+  id?: number;
+  name?: string | undefined;
+}
+
+export class GroupRoleDtoIEnumerableResult
+  implements IGroupRoleDtoIEnumerableResult
+{
+  message?: string | undefined;
+  success?: boolean;
+  value?: GroupRoleDto[] | undefined;
+
+  constructor(data?: IGroupRoleDtoIEnumerableResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      if (Array.isArray(_data['Value'])) {
+        this.value = [] as any;
+        for (let item of _data['Value'])
+          this.value!.push(GroupRoleDto.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): GroupRoleDtoIEnumerableResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GroupRoleDtoIEnumerableResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    if (Array.isArray(this.value)) {
+      data['Value'] = [];
+      for (let item of this.value) data['Value'].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IGroupRoleDtoIEnumerableResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GroupRoleDto[] | undefined;
 }
 
 export class Int32IEnumerableResult implements IInt32IEnumerableResult {
