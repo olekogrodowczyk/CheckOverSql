@@ -30,6 +30,7 @@ import { GroupsModule } from '../groups/groups.module';
 import { AssignDialogComponent } from './assign-dialog/assign-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { InvitationsModule } from '../invitations/invitations.module';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     GroupsModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    InvitationsModule,
   ],
   exports: [AssignDialogComponent],
 })

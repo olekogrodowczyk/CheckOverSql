@@ -1,10 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GetGroupDto } from 'src/app/web-api-client';
 import { GlobalVariables } from 'src/app/global';
-import {
-  MatDialog,
-  throwMatDialogContentAlreadyAttachedError,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AssignDialogComponent } from 'src/app/exercises/assign-dialog/assign-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 

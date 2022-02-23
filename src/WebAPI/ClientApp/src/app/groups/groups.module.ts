@@ -19,7 +19,6 @@ import { GroupComponent } from './group/group.component';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ExercisesModule } from '../exercises/exercises.module';
-import { MakeInvitationFormComponent } from './make-invitation-form/make-invitation-form.component';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
@@ -29,7 +28,6 @@ import { MatSelectModule } from '@angular/material/select';
     GroupsListComponent,
     GroupCardComponent,
     GroupComponent,
-    MakeInvitationFormComponent,
   ],
   imports: [
     CommonModule,
