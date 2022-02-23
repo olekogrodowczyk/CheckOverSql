@@ -4016,7 +4016,9 @@ export class GetInvitationDto implements IGetInvitationDto {
   id?: number;
   groupName?: string | undefined;
   sender?: string | undefined;
+  senderId?: number;
   receiver?: string | undefined;
+  receiverId?: number;
   status?: string | undefined;
   roleName?: string | undefined;
   sentAt?: Date;
@@ -4036,7 +4038,9 @@ export class GetInvitationDto implements IGetInvitationDto {
       this.id = _data['Id'];
       this.groupName = _data['GroupName'];
       this.sender = _data['Sender'];
+      this.senderId = _data['SenderId'];
       this.receiver = _data['Receiver'];
+      this.receiverId = _data['ReceiverId'];
       this.status = _data['Status'];
       this.roleName = _data['RoleName'];
       this.sentAt = _data['SentAt']
@@ -4060,7 +4064,9 @@ export class GetInvitationDto implements IGetInvitationDto {
     data['Id'] = this.id;
     data['GroupName'] = this.groupName;
     data['Sender'] = this.sender;
+    data['SenderId'] = this.senderId;
     data['Receiver'] = this.receiver;
+    data['ReceiverId'] = this.receiverId;
     data['Status'] = this.status;
     data['RoleName'] = this.roleName;
     data['SentAt'] = this.sentAt ? this.sentAt.toISOString() : <any>undefined;
@@ -4075,7 +4081,9 @@ export interface IGetInvitationDto {
   id?: number;
   groupName?: string | undefined;
   sender?: string | undefined;
+  senderId?: number;
   receiver?: string | undefined;
+  receiverId?: number;
   status?: string | undefined;
   roleName?: string | undefined;
   sentAt?: Date;
