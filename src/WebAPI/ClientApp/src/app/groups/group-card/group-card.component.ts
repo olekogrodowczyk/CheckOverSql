@@ -9,6 +9,7 @@ import { GlobalVariables } from 'src/app/global';
 })
 export class GroupCardComponent implements OnInit {
   @Input() model!: GetGroupDto;
+  @Input() toAssign!: boolean;
   imagePath!: string;
   constructor() {}
 

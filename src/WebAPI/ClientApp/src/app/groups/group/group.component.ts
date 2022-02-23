@@ -20,7 +20,7 @@ export class GroupComponent implements OnInit {
 
   ngOnInit(): void {
     this.getGroupIdFromRoute();
-    this.getAssignments();
+    this.getUsers();
     this.getUserGroupRole();
     console.log(this.groupRole);
   }
@@ -40,7 +40,7 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  getAssignments() {
+  getUsers() {
     if (this.groupId && this.groupId > 0) {
       this.groupClient.getAllAssignments(this.groupId).subscribe({
         next: ({ value }) => {

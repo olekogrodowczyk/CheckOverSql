@@ -25,10 +25,10 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getImages();
+    this.getGroups();
   }
 
-  getImages() {
+  getGroups() {
     this.groupClient.getUserGroups().subscribe({
       next: ({ value }) => {
         this.groups = value!;

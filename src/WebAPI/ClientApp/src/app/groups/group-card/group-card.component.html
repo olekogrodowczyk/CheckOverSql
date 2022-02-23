@@ -5,8 +5,13 @@
   <mat-card-content> </mat-card-content>
   <img mat-card-image [src]="imagePath" alt="Photo of a group" />
   <mat-card-actions>
-    <a mat-button [routerLink]="['/groups', model.id]" style="width: 100%"
+    <a
+      *ngIf="!toAssign"
+      mat-button
+      [routerLink]="['/groups', model.id]"
+      class="button-width"
       >Show</a
     >
+    <button class="button-width" mat-button *ngIf="toAssign">Assign</button>
   </mat-card-actions>
 </mat-card>

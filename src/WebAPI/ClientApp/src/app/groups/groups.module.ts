@@ -42,5 +42,6 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatTableModule,
   ],
+  exports: [GroupsListComponent],
 })
 export class GroupsModule {}

@@ -20,6 +20,7 @@ import {
 })
 export class GroupsListComponent implements OnInit, OnChanges {
   @Input() groups!: GetGroupDto[];
+  @Input() toAssign!: boolean;
   constructor(
     private groupClient: GroupClient,
     private snackBar: SnackbarService
