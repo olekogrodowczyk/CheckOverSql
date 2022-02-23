@@ -30,8 +30,7 @@
 }
 
 .logo {
-  max-height: 75%;
-  max-width: 75%;
+  max-height: 65%;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -39,4 +38,9 @@
 a {
   text-decoration: none;
   color: white;
+}
+
+.user-text {
+  font-size: 1rem;
+  margin-left: 0.4rem;
 }

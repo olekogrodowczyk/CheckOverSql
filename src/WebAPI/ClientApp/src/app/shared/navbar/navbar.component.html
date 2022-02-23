@@ -48,16 +48,19 @@
     >
   </ng-container>
   <ng-container *ngIf="authService.signedIn$ | async">
-    <p *ngIf="authService.loggedUser$ | async" class="welcome">
-      Hello, {{ authService.loggedUser$.getValue() }}
-    </p>
     <button
-      (click)="logout()"
+      *ngIf="authService.loggedUser$ | async"
       class="login-button"
-      mat-flat-button
-      color="accent"
+      mat-button
+      [matMenuTriggerFor]="menu"
     >
-      Sign out
+      <span class="user-text">{{ authService.loggedUser$.getValue() }}</span>
+      <mat-icon aria-hidden="false" aria-label="expand_more"
+        >expand_more</mat-icon
+      >
     </button>
+    <mat-menu #menu="matMenu">
+      <button (click)="logout()" mat-menu-item>Sign out</button>
+    </mat-menu>
   </ng-container>
 </mat-toolbar>
