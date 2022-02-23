@@ -48,26 +48,43 @@ namespace Application.Invitations.Commands.CreateInvitation
 
         public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
         {
-            var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
-            var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
-            var group = await _groupRepository.GetByIdAsync(command.GroupId);
-            var assignment = await _assignmentRepository.SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId);
-            if(assignment is null) { throw new NotFoundException("Unexpected error occurred"); }
+            var data = await getData(command); 
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, data.Item1
                 , new PermissionRequirement(PermissionNames.SendingInvitations));
 
             var invitation = new Invitation
             {
                 SenderId = (int)_userContextService.GetUserId,
-                Receiver = receiver,
+                Receiver = data.Item2,
                 Status = InvitationStatusEnum.Sent.ToString(),
-                GroupRole = groupRole,
-                Group = group
+                GroupRole = data.Item3,
+                Group = data.Item4,
             };
 
             await _invitationRepository.AddAsync(invitation);
             return invitation.Id;
+        }
+
+        private async Task<(Assignment, User, GroupRole, Group)> getData(CreateInvitationCommand command)
+        {
+            int? loggedUserId = _userContextService.GetUserId;
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
+
+            var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
+            if(receiver is null) { throw new NotFoundException($"Receiver with email: {command.ReceiverEmail} hasn't been found"); }
+           
+            var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
+            if(groupRole is null) { throw new NotFoundException($"Group role with name: {command.RoleName} hasn't been found"); }
+           
+            var group = await _groupRepository.GetByIdAsync(command.GroupId);
+            if(group is null) { throw new NotFoundException($"Group with id: {command.GroupId} hasn't been found"); }
+            var assignment = await _assignmentRepository
+                .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == command.GroupId);
+            if (assignment is null) 
+            { throw new NotFoundException
+                    ($"Assignment with loggedUserId: {(int)loggedUserId} and groupId: {command.GroupId} hasn't been found"); }
+            return (assignment, receiver, groupRole, group);
         }
     }
 }
