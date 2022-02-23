@@ -36,6 +36,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./groups/groups.module').then((mod) => mod.GroupsModule),
   },
+  {
+    path: 'invitations',
+    canLoad: [AuthGuard],
+    loadChildren: () =>
+      import('./invitations/invitations.module').then(
+        (mod) => mod.InvitationsModule
+      ),
+  },
 ];
 
 @NgModule({
