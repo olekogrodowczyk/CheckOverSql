@@ -14,6 +14,7 @@ using Application.Groups.Queries;
 using Application.Groups.Commands.DeleteGroup;
 using Application.Groups.Queries.GetAllAssignmentsInGroup;
 using Application.Groups.Queries.GetUserGroupRole;
+using Application.Groups.Queries.GetAllAssignableGroups;
 
 namespace WebAPI.Controllers
 {
@@ -71,6 +72,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(new GetUserGroupRoleQuery { GroupId= groupId });
             return Ok(new Result<string>(result, "User's group role returned successfully"));
+        }
+
+        [HttpGet("GetAllAssignableGroups")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetGroupDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetAllAssignableGroups()
+        {
+            var result = await Mediator.Send(new GetAllAssignableGroupsQuery());
+            return Ok(new Result<IEnumerable<GetGroupDto>>(result, "All assignable groups returned successfully"));
         }
     }
 }

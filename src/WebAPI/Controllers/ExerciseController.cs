@@ -62,13 +62,12 @@ namespace WebAPI.Controllers
             return Ok(new Result<PaginatedList<GetExerciseDto>>(result, "All public exercises returned successfully"));
         }
 
-        [HttpPost("AssignExercise/{id}")]
+        [HttpPost("AssignExercise")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<int>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> AssignExerciseToUsersInGroup
-            ([FromRoute] int id, [FromBody] AssignExerciseToUsersCommand command)
+            ([FromBody] AssignExerciseToUsersCommand command)
         {
-            if(id != command.ExerciseId) { return BadRequest(); }
             var result = await Mediator.Send(command);   
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
         }
