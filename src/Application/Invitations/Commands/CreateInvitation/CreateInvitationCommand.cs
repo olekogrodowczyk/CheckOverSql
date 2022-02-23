@@ -72,18 +72,18 @@ namespace Application.Invitations.Commands.CreateInvitation
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
 
             var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
-            if(receiver is null) { throw new NotFoundException($"Receiver with email: {command.ReceiverEmail} hasn't been found"); }
+            if(receiver is null) { throw new NotFoundException($"Receiver with email: {command.ReceiverEmail} hasn't been found", true); }
            
             var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
-            if(groupRole is null) { throw new NotFoundException($"Group role with name: {command.RoleName} hasn't been found"); }
+            if(groupRole is null) { throw new NotFoundException($"Group role with name: {command.RoleName} hasn't been found", true); }
            
             var group = await _groupRepository.GetByIdAsync(command.GroupId);
-            if(group is null) { throw new NotFoundException($"Group with id: {command.GroupId} hasn't been found"); }
+            if(group is null) { throw new NotFoundException($"Group with id: {command.GroupId} hasn't been found", true); }
             var assignment = await _assignmentRepository
                 .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == command.GroupId);
             if (assignment is null) 
             { throw new NotFoundException
-                    ($"Assignment with loggedUserId: {(int)loggedUserId} and groupId: {command.GroupId} hasn't been found"); }
+                    ($"Assignment with loggedUserId: {(int)loggedUserId} and groupId: {command.GroupId} hasn't been found", true); }
             return (assignment, receiver, groupRole, group);
         }
     }
