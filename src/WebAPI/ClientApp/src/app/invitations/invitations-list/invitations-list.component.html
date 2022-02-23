@@ -1,0 +1,7 @@
+<div fxLayout="row wrap">
+  <app-invitation-card
+    fxFlex.lt-md="1 1 100%"
+    *ngFor="let invitation of invitations"
+    [model]="invitation"
+  ></app-invitation-card>
+</div>
