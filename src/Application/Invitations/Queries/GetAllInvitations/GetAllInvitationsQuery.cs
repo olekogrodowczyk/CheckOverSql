@@ -1,6 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Groups;
+using Application.Interfaces;
 using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using System;
@@ -14,7 +16,6 @@ namespace Application.Invitations.Queries.GetAllInvitationReceived
 {
     public class GetAllInvitationsQuery : IRequest<IEnumerable<GetInvitationDto>>
     {
-        public int UserId { get; set; }
         public string QueryType { get; set; }
     }
 
@@ -22,25 +23,32 @@ namespace Application.Invitations.Queries.GetAllInvitationReceived
     {
         private readonly IInvitationRepository _invitationRepository;
         private readonly IMapper _mapper;
+        private readonly IUserContextService _userContextService;
 
-        public GetAllInvitationsReceivedQueryHandler(IInvitationRepository invitationRepository, IMapper mapper)
+        public GetAllInvitationsReceivedQueryHandler(IInvitationRepository invitationRepository, IMapper mapper
+            ,IUserContextService userContextService)
         {
             _invitationRepository = invitationRepository;
             _mapper = mapper;
+            _userContextService = userContextService;
         }
 
         public async Task<IEnumerable<GetInvitationDto>> Handle(GetAllInvitationsQuery command, CancellationToken cancellationToken)
         {
-            var invitations = await _invitationRepository.GetInvitationsWithAllIncludes();
+            int? loggedUserId = _userContextService.GetUserId;
+            if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
+            IEnumerable<Invitation> invitations;
             switch(command.QueryType.ToLower())
             {
                 case "received":
-                    invitations = invitations.Where(x => x.ReceiverId == command.UserId);
+                    invitations = await _invitationRepository.GetWhereAsync(x => x.ReceiverId == (int)loggedUserId, x=>x.GroupRole);
                     break;
                 case "sent":
-                    invitations = invitations.Where(x => x.SenderId == command.UserId);
+                    invitations = await _invitationRepository.GetWhereAsync(x => x.SenderId == (int)loggedUserId, x=>x.GroupRole);
                     break;
                 case "all":
+                    invitations = await _invitationRepository
+                        .GetWhereAsync(x => x.SenderId == (int)loggedUserId || x.ReceiverId == (int)loggedUserId, x=>x.GroupRole);
                     break;
                 default:
                     throw new BadRequestException("TypeOfGetInvitationsQuery is wrong", true);

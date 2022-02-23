@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAll([FromQuery] string queryType)
         {
             int loggedUserId = (int)_userContextService.GetUserId;
-            var command = new GetAllInvitationsQuery { QueryType = queryType, UserId = loggedUserId };
+            var command = new GetAllInvitationsQuery { QueryType = queryType };
             var result = await Mediator.Send(command);
             return Ok(new Result<IEnumerable<GetInvitationDto>>(result, "All Invitations returned successfully"));
         }
