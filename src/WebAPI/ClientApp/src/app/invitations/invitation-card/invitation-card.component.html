@@ -5,10 +5,25 @@
     <span fxLayout="column">
       <span>From: {{ model.sender }}</span>
       <span>Role: {{ model.roleName }}</span>
+      <span>Status: {{ model.status }}</span>
     </span>
   </mat-card-subtitle>
   <mat-card-actions fxLayoutGap="1em">
-    <button mat-flat-button color="primary">Accept</button>
-    <button mat-flat-button color="warn">Reject</button>
+    <button
+      [disabled]="model.status === 'Sent' ? false : true"
+      (click)="accept()"
+      mat-flat-button
+      color="primary"
+    >
+      Accept
+    </button>
+    <button
+      [disabled]="model.status === 'Sent' ? false : true"
+      (click)="reject()"
+      mat-flat-button
+      color="warn"
+    >
+      Reject
+    </button>
   </mat-card-actions>
 </mat-card>

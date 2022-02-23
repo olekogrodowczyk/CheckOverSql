@@ -18,6 +18,10 @@ export class InvitationsListComponent implements OnInit {
     this.getAllInvitations();
   }
 
+  refresh() {
+    this.ngOnInit();
+  }
+
   getAllInvitations() {
     this.invitationClient.getAll('Received').subscribe({
       next: ({ value }) => {

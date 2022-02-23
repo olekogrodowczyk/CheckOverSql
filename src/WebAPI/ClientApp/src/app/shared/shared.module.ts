@@ -9,6 +9,8 @@ import { SnackbarService } from './snackbar.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { InvitationsModule } from '../invitations/invitations.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [NavbarComponent, FooterComponent],
@@ -20,6 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSnackBarModule,
     MatMenuModule,
     MatIconModule,
+    InvitationsModule,
+    MatDialogModule,
   ],
   exports: [NavbarComponent, FooterComponent],
   providers: [SnackbarService],
