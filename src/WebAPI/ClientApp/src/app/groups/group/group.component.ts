@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetAssignmentDto, GroupClient } from 'src/app/web-api-client';
+import { MakeInvitationFormComponent } from '../make-invitation-form/make-invitation-form.component';
 
 @Component({
   selector: 'app-group',
@@ -16,7 +17,8 @@ export class GroupComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private groupClient: GroupClient,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,16 @@ export class GroupComponent implements OnInit {
         },
       });
     }
+  }
+
+  openInvitationDialog() {
+    let width = window.innerWidth;
+    const dialogRef = this.dialog.open(MakeInvitationFormComponent, {
+      width: innerWidth > 992 ? '25%' : '50%',
+      data: {
+        groupId: this.groupId,
+      },
+    });
   }
 
   getUsers() {

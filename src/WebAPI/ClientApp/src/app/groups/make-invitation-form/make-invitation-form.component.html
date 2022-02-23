@@ -1,0 +1,16 @@
+<h2>Send an invitation</h2>
+<form fxLayout="column" [formGroup]="invitationForm" (ngSubmit)="onSubmit()">
+  <mat-form-field class="example-full-width" appearance="fill" color="accent">
+    <mat-label>Email</mat-label>
+    <input type="email" matInput formControlName="receiverEmail" />
+  </mat-form-field>
+  <mat-form-field appearance="fill" color="accent">
+    <mat-label>Role</mat-label>
+    <mat-select formControlName="roleName">
+      <mat-option *ngFor="let groupRole of groupRoles" [value]="groupRole.name">
+        {{ groupRole.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="submit">Send</button>
+</form>

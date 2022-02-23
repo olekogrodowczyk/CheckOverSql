@@ -11,6 +11,8 @@ import {
   DatabaseClient,
   ExerciseClient,
   GroupClient,
+  GroupRoleClient,
+  InvitationClient,
   SolutionClient,
 } from './web-api-client';
 import { TokenInterceptor } from './auth/token.interceptor';
@@ -35,6 +37,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ExerciseClient,
     SolutionClient,
     GroupClient,
+    GroupRoleClient,
+    InvitationClient,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
   ],
