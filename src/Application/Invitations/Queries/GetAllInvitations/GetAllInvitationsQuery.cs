@@ -41,14 +41,15 @@ namespace Application.Invitations.Queries.GetAllInvitationReceived
             switch(command.QueryType.ToLower())
             {
                 case "received":
-                    invitations = await _invitationRepository.GetWhereAsync(x => x.ReceiverId == (int)loggedUserId, x=>x.GroupRole);
+                    invitations = await _invitationRepository
+                        .GetWhereAsync(x => x.ReceiverId == (int)loggedUserId, x=>x.GroupRole,x=>x.Sender,x=>x.Receiver,x=>x.Group);
                     break;
                 case "sent":
-                    invitations = await _invitationRepository.GetWhereAsync(x => x.SenderId == (int)loggedUserId, x=>x.GroupRole);
+                    invitations = await _invitationRepository.GetWhereAsync(x => x.SenderId == (int)loggedUserId, x => x.GroupRole, x => x.Sender, x => x.Receiver, x => x.Group);
                     break;
                 case "all":
                     invitations = await _invitationRepository
-                        .GetWhereAsync(x => x.SenderId == (int)loggedUserId || x.ReceiverId == (int)loggedUserId, x=>x.GroupRole);
+                        .GetWhereAsync(x => x.SenderId == (int)loggedUserId || x.ReceiverId == (int)loggedUserId, x => x.GroupRole, x => x.Sender, x => x.Receiver, x => x.Group);
                     break;
                 default:
                     throw new BadRequestException("TypeOfGetInvitationsQuery is wrong", true);
