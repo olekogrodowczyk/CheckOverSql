@@ -48,9 +48,8 @@ namespace Application.Groups.Queries.GetAllAssignmentsInGroup
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
                 , userAssignment, new PermissionRequirement(PermissionNames.GettingAssignments));
 
-            await _assignmentRepository.GetAllAsync();
-            var group = await _groupRepository.GetWhereAsync(x => x.Id == request.GroupId, x => x.Assignments);
-            var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentDto>>(group.SelectMany(x => x.Assignments));
+            var assignments = await _assignmentRepository.GetWhereAsync(x => x.GroupId == request.GroupId, x => x.User);
+            var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentDto>>(assignments);
             return assignmentDtos;
         }
     }
