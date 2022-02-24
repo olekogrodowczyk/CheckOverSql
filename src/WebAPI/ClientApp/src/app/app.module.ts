@@ -19,9 +19,10 @@ import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { BaseUrlInterceptor } from './base-url.interceptor';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { HomePageComponent } from './home-page/home-page.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HomePageComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
