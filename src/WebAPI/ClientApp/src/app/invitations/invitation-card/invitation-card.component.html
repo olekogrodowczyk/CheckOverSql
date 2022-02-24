@@ -4,13 +4,18 @@
     ><p>{{ model.sentAt | date: "medium" }}</p>
     <span fxLayout="column">
       <span>From: {{ model.sender }}</span>
+      <span>To: {{ model.receiver }}</span>
       <span>Role: {{ model.roleName }}</span>
       <span>Status: {{ model.status }}</span>
     </span>
   </mat-card-subtitle>
   <mat-card-actions fxLayoutGap="1em">
     <button
-      [disabled]="model.status === 'Sent' ? false : true"
+      [disabled]="
+        model.status !== 'Sent' || loggedUserId !== model.receiverId
+          ? true
+          : false
+      "
       (click)="accept()"
       mat-flat-button
       color="primary"
@@ -18,7 +23,11 @@
       Accept
     </button>
     <button
-      [disabled]="model.status === 'Sent' ? false : true"
+      [disabled]="
+        model.status !== 'Sent' || loggedUserId !== model.receiverId
+          ? true
+          : false
+      "
       (click)="reject()"
       mat-flat-button
       color="warn"

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { GetInvitationDto, InvitationClient } from 'src/app/web-api-client';
+import {
+  AccountClient,
+  GetInvitationDto,
+  InvitationClient,
+} from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-invitations-list',
@@ -9,21 +13,35 @@ import { GetInvitationDto, InvitationClient } from 'src/app/web-api-client';
 })
 export class InvitationsListComponent implements OnInit {
   invitations!: GetInvitationDto[];
+  loggedUserId!: number;
   constructor(
     private invitationClient: InvitationClient,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private accountClient: AccountClient
   ) {}
 
   ngOnInit(): void {
     this.getAllInvitations();
+    this.getLoggedUserId();
   }
 
   refresh() {
     this.ngOnInit();
   }
 
+  getLoggedUserId() {
+    this.accountClient.getLoggedUserId().subscribe({
+      next: ({ value }) => {
+        this.loggedUserId = value!;
+      },
+      error: (response) => {
+        console.log('Unexpected error occurred');
+      },
+    });
+  }
+
   getAllInvitations() {
-    this.invitationClient.getAll('Received').subscribe({
+    this.invitationClient.getAll('All').subscribe({
       next: ({ value }) => {
         this.invitations = value!;
       },

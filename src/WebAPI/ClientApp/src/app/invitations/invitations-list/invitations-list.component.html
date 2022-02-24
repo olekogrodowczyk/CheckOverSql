@@ -1,4 +1,4 @@
-<div fxLayout="row wrap" fxLayoutGap="2rem" style="width: 100%">
+<div fxLayout="row wrap" fxLayoutGap="2rem grid" style="width: 100%">
   <app-invitation-card
     (onChange)="refresh()"
     fxFlex.gt-sm="1 1 25%"
@@ -6,5 +6,6 @@
     fxFlex.lt-sm="1 1 100%"
     *ngFor="let invitation of invitations"
     [model]="invitation"
+    [loggedUserId]="loggedUserId"
   ></app-invitation-card>
 </div>

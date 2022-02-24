@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
-import { GetInvitationDto, InvitationClient } from 'src/app/web-api-client';
+import {
+  AccountClient,
+  GetInvitationDto,
+  InvitationClient,
+} from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-invitation-card',
@@ -10,6 +14,7 @@ import { GetInvitationDto, InvitationClient } from 'src/app/web-api-client';
 export class InvitationCardComponent implements OnInit {
   @Output() onChange: EventEmitter<any> = new EventEmitter();
   @Input() model!: GetInvitationDto;
+  @Input() loggedUserId!: number;
   constructor(
     private invitationClient: InvitationClient,
     private snackBar: SnackbarService
