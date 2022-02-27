@@ -5,7 +5,18 @@ import {
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { delay, map, Observable, of, pluck, take, tap } from 'rxjs';
+import {
+  catchError,
+  delay,
+  map,
+  Observable,
+  of,
+  pluck,
+  take,
+  tap,
+  throwError,
+} from 'rxjs';
+import { SnackbarService } from '../shared/snackbar.service';
 import { DatabaseClient } from '../web-api-client';
 import { SendQueryService } from './send-query.service';
 
@@ -15,7 +26,8 @@ import { SendQueryService } from './send-query.service';
 export class QueryResultResolver implements Resolve<string[][] | undefined> {
   constructor(
     private sendQueryService: SendQueryService,
-    private databaseClient: DatabaseClient
+    private databaseClient: DatabaseClient,
+    private snackBar: SnackbarService
   ) {}
   resolve(
     route: ActivatedRouteSnapshot,
@@ -23,7 +35,11 @@ export class QueryResultResolver implements Resolve<string[][] | undefined> {
   ): Promise<string[][]> | Observable<string[][]> | string[][] {
     return this.databaseClient.getQueryValue(this.sendQueryService.model).pipe(
       pluck('value'),
-      map((data) => (this.sendQueryService.queryResult = data!))
+      map((data) => (this.sendQueryService.queryResult = data!)),
+      catchError((err, caught) => {
+        this.snackBar.openSnackBar(err.message);
+        return throwError(() => new Error(err));
+      })
     );
   }
 }
