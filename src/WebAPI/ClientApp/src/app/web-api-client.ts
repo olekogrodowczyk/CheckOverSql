@@ -4451,12 +4451,14 @@ export interface IGetSolutionDtoResult {
 }
 
 export class GetSolvingDto implements IGetSolvingDto {
+  id?: number;
   assignedBy?: string | undefined;
   solver?: string | undefined;
   assignedAt?: Date;
   sentAt?: Date | undefined;
   deadLine?: Date | undefined;
   status?: string | undefined;
+  group?: string | undefined;
   exercise?: GetExerciseDto;
 
   constructor(data?: IGetSolvingDto) {
@@ -4470,6 +4472,7 @@ export class GetSolvingDto implements IGetSolvingDto {
 
   init(_data?: any) {
     if (_data) {
+      this.id = _data['Id'];
       this.assignedBy = _data['AssignedBy'];
       this.solver = _data['Solver'];
       this.assignedAt = _data['AssignedAt']
@@ -4482,6 +4485,7 @@ export class GetSolvingDto implements IGetSolvingDto {
         ? new Date(_data['DeadLine'].toString())
         : <any>undefined;
       this.status = _data['Status'];
+      this.group = _data['Group'];
       this.exercise = _data['Exercise']
         ? GetExerciseDto.fromJS(_data['Exercise'])
         : <any>undefined;
@@ -4497,6 +4501,7 @@ export class GetSolvingDto implements IGetSolvingDto {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data['Id'] = this.id;
     data['AssignedBy'] = this.assignedBy;
     data['Solver'] = this.solver;
     data['AssignedAt'] = this.assignedAt
@@ -4507,18 +4512,21 @@ export class GetSolvingDto implements IGetSolvingDto {
       ? this.deadLine.toISOString()
       : <any>undefined;
     data['Status'] = this.status;
+    data['Group'] = this.group;
     data['Exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
     return data;
   }
 }
 
 export interface IGetSolvingDto {
+  id?: number;
   assignedBy?: string | undefined;
   solver?: string | undefined;
   assignedAt?: Date;
   sentAt?: Date | undefined;
   deadLine?: Date | undefined;
   status?: string | undefined;
+  group?: string | undefined;
   exercise?: GetExerciseDto;
 }
 
