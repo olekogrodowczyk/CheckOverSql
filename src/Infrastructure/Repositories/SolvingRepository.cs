@@ -22,8 +22,12 @@ namespace Infrastructure.Repositories
         {
             var solvings = await _context.Solvings
                 .Include(x => x.Creator)
-                .Include(x => x.Assignment)
+                .Include(x => x.Exercise)
+                .ThenInclude(x=>x.Database)
+                .Include(x => x.Assignment)                
                 .ThenInclude(x => x.User)
+                .Include(x=>x.Assignment)
+                .ThenInclude(x=>x.Group)
                 .Where(x => x.Assignment.UserId == userId)
                 .ToListAsync();
             return solvings;

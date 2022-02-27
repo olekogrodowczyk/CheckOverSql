@@ -18,15 +18,17 @@ namespace Application.Groups.Queries
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public string Status { get; set; }
+        public string Group { get; set; }
         public GetExerciseDto Exercise { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Solving, GetSolvingDto>()
                 .ForMember(x => x.Solver, y => y.MapFrom(z => z.Assignment.User.FirstName + " " + z.Assignment.User.LastName))
-                .ForMember(x => x.AssignedBy, y => y.MapFrom(z => z.Creator.FirstName + z.Creator.LastName))
+                .ForMember(x => x.AssignedBy, y => y.MapFrom(z => z.Creator.FirstName + " " + z.Creator.LastName))
                 .ForMember(x => x.AssignedAt, y => y.MapFrom(z => z.Created))
-                .ForMember(x => x.Exercise, y => y.MapFrom(z => z.Exercise));
+                .ForMember(x => x.Exercise, y => y.MapFrom(z => z.Exercise))
+                .ForMember(x => x.Group, opt => opt.MapFrom(y => y.Assignment.Group.Name));
         }
     }
 }

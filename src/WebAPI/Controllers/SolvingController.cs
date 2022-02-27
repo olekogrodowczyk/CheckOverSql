@@ -9,18 +9,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SolvingController : ApiControllerBase
     {
         private readonly IUserContextService _userContextService;
 
-        public SolvingController(IUserContextService userContextService)
+        public SolvingController()
         {
-            _userContextService = userContextService;
         }
 
         [HttpGet("GetAll")]
@@ -28,8 +29,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllSolvingsAssignedToUser()
         {
-            int loggedUserId = (int)_userContextService.GetUserId;
-            var result = await Mediator.Send(new GetAllSolvingsAssignedToUserQuery { UserId = loggedUserId });
+            var result = await Mediator.Send(new GetAllSolvingsAssignedToUserQuery());
             return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings returned successfully"));
         }
 
