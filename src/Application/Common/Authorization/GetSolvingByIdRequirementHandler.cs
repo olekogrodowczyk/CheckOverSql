@@ -44,7 +44,8 @@ namespace Application.Authorization
             if (!ifExists)
             {
                 throw new ForbidException("You don't have permission to get this solution", true);
-            }                 
+            }
+            context.Succeed(requirement);
         }
     }
 }
