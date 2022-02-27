@@ -17,18 +17,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MakeInvitationFormComponent } from './make-invitation-form/make-invitation-form.component';
 import { InvitationCardComponent } from './invitation-card/invitation-card.component';
 import { InvitationsListComponent } from './invitations-list/invitations-list.component';
-import { HomeComponent } from './home/home.component';
-import { InvitationsRoutingModule } from './invitations-routing.module';
 
 @NgModule({
   declarations: [
     InvitationCardComponent,
     InvitationsListComponent,
     MakeInvitationFormComponent,
-    HomeComponent,
   ],
   imports: [
-    InvitationsRoutingModule,
     CommonModule,
     MatButtonModule,
     ReactiveFormsModule,
@@ -42,6 +38,6 @@ import { InvitationsRoutingModule } from './invitations-routing.module';
     MatTableModule,
     MatSelectModule,
   ],
-  exports: [MakeInvitationFormComponent],
+  exports: [MakeInvitationFormComponent, InvitationsListComponent],
 })
 export class InvitationsModule {}

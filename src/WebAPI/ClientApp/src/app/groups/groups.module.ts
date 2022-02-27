@@ -20,6 +20,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { ExercisesModule } from '../exercises/exercises.module';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { InvitationsComponent } from './invitations/invitations.component';
+import { InvitationsModule } from '../invitations/invitations.module';
+import { GroupsComponent } from './groups/groups.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +32,8 @@ import { MatSelectModule } from '@angular/material/select';
     GroupsListComponent,
     GroupCardComponent,
     GroupComponent,
+    InvitationsComponent,
+    GroupsComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +50,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatListModule,
     MatTableModule,
     MatSelectModule,
+    MatSidenavModule,
+    InvitationsModule,
   ],
   exports: [GroupsListComponent],
 })
