@@ -12,6 +12,7 @@ namespace Application.Groups.Queries
 {
     public class GetSolvingDto : IMap
     {
+        public int Id { get; set; }
         public string AssignedBy { get; set; }
         public string Solver { get; set; }
         public DateTime AssignedAt { get; set; }
