@@ -39,6 +39,7 @@ namespace Application.Groups.Queries.GetAllSolvingsAssignedToUser
             var solvingsDtos = _mapper.Map<IEnumerable<GetSolvingDto>>(solvings);
             foreach (var item in solvingsDtos.Select(x => x.Exercise))
             {
+                item.Passed = await _solutionService.CheckIfUserPassedExercise(item.Id);
                 item.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(item.Id);
             }
             return solvingsDtos;

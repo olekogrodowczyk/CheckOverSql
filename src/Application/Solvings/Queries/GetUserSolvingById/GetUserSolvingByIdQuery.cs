@@ -51,7 +51,8 @@ namespace Application.Groups.Queries.GetUserSolvingById
             var solvingDto = _mapper.Map<GetSolvingDto>(solving);
             if (solving.Exercise is not null)
             {
-                solvingDto.Exercise.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(solvingDto.Exercise.Id);
+                solvingDto.Exercise.Passed = await _solutionService.CheckIfUserPassedExercise(solvingDto.Exercise.Id);
+                solvingDto.Exercise.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(solvingDto.Exercise.Id); 
             }
             return solvingDto;
         }
