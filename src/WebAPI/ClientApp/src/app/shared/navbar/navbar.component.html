@@ -33,16 +33,6 @@
     [routerLink]="['groups']"
     >Groups</a
   >
-  <a
-    *ngIf="authService.signedIn$ | async"
-    routerLinkActive="isButtonActive"
-    class="menu-button"
-    mat-flat-button
-    color="primary"
-    [routerLink]="['invitations']"
-  >
-    Invitations
-  </a>
 
   <span class="spacer"></span>
   <ng-container *ngIf="!(authService.signedIn$ | async)">

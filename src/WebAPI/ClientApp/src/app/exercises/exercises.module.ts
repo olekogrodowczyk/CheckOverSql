@@ -67,6 +67,6 @@ import { InvitationsModule } from '../invitations/invitations.module';
     MatNativeDateModule,
     InvitationsModule,
   ],
-  exports: [AssignDialogComponent],
+  exports: [AssignDialogComponent, ExerciseCardComponent],
 })
 export class ExercisesModule {}

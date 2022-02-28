@@ -25,7 +25,7 @@ export class SolveExerciseFormComponent implements OnInit {
   });
 
   constructor(
-    private dialogRef: MatDialogRef<SolveExerciseFormComponent>,
+    public dialogRef: MatDialogRef<SolveExerciseFormComponent>,
     private solutionClient: SolutionClient,
     private snackBar: SnackbarService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
@@ -55,6 +55,6 @@ export class SolveExerciseFormComponent implements OnInit {
           this.snackBar.openSnackBar(message);
         },
       });
-    this.dialogRef.close();
+    this.dialogRef.close(true);
   }
 }

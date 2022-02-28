@@ -24,6 +24,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { InvitationsComponent } from './invitations/invitations.component';
 import { InvitationsModule } from '../invitations/invitations.module';
 import { GroupsComponent } from './groups/groups.component';
+import { TasksModule } from '../tasks/tasks.module';
 
 @NgModule({
   declarations: [

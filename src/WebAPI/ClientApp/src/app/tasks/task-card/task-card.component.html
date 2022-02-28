@@ -1,0 +1,13 @@
+<app-exercise-card [model]="model.exercise!" (onSolve)="refresh()">
+  <div class="content">
+    <div fxLayout="row">
+      Deadline: {{ model.deadLine | date: "short" }}
+      <p style="margin-left: auto">Group: {{ model.group }}</p>
+    </div>
+    <div fxLayout="row">
+      Status: {{ model.status }}
+      <p style="margin-left: auto">By: {{ model.assignedBy }}</p>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+</app-exercise-card>

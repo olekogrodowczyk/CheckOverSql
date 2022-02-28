@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetExerciseDto, GroupClient, QueryDto } from 'src/app/web-api-client';
@@ -15,8 +15,9 @@ export class ExerciseCardComponent implements OnInit {
   buttonText!: string;
   @Input() canAssign!: boolean;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
+  @Output() onSolve = new EventEmitter();
   constructor(
-    private dialog: MatDialog,
+    public dialog: MatDialog,
     private groupClient: GroupClient,
     private snackBar: SnackbarService
   ) {}
@@ -55,6 +56,11 @@ export class ExerciseCardComponent implements OnInit {
         title: this.model.title,
         description: this.model.description,
       },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.onSolve.emit();
+      }
     });
   }
 

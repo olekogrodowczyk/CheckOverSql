@@ -14,6 +14,7 @@ import {
   GroupRoleClient,
   InvitationClient,
   SolutionClient,
+  SolvingClient,
 } from './web-api-client';
 import { TokenInterceptor } from './auth/token.interceptor';
 import { AuthModule } from './auth/auth.module';
@@ -40,6 +41,7 @@ import { HomePageComponent } from './home-page/home-page.component';
     GroupClient,
     GroupRoleClient,
     InvitationClient,
+    SolvingClient,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BaseUrlInterceptor, multi: true },
   ],

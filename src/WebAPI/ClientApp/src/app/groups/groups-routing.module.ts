@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { TasksListComponent } from '../tasks/tasks-list/tasks-list.component';
 import { GroupComponent } from './group/group.component';
 import { GroupsComponent } from './groups/groups.component';
 import { HomeComponent } from './home/home.component';
@@ -12,10 +13,10 @@ const routes: Routes = [
     children: [
       { path: 'invitations', component: InvitationsComponent, outlet: 'side' },
       { path: 'groups', component: GroupsComponent, outlet: 'side' },
+      { path: 'tasks', component: TasksListComponent, outlet: 'side' },
+      { path: ':groupId', component: GroupComponent, outlet: 'side' },
     ],
   },
-  { path: 'invitations', component: InvitationsComponent },
-  { path: ':groupId', component: GroupComponent },
 ];
 
 @NgModule({
