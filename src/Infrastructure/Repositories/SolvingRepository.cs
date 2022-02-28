@@ -48,8 +48,12 @@ namespace Infrastructure.Repositories
         {
             var solving = await _context.Solvings
                 .Include(x => x.Creator)
-                .Include(x => x.Assignment)
+                .Include(x=>x.Assignment)
+                .ThenInclude(x=>x.Group)
+                .Include(x=>x.Assignment)
                 .ThenInclude(x => x.User)
+                .Include(x=>x.Exercise)
+                .ThenInclude(x=>x.Database)
                 .FirstOrDefaultAsync(x => x.Id == solvingId);
             return solving;
         }
