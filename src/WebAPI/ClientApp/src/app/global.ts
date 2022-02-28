@@ -1,3 +1,3 @@
-export const GlobalVariables = Object.freeze({
-  BASE_API_URL: 'https:localhost:5001',
-});
+export class GlobalVariables {
+  public static BASE_API_URL: string = 'https:localhost:5001';
+}

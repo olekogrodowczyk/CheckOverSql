@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ExercisesModule } from '../exercises/exercises.module';
 import { ExerciseCardComponent } from '../exercises/exercise-card/exercise-card.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [TasksListComponent, TaskCardComponent],
@@ -18,6 +19,7 @@ import { ExerciseCardComponent } from '../exercises/exercise-card/exercise-card.
     ExercisesModule,
     MatDividerModule,
     FlexLayoutModule,
+    SharedModule,
   ],
 })
 export class TasksModule {}

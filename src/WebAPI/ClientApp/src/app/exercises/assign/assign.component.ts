@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HeaderService } from 'src/app/shared/header.service';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetGroupDto, GroupClient } from 'src/app/web-api-client';
 
@@ -11,10 +12,12 @@ export class AssignComponent implements OnInit {
   groups!: GetGroupDto[];
   constructor(
     private groupClient: GroupClient,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit(): void {
+    this.headerService.headerTitle$.next('Assign Exercise');
     this.getGroups();
   }
 

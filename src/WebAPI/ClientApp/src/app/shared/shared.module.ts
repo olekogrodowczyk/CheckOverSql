@@ -11,9 +11,11 @@ import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { InvitationsModule } from '../invitations/invitations.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { HeaderComponent } from './header/header.component';
+import { HeaderService } from './header.service';
 
 @NgModule({
-  declarations: [NavbarComponent, FooterComponent],
+  declarations: [NavbarComponent, FooterComponent, HeaderComponent],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -25,7 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     InvitationsModule,
     MatDialogModule,
   ],
-  exports: [NavbarComponent, FooterComponent],
+  exports: [NavbarComponent, FooterComponent, HeaderComponent],
   providers: [SnackbarService],
 })
 export class SharedModule {}

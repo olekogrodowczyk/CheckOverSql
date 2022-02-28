@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { HeaderService } from 'src/app/shared/header.service';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetGroupDto, GroupClient } from 'src/app/web-api-client';
 import { CreateGroupFormComponent } from '../create-group-form/create-group-form.component';
@@ -14,10 +15,12 @@ export class GroupsComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private groupClient: GroupClient,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private headerService: HeaderService
   ) {}
 
   ngOnInit(): void {
+    this.headerService.headerTitle$.next('Groups');
     this.getGroups();
   }
 
