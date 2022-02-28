@@ -13,8 +13,8 @@ const routes: Routes = [
     children: [
       { path: 'invitations', component: InvitationsComponent, outlet: 'side' },
       { path: 'groups', component: GroupsComponent, outlet: 'side' },
+      { path: 'group/:groupId', component: GroupComponent, outlet: 'side' },
       { path: 'tasks', component: TasksListComponent, outlet: 'side' },
-      { path: ':groupId', component: GroupComponent, outlet: 'side' },
     ],
   },
 ];

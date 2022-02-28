@@ -8,7 +8,7 @@
     <a
       *ngIf="!toAssign"
       mat-button
-      [routerLink]="['/groups', { outlets: { side: ['tasks'] } }]"
+      [routerLink]="['/groups', { outlets: { side: ['group', model.id] } }]"
       class="button-width"
       >Show</a
     >
