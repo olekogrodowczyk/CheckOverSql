@@ -45,7 +45,7 @@
     </button>
     <button (click)="openSignUpDialog()" class="login-button" mat-button>
       <mat-icon aria-hidden="false" aria-label="Example home icon"
-        >person</mat-icon
+        >person_add</mat-icon
       >
       Sign Up
     </button>
@@ -63,7 +63,12 @@
       >
     </button>
     <mat-menu #menu="matMenu">
-      <button (click)="logout()" mat-menu-item>Sign out</button>
+      <button (click)="logout()" mat-menu-item>
+        <mat-icon aria-hidden="false" aria-label="Example home icon"
+          >logout</mat-icon
+        >
+        Sign out
+      </button>
     </mat-menu>
   </ng-container>
 </mat-toolbar>
