@@ -13,6 +13,7 @@ import { InvitationsModule } from '../invitations/invitations.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { HeaderComponent } from './header/header.component';
 import { HeaderService } from './header.service';
+import { AuthModule } from '../auth/auth.module';
 
 @NgModule({
   declarations: [NavbarComponent, FooterComponent, HeaderComponent],
@@ -26,6 +27,7 @@ import { HeaderService } from './header.service';
     MatIconModule,
     InvitationsModule,
     MatDialogModule,
+    AuthModule,
   ],
   exports: [NavbarComponent, FooterComponent, HeaderComponent],
   providers: [SnackbarService],

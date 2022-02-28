@@ -36,16 +36,19 @@
 
   <span class="spacer"></span>
   <ng-container *ngIf="!(authService.signedIn$ | async)">
-    <a routerLink="/login" class="login-button" mat-flat-button color="accent">
+    <button (click)="openSignInDialog()" class="login-button" mat-button>
+      <mat-icon aria-hidden="false" aria-label="Example home icon"
+        >login</mat-icon
+      >
+
       Sign In
-    </a>
-    <a
-      routerLink="/register"
-      class="login-button"
-      mat-flat-button
-      color="accent"
-      >Sign Up</a
-    >
+    </button>
+    <button (click)="openSignUpDialog()" class="login-button" mat-button>
+      <mat-icon aria-hidden="false" aria-label="Example home icon"
+        >person</mat-icon
+      >
+      Sign Up
+    </button>
   </ng-container>
   <ng-container *ngIf="authService.signedIn$ | async">
     <button

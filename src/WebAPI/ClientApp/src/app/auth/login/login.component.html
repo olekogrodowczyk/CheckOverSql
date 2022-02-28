@@ -2,7 +2,7 @@
   <div class="form-wrapper">
     <div class="form-header">Sign In</div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Email</mat-label>
         <input
           matInput
@@ -12,7 +12,7 @@
           type="email"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Password</mat-label>
         <input
           matInput
@@ -22,7 +22,7 @@
           formControlName="password"
         />
       </mat-form-field>
-      <button mat-flat-button color="accent">Submit</button>
+      <button mat-flat-button color="primary">Submit</button>
     </form>
   </div>
 </div>

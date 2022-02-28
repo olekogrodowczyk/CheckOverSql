@@ -2,7 +2,7 @@
   <div class="form-wrapper">
     <div class="form-header">Sign Up</div>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>First name</mat-label>
         <input
           matInput
@@ -11,7 +11,7 @@
           autocomplete="off"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Last name</mat-label>
         <input
           matInput
@@ -20,7 +20,7 @@
           name="lastName"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Login</mat-label>
         <input
           matInput
@@ -29,7 +29,7 @@
           name="login"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Email address</mat-label>
         <input
           matInput
@@ -38,7 +38,7 @@
           autocomplete="off"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Password</mat-label>
         <input
           matInput
@@ -48,7 +48,7 @@
           autocomplete="off"
         />
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" color="accent">
         <mat-label>Cofirm password</mat-label>
         <input
           matInput
@@ -58,7 +58,7 @@
           autocomplete="off"
         />
       </mat-form-field>
-      <button mat-flat-button color="accent">Submit</button>
+      <button mat-flat-button color="primary">Submit</button>
     </form>
   </div>
 </div>

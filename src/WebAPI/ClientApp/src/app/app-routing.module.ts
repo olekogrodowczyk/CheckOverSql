@@ -13,17 +13,6 @@ const routes: Routes = [
     component: HomePageComponent,
   },
   {
-    canActivate: [IsLoggedInGuard],
-    path: 'login',
-    component: LoginComponent,
-  },
-  {
-    canActivate: [IsLoggedInGuard],
-    path: 'register',
-    component: RegisterComponent,
-  },
-
-  {
     path: 'exercises',
     canLoad: [AuthGuard],
     loadChildren: () =>
