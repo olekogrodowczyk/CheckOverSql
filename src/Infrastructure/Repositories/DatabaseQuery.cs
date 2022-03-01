@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories
         public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows)
         {    
             if(numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
-            SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
+            SqlConnection connection = new SqlConnection(connectionString);
 
             connection.Open();
 
