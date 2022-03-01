@@ -183,7 +183,7 @@ namespace WebAPI.IntegrationTests.Controllers
                     ReceiverId = receiverId,
                     GroupId = group.Id,
                     GroupRoleId = 2,
-                    Status = InvitationStatusEnum.Sent.ToString()
+                    Status = InvitationStatusEnum.Sent
                 });
 
             var invitation2 = await addNewEntity<Invitation>
@@ -194,7 +194,7 @@ namespace WebAPI.IntegrationTests.Controllers
                     GroupId = group.Id,
                     GroupRoleId = 2
                     ,
-                    Status = InvitationStatusEnum.Accepted.ToString()
+                    Status = InvitationStatusEnum.Accepted
                 });
 
             var invitation3 = await addNewEntity<Invitation>
@@ -204,7 +204,7 @@ namespace WebAPI.IntegrationTests.Controllers
                     ReceiverId = 102,
                     GroupId = group.Id,
                     GroupRoleId = 2,                    
-                    Status = InvitationStatusEnum.Sent.ToString()
+                    Status = InvitationStatusEnum.Sent
                 });
 
             //Act
@@ -259,7 +259,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 SenderId = 100,
                 ReceiverId = 99,
                 GroupId = group.Id,
-                Status = InvitationStatusEnum.Sent.ToString(),
+                Status = InvitationStatusEnum.Sent,
             });
 
             //Act

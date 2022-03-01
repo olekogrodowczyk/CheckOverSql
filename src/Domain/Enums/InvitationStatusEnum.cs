@@ -8,7 +8,7 @@ namespace Domain.Enums
 {
     public enum InvitationStatusEnum
     {
-        Sent,
+        Sent=1,
         Accepted,
         Rejected
     }

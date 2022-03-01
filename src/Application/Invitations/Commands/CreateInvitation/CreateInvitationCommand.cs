@@ -57,7 +57,7 @@ namespace Application.Invitations.Commands.CreateInvitation
             {
                 SenderId = (int)_userContextService.GetUserId,
                 Receiver = data.Item2,
-                Status = InvitationStatusEnum.Sent.ToString(),
+                Status = InvitationStatusEnum.Sent,
                 GroupRole = data.Item3,
                 Group = data.Item4,
             };

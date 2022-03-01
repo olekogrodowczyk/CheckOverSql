@@ -32,13 +32,13 @@ namespace Application.Invitations.Commands.RejectInvitation
         public async Task<Unit> Handle(RejectInvitationCommand request, CancellationToken cancellationToken)
         {
             var invitation = await _invitationRepository.GetByIdAsync(request.InvitationId);
-            if (invitation.Status != InvitationStatusEnum.Sent.ToString())
+            if (invitation.Status != InvitationStatusEnum.Sent)
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
             checkForLoggedUser(invitation);
 
-            invitation.Status = InvitationStatusEnum.Rejected.ToString();
+            invitation.Status = InvitationStatusEnum.Rejected;
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
         }

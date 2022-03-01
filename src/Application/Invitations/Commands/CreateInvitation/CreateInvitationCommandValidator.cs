@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Interfaces;
 using Application.Invitations.Commands.CreateInvitation;
+using Domain.Enums;
 using Domain.Interfaces;
 using FluentValidation;
 using System;
@@ -80,7 +81,7 @@ namespace Application.Dto.CreateInvitationDto
             var groupRole = await _groupRoleRepository.GetByName(role);
 
             bool result = await _invitationRepository
-                .AnyAsync(x => x.ReceiverId == receiver.Id && x.Status == "Sent"
+                .AnyAsync(x => x.ReceiverId == receiver.Id && x.Status == InvitationStatusEnum.Sent
                 && x.GroupId == groupId && x.GroupRoleId == groupRole.Id);
 
             if (!result) { return true; }

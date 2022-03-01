@@ -35,7 +35,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
         public async Task<Unit> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
         {
             var invitation = await _invitationRepository.GetByIdAsync(request.InvitationId);
-            if (invitation.Status != InvitationStatusEnum.Sent.ToString())
+            if (invitation.Status != InvitationStatusEnum.Sent)
             {
                 throw new BadRequestException("The invitation isn't pending", true);
             }
@@ -48,7 +48,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
                 UserId = invitation.ReceiverId,
             });
 
-            invitation.Status = InvitationStatusEnum.Accepted.ToString();
+            invitation.Status = InvitationStatusEnum.Accepted;
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
         }
