@@ -20,14 +20,14 @@ namespace Application.Services
             _databaseRepository = databaseRepository;
         }
        
-        public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, bool isAdmin=false, int? numberOfRows = null)
+        public async Task<List<List<string>>> SendQueryWithData(string query, string databaseName, int? numberOfRows = null)
         {
             string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             var result = await _databaseQuery.ExecuteQueryWithData(query, connectionString, numberOfRows);
             return result;
         }
 
-        public async Task<int> SendQueryNoData(string query, string databaseName, bool isAdmin=false)
+        public async Task<int> SendQueryNoData(string query, string databaseName)
         {
             string connectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             var result = await _databaseQuery.ExecuteQueryNoData(query, connectionString);

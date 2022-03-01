@@ -1,5 +1,4 @@
-﻿using Application.Databases.Commands.SendQueryAdmin;
-using Application.Databases.Queries;
+﻿using Application.Databases.Queries;
 using Application.Databases.Queries.GetDatabaseNames;
 using Application.Databases.Queries.GetQueryHistory;
 using Application.Databases.Queries.GetQueryValueAdmin;
@@ -25,15 +24,6 @@ namespace WebAPI.Controllers
             _queryService = queryService;
         }
 
-        [Authorize(Roles = "Admin")]
-        [ProducesResponseType(200, Type = typeof(Result<int>))]
-        [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        [HttpPost("SendQueryAdmin")]
-        public async Task<IActionResult> SendQueryAdmin(SendQueryAdminCommand command)
-        {
-            var result = await Mediator.Send(command);
-            return Ok(new Result<int>(result, "Query executed successfully, number of rows affected returned."));
-        }
 
         [Authorize]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<IEnumerable<string>>>))]
