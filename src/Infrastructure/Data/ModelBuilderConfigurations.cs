@@ -15,10 +15,10 @@ namespace Infrastructure.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Login)
                 .IsUnique();
-
 
             modelBuilder.Entity<User>()
                 .Property(x => x.Email)
@@ -35,6 +35,19 @@ namespace Infrastructure.Data
             modelBuilder.Entity<User>()
                 .Property(x => x.Email)
                 .HasMaxLength(25);
+
+            modelBuilder.Entity<Database>()
+                .OwnsOne(c => c.ConnectionString, x =>
+                  {
+                      x.Property(p => p.Server).HasMaxLength(50)
+                      .HasColumnName("Server");
+                      x.Property(p => p.Database).HasMaxLength(50)
+                      .HasColumnName("Database");
+                      x.Property(p => p.User).HasMaxLength(50)
+                      .HasColumnName("User");
+                      x.Property(p => p.Password).HasMaxLength(50)
+                      .HasColumnName("Password");
+                  });              
                 
         }
     }

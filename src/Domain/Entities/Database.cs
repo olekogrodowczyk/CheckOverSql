@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,7 @@ namespace Domain.Entities
     public class Database : AuditableEntity
     {
         public string Name { get; set; }
-        public string ConnectionString { get; set; }
-        public string ConnectionStringAdmin { get; set; }
+        public ConnectionString ConnectionString { get; set; }
         public virtual ICollection<Query> Queries { get; set; }
         public virtual ICollection<Exercise> Exercises { get; set; }
     }

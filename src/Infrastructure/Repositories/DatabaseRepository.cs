@@ -35,7 +35,7 @@ namespace Infrastructure.Repositories
         {
             var result = await _context.Databases.FirstOrDefaultAsync(x => x.Name == name);
             if (result == null) { throw new NotFoundException($"Result is not found with name:{name}"); }
-            return isAdmin == false ? result.ConnectionString : result.ConnectionStringAdmin;             
+            return result.ConnectionString.ToString();         
         }
     }
 }
