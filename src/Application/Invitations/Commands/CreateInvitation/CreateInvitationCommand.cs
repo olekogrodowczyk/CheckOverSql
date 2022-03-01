@@ -51,7 +51,7 @@ namespace Application.Invitations.Commands.CreateInvitation
             var data = await getData(command); 
 
             var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, data.Item1
-                , new PermissionRequirement(PermissionNames.SendingInvitations));
+                , new PermissionRequirement(PermissionEnum.SendingInvitations));
 
             var invitation = new Invitation
             {

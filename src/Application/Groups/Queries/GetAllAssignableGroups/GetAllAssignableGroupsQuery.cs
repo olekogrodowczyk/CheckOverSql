@@ -55,7 +55,7 @@ namespace Application.Groups.Queries.GetAllAssignableGroups
         private async Task<bool> checkIfAssignmentCanAssignExerciseInGroup(Assignment assignment)
         {
             return await _assignmentRepository.CheckIfAssignmentHasPermission
-                (assignment.Id, GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises));
+                (assignment.Id, PermissionEnum.AssigningExercises);
         }
     }
 }

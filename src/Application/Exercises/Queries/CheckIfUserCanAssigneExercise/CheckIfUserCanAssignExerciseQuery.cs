@@ -37,7 +37,7 @@ namespace Application.Exercises.Queries.CheckIfUserCanAssigneExercise
             foreach(var assignment in assignments)
             {
                 if (await _assignmentRepository.CheckIfAssignmentHasPermission
-                    (assignment.Id, GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)))
+                    (assignment.Id, PermissionEnum.AssigningExercises))
                 {
                     result = true;
                 }

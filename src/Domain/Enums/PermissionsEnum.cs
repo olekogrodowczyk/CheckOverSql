@@ -1,38 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum PermissionNames
+    public enum PermissionEnum
     {
+        [Display(Name = "Sending Invitations")]
         SendingInvitations,
+        [Display(Name = "Deleting Users")]
         DeletingUsers,
+        [Display(Name = "Deleting Group")]
         DeletingGroup,
+        [Display(Name = "Assigning Exercises")]
         AssigningExercises,
+        [Display(Name = "Checking Exercises")]
         CheckingExercises,
+        [Display(Name = "Getting Assignments")]
         GettingAssignments,
+        [Display(Name = "Doing Exercises")]
         DoingExercises,
     }
 
-    public static class GetPermissionByEnum
-    {
-        public static string GetPermissionName(PermissionNames permissionNames)
-        {
-            switch (permissionNames)
-            {
-                case PermissionNames.SendingInvitations: return "Sending Invitations";
-                case PermissionNames.DeletingGroup: return "Deleting Group";
-                case PermissionNames.DeletingUsers: return "Deleting Users";
-                case PermissionNames.AssigningExercises: return "Assigning Exercises";
-                case PermissionNames.CheckingExercises: return "Checking Exercises";
-                case PermissionNames.GettingAssignments: return "Getting Assignments";
-                case PermissionNames.DoingExercises: return "Doing Exercises";
-                default: throw new ArgumentException("Error in getPermissionByEnum");
-            }
-        }
-    }
+    
 
 }

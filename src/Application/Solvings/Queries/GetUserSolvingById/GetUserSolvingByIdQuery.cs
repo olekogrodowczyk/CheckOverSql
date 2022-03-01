@@ -66,7 +66,7 @@ namespace Application.Groups.Queries.GetUserSolvingById
                 var loggedUserAssignment =
                 await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment((int)loggedUserId, (int)solving.AssignmentId);
                 var authorizationPermissionRequirement = await _authorizationService.AuthorizeAsync
-                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(PermissionNames.CheckingExercises));
+                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(PermissionEnum.CheckingExercises));
             }
         }
     }

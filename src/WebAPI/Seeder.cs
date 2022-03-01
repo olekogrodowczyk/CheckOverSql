@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
+using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -165,37 +166,37 @@ namespace WebAPI
             {
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations),
+                    Title = PermissionEnum.SendingInvitations.GetDisplayName(),
                     Description = "This permission lets a user to send invitations to other users"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers),
+                    Title = PermissionEnum.DeletingUsers.GetDisplayName(),
                     Description = "This permission lets a user to delete other users from group"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup),
+                    Title = PermissionEnum.DeletingGroup.GetDisplayName(),
                     Description = "This permission lets a user to delete a group"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises),
+                    Title = PermissionEnum.AssigningExercises.GetDisplayName(),
                     Description = "This permission lets a user to assign exercises to do"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises),
+                    Title = PermissionEnum.CheckingExercises.GetDisplayName(),
                     Description = "This permission lets a user in group to check other exercises"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments),
+                    Title = PermissionEnum.GettingAssignments.GetDisplayName(),
                     Description = "This permission lets a user to get assignments in group"
                 },
                 new Permission()
                 {
-                    Title = GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises),
+                    Title = PermissionEnum.DoingExercises.GetDisplayName(),
                     Description = "This permission lets a user to do an exercise",
                 }
             };
@@ -213,22 +214,22 @@ namespace WebAPI
             }
             return new List<GroupRolePermission>
             {
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations)),
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers)),
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingGroup)),
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
-                getGroupRolePermission("Owner",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
-                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.SendingInvitations)),
-                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.DeletingUsers)),
-                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
-                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
-                getGroupRolePermission("Moderator", GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
-                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.AssigningExercises)),
-                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.CheckingExercises)),
-                getGroupRolePermission("Checker",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
-                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.GettingAssignments)),
-                getGroupRolePermission("User",GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises))
+                getGroupRolePermission("Owner",PermissionEnum.SendingInvitations.GetDisplayName()),
+                getGroupRolePermission("Owner",PermissionEnum.DeletingUsers.GetDisplayName()),
+                getGroupRolePermission("Owner",PermissionEnum.DeletingGroup.GetDisplayName()),
+                getGroupRolePermission("Owner",PermissionEnum.AssigningExercises.GetDisplayName()),
+                getGroupRolePermission("Owner",PermissionEnum.CheckingExercises.GetDisplayName()),
+                getGroupRolePermission("Owner",PermissionEnum.GettingAssignments.GetDisplayName()),
+                getGroupRolePermission("Moderator", PermissionEnum.SendingInvitations.GetDisplayName()),
+                getGroupRolePermission("Moderator", PermissionEnum.DeletingUsers.GetDisplayName()),
+                getGroupRolePermission("Moderator", PermissionEnum.AssigningExercises.GetDisplayName()),
+                getGroupRolePermission("Moderator", PermissionEnum.CheckingExercises.GetDisplayName()),
+                getGroupRolePermission("Moderator", PermissionEnum.GettingAssignments.GetDisplayName()),
+                getGroupRolePermission("Checker",PermissionEnum.AssigningExercises.GetDisplayName()),
+                getGroupRolePermission("Checker",PermissionEnum.CheckingExercises.GetDisplayName()),
+                getGroupRolePermission("Checker",PermissionEnum.GettingAssignments.GetDisplayName()),
+                getGroupRolePermission("User",PermissionEnum.GettingAssignments.GetDisplayName()),
+                getGroupRolePermission("User",PermissionEnum.DoingExercises.GetDisplayName())
             };
         }
     }

@@ -13,10 +13,11 @@ namespace Application.Authorization
     public class PermissionRequirement : IAuthorizationRequirement
     {
 
-        public PermissionRequirement(PermissionNames permissionName)
+        public PermissionRequirement(PermissionEnum permission)
         {
-            PermissionTitle = GetPermissionByEnum.GetPermissionName(permissionName);
+            Permission = permission;
         }
-        public string PermissionTitle { get; }
+        public PermissionEnum Permission { get; }
+         
     }
 }

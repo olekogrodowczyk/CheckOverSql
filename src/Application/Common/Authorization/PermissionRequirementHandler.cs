@@ -1,6 +1,7 @@
 ﻿using Application.Authorization;
 using Application.Common.Exceptions;
 using Application.Interfaces;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,16 +30,13 @@ namespace Infrastructure.Authorization
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement, Assignment assignment)
         {
-            if (assignment == null) { throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true); }
-
-            var result = await _assignmentRepository.CheckIfAssignmentHasPermission(assignment.Id, requirement.PermissionTitle);
-
-            if (!await _permissionRepository.AnyAsync(x => x.Title == requirement.PermissionTitle))
+            if (assignment == null) { throw new ForbidException($"Access denied for permission: {requirement.Permission.GetDisplayName()}", true); }
+            if (!await _permissionRepository.AnyAsync(x => x.Title == requirement.Permission.GetDisplayName()))
             {
-                throw new NotFoundException($"Permission {requirement.PermissionTitle} cannot be found");
+                throw new NotFoundException($"Permission {requirement.Permission.GetDisplayName()} cannot be found");
             }
-            if (!result) { throw new ForbidException($"Access denied for permission: {requirement.PermissionTitle}", true); }
-
+            var result = await _assignmentRepository.CheckIfAssignmentHasPermission(assignment.Id, requirement.Permission);       
+            if (!result) { throw new ForbidException($"Access denied for permission: {requirement.Permission.GetDisplayName()}", true); }
             context.Succeed(requirement);
         }
     }

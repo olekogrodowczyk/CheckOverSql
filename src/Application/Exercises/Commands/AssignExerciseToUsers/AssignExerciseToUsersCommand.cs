@@ -60,7 +60,7 @@ namespace Application.Dto.AssignExerciseToUsersTo
         private async Task<bool> checkIfAssignmentCanDoExercise(Assignment assignment)
         {
             return await _assignmentRepository.CheckIfAssignmentHasPermission
-                (assignment.Id, GetPermissionByEnum.GetPermissionName(PermissionNames.DoingExercises));
+                (assignment.Id, PermissionEnum.DoingExercises);
         }
     }
 }

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Enums;
+using Domain.Common;
 
 namespace Infrastructure.Repositories
 {
@@ -19,8 +21,9 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task<bool> CheckIfAssignmentHasPermission(int assignmentId, string permissionTitle)
+        public async Task<bool> CheckIfAssignmentHasPermission(int assignmentId, PermissionEnum permissionsEnum)
         {
+            string permissionTitle = permissionsEnum.GetDisplayName();
             var assignment = await _context
                 .Assignments
                 .Include(x=>x.GroupRole)

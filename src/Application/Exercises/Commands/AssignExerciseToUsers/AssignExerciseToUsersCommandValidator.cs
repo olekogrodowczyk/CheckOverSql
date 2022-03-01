@@ -49,7 +49,7 @@ namespace Application.Dto.AssignExerciseToUsers
             if (assignment == null) { return false; }
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                , new PermissionRequirement(PermissionNames.AssigningExercises));
+                , new PermissionRequirement(PermissionEnum.AssigningExercises));
             return true;
         }
     }

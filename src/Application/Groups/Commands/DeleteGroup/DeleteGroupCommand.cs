@@ -43,7 +43,7 @@ namespace Application.Groups.Commands.DeleteGroup
             if (userAssignment == null) { throw new ForbidException("You're not in the group", true); }
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
-                , userAssignment, new PermissionRequirement(PermissionNames.DeletingGroup));
+                , userAssignment, new PermissionRequirement(PermissionEnum.DeletingGroup));
 
             //Assignments are needed to be included first
             await _assignmentRepository.GetAllAsync(x => x.Group);
