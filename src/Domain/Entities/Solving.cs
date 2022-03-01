@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Domain.Entities
         public virtual Exercise Exercise { get; set; }
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
-        public string Status { get; set; }
+        public SolvingStatusEnum Status { get; set; }
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public virtual Checking Checking { get; set; }

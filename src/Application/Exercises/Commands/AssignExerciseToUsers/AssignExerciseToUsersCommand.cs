@@ -46,7 +46,7 @@ namespace Application.Dto.AssignExerciseToUsersTo
                 var solving = new Solving
                 {
                     ExerciseId = request.ExerciseId,
-                    Status = SolvingStatus.ToDo.ToString(),
+                    Status = SolvingStatusEnum.ToDo,
                     DeadLine = request.DeadLine,
                     AssignmentId = assignment.Id,
                     CreatorId = (int)_userContextService.GetUserId

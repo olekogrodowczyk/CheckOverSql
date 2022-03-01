@@ -42,7 +42,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.Done.ToString(),
+                Status = SolvingStatusEnum.Done,
                 AssignmentId = assignmentSolver.Id,
                 ExerciseId = exercise.Id
             });
@@ -74,7 +74,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 99,
-                Status = SolvingStatus.Done.ToString(),
+                Status = SolvingStatusEnum.Done,
                 AssignmentId = assignmentSolver.Id,
                 ExerciseId = exercise.Id
             });
@@ -108,7 +108,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.Done.ToString(),
+                Status = SolvingStatusEnum.Done,
                 AssignmentId = assignmentSolver.Id,
                 ExerciseId = exercise.Id
             });
@@ -145,7 +145,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solving = await addNewEntity<Solving>(new Solving
             {
                 CreatorId = 102,
-                Status = SolvingStatus.Done.ToString(),
+                Status = SolvingStatusEnum.Done,
                 AssignmentId = assignmentSolver.Id,
                 ExerciseId = exercise.Id
             });
@@ -175,25 +175,25 @@ namespace WebAPI.IntegrationTests.Controllers
             for(int i = 0; i < 10; i++) { exercises.Add(await addNewEntity<Exercise>(getValidExercise())); }
             List<Solving> solvings = new List<Solving>()
             {
-                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.Done.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatusEnum.Done
                 , AssignmentId = assignment.Id, ExerciseId = exercises[0].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatus.ToDo.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatusEnum.ToDo
                 , AssignmentId = assignment.Id, ExerciseId = exercises[1].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.DoneButOverdue.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatusEnum.DoneButOverdue
                 , AssignmentId = assignment.Id, ExerciseId = exercises[2].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatus.ToDo.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatusEnum.ToDo
                 , AssignmentId = assignment.Id, ExerciseId = exercises[3].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 101, Status = SolvingStatus.Done.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 101, Status = SolvingStatusEnum.Done
                 , AssignmentId = assignment.Id, ExerciseId = exercises[4].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.ToDo.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatusEnum.ToDo
                 , AssignmentId = assignment.Id, ExerciseId = exercises[5].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.DoneButOverdue.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatusEnum.DoneButOverdue
                 , AssignmentId = assignment.Id, ExerciseId = exercises[6].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatus.ToDo.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 102, Status = SolvingStatusEnum.ToDo
                 , AssignmentId = assignment.Id, ExerciseId = exercises[7].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatus.ToDo.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 103, Status = SolvingStatusEnum.ToDo
                 , AssignmentId = assignment.Id, ExerciseId = exercises[8].Id}),
-                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatus.Done.ToString()
+                await addNewEntity<Solving>(new Solving{ CreatorId = 100, Status = SolvingStatusEnum.Done
                 , AssignmentId = assignment.Id, ExerciseId = exercises[9].Id}),
             };
 

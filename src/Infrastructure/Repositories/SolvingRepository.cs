@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
                 .Include(x => x.Creator)
                 .Include(x => x.Assignment)
                 .ThenInclude(x => x.User)
-                .Where(x => x.Assignment.UserId == userId && x.Status == SolvingStatus.ToDo.ToString())
+                .Where(x => x.Assignment.UserId == userId && x.Status == SolvingStatusEnum.ToDo)
                 .ToListAsync();
             return solvings;
         }

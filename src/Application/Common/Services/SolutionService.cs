@@ -56,8 +56,8 @@ namespace Application.Services
             var solvingsAssignedToUser = await _solvingRepository.GetSolvingsAssignedToUserToDo(loggedUserId);
             foreach (var solvingAssignedToUser in solvingsAssignedToUser.Where(x=>x.ExerciseId == exerciseId))
             {
-                solvingAssignedToUser.Status = solvingAssignedToUser.DeadLine > DateTime.UtcNow ? SolvingStatus.Done.ToString()
-                    : SolvingStatus.DoneButOverdue.ToString();
+                solvingAssignedToUser.Status = solvingAssignedToUser.DeadLine > DateTime.UtcNow ? SolvingStatusEnum.Done
+                    : SolvingStatusEnum.DoneButOverdue;
                 solvingAssignedToUser.SentAt = DateTime.UtcNow;
                 solution.SolvingId = solvingAssignedToUser.Id;
                 solution.Outcome = true;

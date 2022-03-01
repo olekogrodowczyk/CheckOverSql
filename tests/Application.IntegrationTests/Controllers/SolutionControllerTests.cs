@@ -58,7 +58,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 AssignmentId = assignment2.Id,
                 ExerciseId = exercise.Id,
                 CreatorId = 100,
-                Status = SolvingStatus.ToDo.ToString(),
+                Status = SolvingStatusEnum.ToDo,
                 DeadLine = deadline,
                 SentAt = DateTime.UtcNow
             });
@@ -67,7 +67,7 @@ namespace WebAPI.IntegrationTests.Controllers
                 AssignmentId = assignment3.Id,
                 ExerciseId = exercise.Id,
                 CreatorId = 100,
-                Status = SolvingStatus.ToDo.ToString(),
+                Status = SolvingStatusEnum.ToDo,
                 DeadLine = deadline,
                 SentAt = DateTime.UtcNow
             });
@@ -145,7 +145,7 @@ namespace WebAPI.IntegrationTests.Controllers
             var solvings = await context.Solvings.Include(x=>x.Solution).ToListAsync();
             solvings.ForEach(solving =>
             {
-                solving.Status.Should().Be(SolvingStatus.Done.ToString());
+                solving.Status.Should().Be(SolvingStatusEnum.Done);
                 solving.Solution.Outcome.Should().BeTrue();
             });
             context.Assignments.Include(x=>x.Solvings).SelectMany(x=>x.Solvings).Count().Should().Be(2);
@@ -171,7 +171,7 @@ namespace WebAPI.IntegrationTests.Controllers
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             context.Comparisons.Count().Should().Be(1);
             var solvingResult = await context.Solvings.Include(x => x.Solution).FirstOrDefaultAsync(x => x.Id == initResult.Item2);
-            solvingResult.Status.Should().Be(SolvingStatus.DoneButOverdue.ToString());
+            solvingResult.Status.Should().Be(SolvingStatusEnum.DoneButOverdue);
             solvingResult.Solution.Outcome.Should().BeTrue();
         }
 

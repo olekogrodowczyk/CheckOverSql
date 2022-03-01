@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-    public enum SolvingStatus
+    public enum SolvingStatusEnum
     {
-        ToDo,
+        ToDo=1,
         Overdue,
         Done,
         DoneButOverdue,
