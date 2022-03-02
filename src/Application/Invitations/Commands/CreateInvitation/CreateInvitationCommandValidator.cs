@@ -20,62 +20,47 @@ namespace Application.Dto.CreateInvitationDto
         private readonly IInvitationRepository _invitationRepository;
         private readonly IUserContextService _userContextService;
         private readonly IAssignmentRepository _assignmentRepository;
+        private readonly IGroupRepository _groupRepository;
         private IEnumerable<string> groupRoleNames;
 
         public CreateInvitationCommandValidator(IUserRepository userRepository, IGroupRoleRepository groupRoleRepository
             ,IInvitationRepository invitationRepository, IUserContextService userContextService
-            ,IAssignmentRepository assignmentRepository)
+            ,IAssignmentRepository assignmentRepository, IGroupRepository groupRepository)
         {
             _userRepository = userRepository;
             _groupRoleRepository = groupRoleRepository;
             _invitationRepository = invitationRepository;
             _userContextService = userContextService;
             _assignmentRepository = assignmentRepository;
-            groupRoleNames = getGroupRoleNames();
+            _groupRepository = groupRepository;
 
             CascadeMode = CascadeMode.Stop;
 
             RuleFor(r => r.RoleName)
-                .NotEmpty().WithMessage("Role hasn't been specified")
-                .Must(GroupRoleExists).WithMessage($"Role should be in {string.Join(',', groupRoleNames)}");
+                .NotEmpty().WithMessage("Role hasn't been specified");
 
             RuleFor(r => r.ReceiverEmail)
-                .NotEmpty().WithMessage("Receiver email hasn't been specified")
-                .MustAsync(EmailExists).WithMessage("Defined email doesn't exist");
+                .NotEmpty().WithMessage("Receiver email hasn't been specified");
+
+            RuleFor(g => g.GroupId)
+                .NotEmpty().WithMessage("The group hasn't been specified");
+
 
             RuleFor(g => g.GroupId).MustAsync
                 (async (model, groupId, cancellation) =>
                 {
-                    return await CheckIfInvitationAlreadyExists(model.ReceiverEmail, model.RoleName, groupId, cancellation);
+                    return await checkIfInvitationAlreadyExists(model.ReceiverEmail, model.RoleName, groupId, cancellation);
                 }).WithMessage("Similar invitation already exists").MustAsync
                 (async (model, groupId, cancellation) =>
                 {
-                    return await CheckIfUserIsAlreadyInGroup(model.ReceiverEmail, model.RoleName, groupId, cancellation);
+                    return await checkIfUserIsAlreadyInGroup(model.ReceiverEmail, model.RoleName, groupId, cancellation);
                 }).WithMessage("User already is in the group")
-                .MustAsync(CheckIfSenderIsInTheGroup).WithMessage("You are not in the group");
+                .MustAsync(checkIfSenderIsInTheGroup).WithMessage("You are not in the group");
 
 
         }
 
-        public IEnumerable<string> getGroupRoleNames()
-        {
-            var groupRoles = _groupRoleRepository.GetAllAsync().Result;
-            return groupRoleNames = groupRoles.Select(x => x.Name);
-        }
-
-        public bool GroupRoleExists(string roleName)
-        {         
-            return groupRoleNames.Contains(roleName);
-        }
-
-        public async Task<bool> EmailExists(string email, CancellationToken cancellationToken)
-        {
-            var result = await _userRepository.SingleOrDefaultAsync(x => x.Email == email);
-            if(result is not null) { return true; }
-            return false;
-        }
-
-        public async Task<bool> CheckIfInvitationAlreadyExists(string email, string role, int groupId, CancellationToken cancellationToken)
+        private async Task<bool> checkIfInvitationAlreadyExists(string email, string role, int groupId, CancellationToken cancellationToken)
         {
             var receiver = await _userRepository.GetByEmail(email);
             var groupRole = await _groupRoleRepository.GetByName(role);
@@ -88,7 +73,7 @@ namespace Application.Dto.CreateInvitationDto
             return false;
         }
 
-        public async Task<bool> CheckIfUserIsAlreadyInGroup(string email, string role, int groupId, CancellationToken cancellationToken)
+        private async Task<bool> checkIfUserIsAlreadyInGroup(string email, string role, int groupId, CancellationToken cancellationToken)
         {
             var receiver = await _userRepository.GetByEmail(email);
             bool result = await _assignmentRepository.AnyAsync(x => x.UserId == receiver.Id && x.GroupId == groupId);
@@ -97,13 +82,13 @@ namespace Application.Dto.CreateInvitationDto
             return false;
         }
 
-        public async Task<bool> CheckIfSenderIsInTheGroup(int groupId, CancellationToken cancellationToken)
+        private async Task<bool> checkIfSenderIsInTheGroup(int groupId, CancellationToken cancellationToken)
         {
             int senderId = (int)_userContextService.GetUserId;
             var result = await _assignmentRepository.AnyAsync(x => x.GroupId == groupId && x.UserId == senderId);
 
             if (result) { return true; }
             return false;
-        }
+        }        
     }
 }

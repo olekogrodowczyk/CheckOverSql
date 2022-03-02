@@ -20,9 +20,9 @@ namespace Infrastructure.Repositories
 
         public async Task<GroupRole> GetByName(string name)
         {
-           var result =  await _context.GroupRoles.FirstOrDefaultAsync(x => x.Name == name);
-           if (result == null) { throw new NotFoundException($"Result is not found with name:{name}"); }
-           return result;
+           var groupRole =  await _context.GroupRoles.FirstOrDefaultAsync(x => x.Name == name);
+           if (groupRole == null) { throw new NotFoundException(nameof(groupRole), groupRole.Id); }
+           return groupRole;
         }
     }
 }

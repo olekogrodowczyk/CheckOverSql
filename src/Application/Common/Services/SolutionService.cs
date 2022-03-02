@@ -72,7 +72,7 @@ namespace Application.Services
         public async Task<bool> Compare(int exerciseId, string query)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
-            if(exercise.DatabaseId is null) { throw new NotFoundException("Defined exercises doesn't have an assigned database"); }
+            if(exercise is null) { throw new NotFoundException(nameof(exercise), exercise.Id); }
             string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
             string databaseConnectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             bool comparisonResult = await _queryEvaluatorDriver.Evaluate(query, exercise.ValidAnswer, databaseConnectionString);

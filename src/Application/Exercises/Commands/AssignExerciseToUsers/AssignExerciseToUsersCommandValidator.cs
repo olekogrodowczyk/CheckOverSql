@@ -41,15 +41,18 @@ namespace Application.Dto.AssignExerciseToUsers
 
         public async Task<bool> CheckIfUserCanAssignExerciseToUsers(int groupId, CancellationToken cancellationToken)
         {
+            int? loggedUserId = _userContextService.GetUserId;
+            if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
             bool groupExists = await _groupRepository.AnyAsync(x => true);
             if (!groupExists) { return false; }
 
             var assignment = await _assignmentRepository
-                .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == groupId);
+                .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == groupId);
             if (assignment == null) { return false; }
 
             await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
                 , new PermissionRequirement(PermissionEnum.AssigningExercises));
+
             return true;
         }
     }

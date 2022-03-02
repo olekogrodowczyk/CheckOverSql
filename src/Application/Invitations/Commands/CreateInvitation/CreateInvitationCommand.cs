@@ -48,43 +48,55 @@ namespace Application.Invitations.Commands.CreateInvitation
 
         public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
         {
-            var data = await getData(command); 
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, data.Item1
+            var receiver = await getReceiver(command.ReceiverEmail);
+            var groupRole = await getGroupRole(command.RoleName);
+            var group = await getGroup(command.GroupId);
+            var assignment = await getAssignment(command.GroupId);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
                 , new PermissionRequirement(PermissionEnum.SendingInvitations));
 
             var invitation = new Invitation
             {
                 SenderId = (int)_userContextService.GetUserId,
-                Receiver = data.Item2,
+                Receiver = receiver,
                 Status = InvitationStatusEnum.Sent,
-                GroupRole = data.Item3,
-                Group = data.Item4,
+                GroupRole = groupRole,
+                Group = group
             };
 
             await _invitationRepository.AddAsync(invitation);
             return invitation.Id;
         }
 
-        private async Task<(Assignment, User, GroupRole, Group)> getData(CreateInvitationCommand command)
+        private async Task<User> getReceiver(string receiverEmail)
+        {
+            var receiver = await _userRepository.GetByEmail(receiverEmail);
+            if (receiver is null) { throw new NotFoundException(nameof(receiver), receiverEmail); }
+            return receiver;
+        }
+
+        private async Task<GroupRole> getGroupRole(string groupRoleName)
+        {
+            var groupRole = await _groupRoleRepository.GetByName(groupRoleName);
+            if (groupRole is null) { throw new NotFoundException(nameof(groupRole), groupRoleName); }
+            return groupRole;
+        }
+
+        private async Task<Group> getGroup(int groupId)
+        {
+            var group = await _groupRepository.GetByIdAsync(groupId);
+            if (group is null) { throw new NotFoundException(nameof(group), groupId); }
+            return group;
+        }
+
+        private async Task<Assignment> getAssignment(int groupId)
         {
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
-
-            var receiver = await _userRepository.GetByEmail(command.ReceiverEmail);
-            if(receiver is null) { throw new NotFoundException($"Receiver with email: {command.ReceiverEmail} hasn't been found", true); }
-           
-            var groupRole = await _groupRoleRepository.GetByName(command.RoleName);
-            if(groupRole is null) { throw new NotFoundException($"Group role with name: {command.RoleName} hasn't been found", true); }
-           
-            var group = await _groupRepository.GetByIdAsync(command.GroupId);
-            if(group is null) { throw new NotFoundException($"Group with id: {command.GroupId} hasn't been found", true); }
             var assignment = await _assignmentRepository
-                .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == command.GroupId);
-            if (assignment is null) 
-            { throw new NotFoundException
-                    ($"Assignment with loggedUserId: {(int)loggedUserId} and groupId: {command.GroupId} hasn't been found", true); }
-            return (assignment, receiver, groupRole, group);
+                .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == groupId);
+            if (assignment is null) { throw new NotFoundException(nameof(assignment), groupId); }
+            return assignment;
         }
     }
 }
