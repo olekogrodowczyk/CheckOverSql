@@ -11,7 +11,13 @@ namespace Application.Common.Exceptions
         public bool IsPublic { get; }
         public NotFoundException(string message, bool isPublic = false) : base(message)
         {
-            IsPublic = IsPublic;
-        }      
+            IsPublic = isPublic;
+        }
+
+        public NotFoundException(string name, object key, bool isPublic=false) 
+            : base($"Entity \"{name}\" ({key}) was not found")
+        {
+            IsPublic = isPublic;
+        }
     }
 }
