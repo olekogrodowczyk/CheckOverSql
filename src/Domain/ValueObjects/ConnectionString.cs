@@ -13,6 +13,11 @@ namespace Domain.ValueObjects
         public string User { get; private set; }
         public string Password { get; private set; }
 
+        public ConnectionString()
+        {
+
+        }
+
         public ConnectionString(string server, string database, string user, string password)
         {
             Server = server;

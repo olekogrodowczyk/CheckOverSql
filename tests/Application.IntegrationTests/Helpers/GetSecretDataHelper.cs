@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Domain.ValueObjects;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace WebAPI.IntegrationTests.Helpers
@@ -8,15 +9,17 @@ namespace WebAPI.IntegrationTests.Helpers
         public static IConfiguration InitConfiguration()
         {
             var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettingstests.json")
+                .AddJsonFile("appsettings.json")
                 .Build();
             return config;
         }
 
-        public static string GetDatabaseReadOnlyConnectionString(string databaseName)
+        public static ConnectionString GetConnectionString(string value)
         {
+            ConnectionString connectionString = new ConnectionString();
             var config = InitConfiguration();
-            return config.GetConnectionString(databaseName);
-        }            
+            config.GetSection(value).Bind(connectionString, x => x.BindNonPublicProperties = true);
+            return connectionString;
+        }
     }
 }
