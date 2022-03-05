@@ -105,6 +105,13 @@ namespace WebAPI.IntegrationTests
             await SeedDataHelper.SeedPublicExercises(context);
         }
 
+        protected async Task SeedPermissionWithGroupRoles()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            await SeedDataHelper.SeedPermissionWithGroupRoles(context);
+        }
+
         protected async Task SeedUsers()
         {
             using var scope = _scopeFactory.CreateScope();
@@ -112,7 +119,7 @@ namespace WebAPI.IntegrationTests
             await SeedDataHelper.SeedUsers(context);
         }
 
-        protected Exercise getValidExercise(bool isPrivate = false)
+        protected Exercise GetValidExercise(bool isPrivate = false, int creatorId = 104)
         {
             var model = new Exercise
             {
@@ -121,7 +128,7 @@ namespace WebAPI.IntegrationTests
                 Title = "Zadanie2 title",
                 ValidAnswer = "SELECT * FROM dbo.Footballers",
                 IsPrivate = isPrivate,
-                CreatorId = 104,
+                CreatorId = creatorId,
             };
             return model;
         }
@@ -141,8 +148,12 @@ namespace WebAPI.IntegrationTests
 
         protected async Task<int> RunAsUserAsync(string login, string firstName, string lastName, string email, string password)
         {
+            var potentialExistingUser = await FirstOrDefaultAsync<User>(x => x.Login == login);
+            if (potentialExistingUser is not null) { return potentialExistingUser.Id; }
+
             using var scope = _scopeFactory.CreateScope();
             var user = scope.ServiceProvider.GetRequiredService<IIdentityService>();
+
             int userId = await user.Register(new RegisterUserCommand
             {
                 Login = login,
