@@ -1,5 +1,4 @@
 ﻿using Application.Dto.CreateExerciseDto;
-using Application.IntegrationTests.FakeAuthentication;
 using Application.Interfaces;
 using Application.Responses;
 using Application.Groups;
@@ -29,7 +28,6 @@ namespace WebAPI.IntegrationTests
     public class CustomWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup : class
     {
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -38,9 +36,16 @@ namespace WebAPI.IntegrationTests
                            .SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
                 services.Remove(dbContextOptions);
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"));
-                services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
-                services.AddMvc(option => option.Filters.Add(new FakeUserFilter()));
-                
+
+                var currentUserServiceDescriptor = services.FirstOrDefault(d =>
+                      d.ServiceType == typeof(IUserContextService));
+                if (currentUserServiceDescriptor != null)
+                {
+                    services.Remove(currentUserServiceDescriptor);
+                }
+                services.AddTransient(provider =>
+                Mock.Of<IUserContextService>(s => s.GetUserId == SharedUtilityClass.CurrentUserId));
+                services.BuildServiceProvider();
 
                 var sp = services.BuildServiceProvider();
 
@@ -50,11 +55,11 @@ namespace WebAPI.IntegrationTests
                     var context = scopedServices.GetRequiredService<ApplicationDbContext>();
 
                     context.Database.EnsureCreated();
-                    SeedDataHelper.SeedDatabases(context,"FootballLeague").Wait();
+                    SeedDataHelper.SeedDatabases(context, "FootballLeague").Wait();
                 }
             });
         }
 
-       
+
     }
 }
