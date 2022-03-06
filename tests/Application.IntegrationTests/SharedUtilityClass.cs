@@ -1,12 +1,15 @@
 ﻿using Application.Identities.Commands.RegisterUser;
 using Application.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
@@ -15,7 +18,7 @@ using WebAPI.IntegrationTests.Helpers;
 
 namespace WebAPI.IntegrationTests
 {
-    public class SharedUtilityClass
+    public partial class SharedUtilityClass
     {
         public static int? CurrentUserId { get; set; }
         protected readonly HttpClient _client;
@@ -96,41 +99,7 @@ namespace WebAPI.IntegrationTests
             context.Comparisons.Clear();
             context.Solvings.Clear();
             await context.SaveChangesAsync();
-        }
-
-        protected async Task SeedPublicExercises()
-        {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedPublicExercises(context);
-        }
-
-        protected async Task SeedPermissionWithGroupRoles()
-        {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedPermissionWithGroupRoles(context);
-        }
-
-        protected async Task SeedUsers()
-        {
-            using var scope = _scopeFactory.CreateScope();
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedUsers(context);
-        }
-
-        protected Exercise GetValidExercise(bool isPrivate = false, int creatorId = 104)
-        {
-            var model = new Exercise
-            {
-                DatabaseId = 1,
-                Description = "Opis2dsadsa",
-                Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
-                IsPrivate = isPrivate,
-                CreatorId = creatorId,
-            };
-            return model;
+            CurrentUserId = null;
         }
 
         protected async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)

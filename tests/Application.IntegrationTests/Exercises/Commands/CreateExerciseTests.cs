@@ -21,6 +21,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
         public async Task ForValidDto_ReturnsOk()
         {
             //Arrange
+            await ClearNotNecesseryData();
             int userId = await RunAsDefaultUserAsync();
             var command = new CreateExerciseCommand
             {
@@ -43,6 +44,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
         public async Task ForInvalidDto_ReturnsBadRequest()
         {
             //Arrange
+            await ClearNotNecesseryData();
             var command = new CreateExerciseCommand
             {
                 DatabaseName = "dsadwqdwq",
@@ -62,6 +64,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
         public async Task ForForbiddenQuery_ReturnsBadRequest()
         {
             //Arrange
+            await ClearNotNecesseryData();
             var command = new CreateExerciseCommand
             {
                 DatabaseName = "FootballLeague",

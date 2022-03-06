@@ -20,16 +20,15 @@ namespace WebAPI.IntegrationTests.Exercises.Queries
         public async Task ForCreatedSampleData_ReturnsCreatedExercises()
         {
             //Arrange
-            //Only public exercises can be returned
+            await ClearNotNecesseryData();
             int userId = await RunAsDefaultUserAsync();
-            await ClearTableInContext<Exercise>();
+            var users = await SeedUsers();
 
             var exercise1 = await AddAsync<Exercise>(GetValidExercise(true, userId));
             var exercise2 = await AddAsync<Exercise>(GetValidExercise(false, userId));
-            var exercise3 = await AddAsync<Exercise>(GetValidExercise(false, 104));
+            var exercise3 = await AddAsync<Exercise>(GetValidExercise(false, users["user3"]));
 
             //Act
-
             var result = await SendAsync(new GetAllCreatedExercisesQuery() { PageNumber = 1, PageSize = 8 });
 
             //Assert

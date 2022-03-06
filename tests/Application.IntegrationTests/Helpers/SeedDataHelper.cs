@@ -73,15 +73,14 @@ namespace WebAPI.IntegrationTests.Helpers
 
         }
 
-        public static async Task SeedUsers(ApplicationDbContext context)
+        public static List<User> GetUsers()
         {
-            if (!await context.Users.AnyAsync())
-            {
-                var users = new List<User>
+            var users = new List<User>
             {
                 new User
                 {
                     Id = 100,
+                    Login = "user1",
                     FirstName = "John",
                     LastName = "Smith",
                     RoleId = 2,
@@ -92,6 +91,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 new User
                 {
                     Id = 101,
+                    Login = "user2",
                     FirstName = "James",
                     LastName = "Kowalski",
                     RoleId = 2,
@@ -102,6 +102,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 new User
                 {
                     Id = 102,
+                    Login = "user3",
                     FirstName = "Richard",
                     LastName = "Johnson",
                     RoleId = 2,
@@ -112,6 +113,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 new User
                 {
                     Id = 103,
+                    Login = "user4",
                     FirstName = "Michael",
                     LastName = "Brown",
                     RoleId = 2,
@@ -122,6 +124,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 new User
                 {
                     Id = 1,
+                    Login="superuser",
                     FirstName = "Super",
                     LastName = "User",
                     RoleId = 1,
@@ -130,9 +133,8 @@ namespace WebAPI.IntegrationTests.Helpers
                     DateOfBirth = DateTime.UtcNow.AddYears(-21)
                 }
             };
-                await context.AddRangeAsync(users);
-                await context.SaveChangesAsync();
-            }
+            return users;
+
         }
     }
 }

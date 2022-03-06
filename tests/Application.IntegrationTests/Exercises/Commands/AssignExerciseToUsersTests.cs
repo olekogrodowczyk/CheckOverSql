@@ -2,6 +2,7 @@
 using Application.Dto.AssignExerciseToUsersTo;
 using Application.Responses;
 using Domain.Entities;
+using Domain.Enums;
 using FluentAssertions;
 using Microsoft.Data.SqlClient;
 using System;
@@ -31,19 +32,19 @@ namespace WebAPI.IntegrationTests.Exercises.Commands.AssignExerciseToUsers
             //Arrange 
             await ClearNotNecesseryData();
             var userId = await RunAsDefaultUserAsync();
-            await SeedUsers();
-            await SeedPermissionWithGroupRoles();
+            var users = await SeedUsers();
+            var groupRoles = await SeedPermissionWithGroupRoles();
 
-            var group1 = await AddAsync<Group>(new Group { Name = "Grupa1", CreatorId = 99 });
-            var group2 = await AddAsync<Group>(new Group { Name = "Grupa1", CreatorId = 100 });
+            var group1 = await AddAsync<Group>(new Group { Name = "Grupa1", CreatorId = userId });
+            var group2 = await AddAsync<Group>(new Group { Name = "Grupa1", CreatorId = users["user1"] });
             List<Assignment> assignments = new List<Assignment>()
             {
                 await AddAsync(new Assignment(userId,group1.Id, groupRoleId)),
-                await AddAsync(new Assignment(100, group1.Id, 4)),
-                await AddAsync(new Assignment(101,group1.Id ,4)),
-                await AddAsync(new Assignment(102, group1.Id, 2)),
-                await AddAsync(new Assignment(103,group1.Id,4)),
-                await AddAsync(new Assignment(100,group2.Id,4))
+                await AddAsync(new Assignment(users["user1"], group1.Id, groupRoles["User"])),
+                await AddAsync(new Assignment(users["user2"], group1.Id , groupRoles["User"])),
+                await AddAsync(new Assignment(users["user3"], group1.Id, groupRoles["Moderator"])),
+                await AddAsync(new Assignment(users["user4"], group1.Id, groupRoles["User"])),
+                await AddAsync(new Assignment(users["user1"], group2.Id, groupRoles["User"])),
             };
             var exercise = await AddAsync<Exercise>(GetValidExercise(false));
             var command = new AssignExerciseToUsersCommand
