@@ -18,17 +18,17 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
         }
 
         [Fact]
-        public async Task ForValidDto_ReturnsOk()
+        public async Task ForValidDto_ReturnsValidResult()
         {
             //Arrange
             await ClearNotNecesseryData();
             int userId = await RunAsDefaultUserAsync();
             var command = new CreateExerciseCommand
             {
-                DatabaseName = "FootballLeague",
+                DatabaseName = "NorthwindSimple",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
+                ValidAnswer = "SELECT * FROM Products",
                 IsPrivate = true,
             };
 
@@ -41,7 +41,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
         }
 
         [Fact]
-        public async Task ForInvalidDto_ReturnsBadRequest()
+        public async Task ForInvalidDto_ThrowsValidationException()
         {
             //Arrange
             await ClearNotNecesseryData();
@@ -50,7 +50,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
                 DatabaseName = "dsadwqdwq",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers"
+                ValidAnswer = "SELECT * FROM Products"
             };
 
             //Act
@@ -67,10 +67,10 @@ namespace WebAPI.IntegrationTests.Exercises.Commands
             await ClearNotNecesseryData();
             var command = new CreateExerciseCommand
             {
-                DatabaseName = "FootballLeague",
+                DatabaseName = "NorthwindSimple",
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
-                ValidAnswer = "INSERT INTO dbo.Footballers (FirstName, LastName) VALUES ('Leo','Messi')",
+                ValidAnswer = "INSERT INTO OrderItem VALUES(1, 11, 14.80, 12)",
                 IsPrivate = true,
             };
 
