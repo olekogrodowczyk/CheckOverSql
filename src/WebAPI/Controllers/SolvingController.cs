@@ -42,13 +42,12 @@ namespace WebAPI.Controllers
             return Ok(new Result<GetSolvingDto>(result, "Solving returned successfully"));
         }
 
-        [HttpGet("GetAllToDo")]
+        [HttpGet("GetAllByStatus")]
         [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
-        public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo()
+        public async Task<IActionResult> GetAllSolvingsAssignedToUserToDo([FromQuery] GetAllSolvingsAssignedToUserByStatusQuery query)
         {
-            int loggedUserId = (int)_userContextService.GetUserId;
-            var result = await Mediator.Send(new GetAllSolvingsAssignedToUserToDoQuery { UserId = loggedUserId });
+            var result = await Mediator.Send(query);
             return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings to do returned successfully"));
         }
     }

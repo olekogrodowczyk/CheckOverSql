@@ -18,17 +18,18 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IEnumerable<Solving>> GetAllSolvingsAssignedToUser(int userId)
+        public async Task<IEnumerable<Solving>> GetAllSolvingsAssignedToUser
+            (int userId, SolvingStatusEnum status = SolvingStatusEnum.ToDo)
         {
             var solvings = await _context.Solvings
                 .Include(x => x.Creator)
                 .Include(x => x.Exercise)
-                .ThenInclude(x=>x.Database)
-                .Include(x => x.Assignment)                
+                .ThenInclude(x => x.Database)
+                .Include(x => x.Assignment)
                 .ThenInclude(x => x.User)
-                .Include(x=>x.Assignment)
-                .ThenInclude(x=>x.Group)
-                .Where(x => x.Assignment.UserId == userId)
+                .Include(x => x.Assignment)
+                .ThenInclude(x => x.Group)
+                .Where(x => x.Assignment.UserId == userId && x.Status == status)
                 .ToListAsync();
             return solvings;
         }
@@ -48,12 +49,12 @@ namespace Infrastructure.Repositories
         {
             var solving = await _context.Solvings
                 .Include(x => x.Creator)
-                .Include(x=>x.Assignment)
-                .ThenInclude(x=>x.Group)
-                .Include(x=>x.Assignment)
+                .Include(x => x.Assignment)
+                .ThenInclude(x => x.Group)
+                .Include(x => x.Assignment)
                 .ThenInclude(x => x.User)
-                .Include(x=>x.Exercise)
-                .ThenInclude(x=>x.Database)
+                .Include(x => x.Exercise)
+                .ThenInclude(x => x.Database)
                 .FirstOrDefaultAsync(x => x.Id == solvingId);
             return solving;
         }
