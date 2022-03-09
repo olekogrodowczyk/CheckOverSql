@@ -15,7 +15,7 @@ namespace Application.Solvings.Queries.GetAllSolvingsAssignedToUserByStatus
         {
             RuleFor(x => x.Status)
                 .Must(checkStatus)
-                .WithMessage($"Valid status has been specified" +
+                .WithMessage($"Valid status hasn't been specified" +
                 $", available statuses: {string.Join(',', Enum.GetNames(typeof(SolvingStatusEnum)))}");
         }
 
