@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.ValueObjects;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,10 +58,17 @@ namespace WebAPI
                     _context.Users.Add(superUser);
                     _context.SaveChanges();
                 }
-                if (!_context.Exercises.Any())
+                if (!_context.Databases.Any())
+                {
+                    var databases = getDatabases();
+                    _context.Databases.AddRange(databases);
+                    _context.SaveChanges();
+                }
+                if (!_context.Exercises.Where(x => !x.IsPrivate).Any())
                 {
                     int superUserId = _context.Users.FirstOrDefault(x => x.Email == "superuser@gmail.com").Id;
-                    var exercises = getPublicExercises(superUserId);
+                    int nortwindSimpleDatabaseId = _context.Databases.SingleOrDefault(x => x.Name == "NorthwindSimple").Id;
+                    var exercises = getNorthwindSimplePublicExercises(superUserId, nortwindSimpleDatabaseId);
                     _context.Exercises.AddRange(exercises);
                     _context.SaveChanges();
                 }
@@ -99,36 +107,61 @@ namespace WebAPI
             };
         }
 
-        public static IEnumerable<Exercise> getPublicExercises(int superUserId)
+        public static IEnumerable<Exercise> getNorthwindSimplePublicExercises(int superUserId, int databaseId)
         {
             return new List<Exercise>()
             {
                 new Exercise()
                 {
-                    DatabaseId = 1,
                     CreatorId = superUserId,
-                    ValidAnswer = "SELECT * FROM dbo.Footballers",
+                    DatabaseId = databaseId,
                     IsPrivate = false,
-                    Title = "Get all fields",
-                    Description = "Get all field description",
+                    Title = "Get all data from table Orders",
+                    Description = " Get all the data from table orders without any aliases",
+                    ValidAnswer = "SELECT * FROM Orders"
                 },
                 new Exercise()
                 {
-                    DatabaseId = 1,
                     CreatorId = superUserId,
-                    ValidAnswer = "SELECT FirstName FROM dbo.Footballers",
+                    DatabaseId = databaseId,
                     IsPrivate = false,
-                    Title = "Get one field",
-                    Description = "Get one field description",
+                    Title = "Get all customers with valid data",
+                    Description = "Get all customers with only Id, FirstName and LastName columns "+
+                    "with following aliases: id, first, last",
+                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers"
                 },
                 new Exercise()
                 {
-                    DatabaseId = 1,
+                    CreatorId=superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate=false,
+                    Title="Get all data from table Products sorted",
+                    Description = "Get all data from table Products sorted by firstly ProductName "+
+                    "and secondly by UnitPrice all in descending type",
+                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers"
+                },
+                new Exercise()
+                {
                     CreatorId = superUserId,
-                    ValidAnswer = "SELECT FirstName, LastName FROM dbo.Footballers",
+                    DatabaseId = databaseId,
                     IsPrivate = false,
-                    Title = "Get two fields",
-                    Description = "Get two fields description",
+                    Title = "Get data with JOINS",
+                    Description = "Get Orders.Id as OrderId, OrderItems.UnitPrice as UnitPriceOrderItem " +
+                    "Products.Package without alias with the appropriate JOINS and sort the data by Products.UnitPrice",
+                    ValidAnswer = @"Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi
+                    INNER JOIN Orders ord ON ord.Id = oi.OrderId
+                    INNER JOIN Products p ON p.Id = oi.ProductId
+                    ORDER BY p.UnitPrice DESC;"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate =false,
+                    Title = "Grouping",
+                    Description = "For every OrderId in OrderItems table show amount of UnitPrices. "+
+                    "Do not use aliases",
+                    ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) FROM OrderItems GROUP BY OrderId;"
                 },
             };
         }
@@ -156,6 +189,20 @@ namespace WebAPI
                 {
                     IsCustom = false,
                     Name = "User"
+                }
+            };
+        }
+
+        //The real data needs be specified by user
+        public static IEnumerable<Database> getDatabases()
+        {
+            return new List<Database>()
+            {
+                new Database()
+                {
+                    ConnectionString=
+                    new ConnectionString("NorthwindSimple Server", "NorthwindSimple database name", "User", "Password"),
+                    Name = "NorthwindSimple",
                 }
             };
         }
