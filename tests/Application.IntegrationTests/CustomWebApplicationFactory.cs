@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using WebAPI;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
+using Application.IntegrationTests.Helpers;
+
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 
 namespace WebAPI.IntegrationTests

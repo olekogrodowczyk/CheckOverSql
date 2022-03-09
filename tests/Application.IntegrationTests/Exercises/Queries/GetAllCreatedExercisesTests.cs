@@ -24,9 +24,9 @@ namespace WebAPI.IntegrationTests.Exercises.Queries
             int userId = await RunAsDefaultUserAsync();
             var users = await SeedUsers();
 
-            var exercise1 = await AddAsync<Exercise>(GetValidExercise(true, userId));
-            var exercise2 = await AddAsync<Exercise>(GetValidExercise(false, userId));
-            var exercise3 = await AddAsync<Exercise>(GetValidExercise(false, users["user3"]));
+            var exercise1 = await AddAsync<Exercise>(GetValidFootballersExercise(true, userId));
+            var exercise2 = await AddAsync<Exercise>(GetValidFootballersExercise(false, userId));
+            var exercise3 = await AddAsync<Exercise>(GetValidFootballersExercise(false, users["user3"]));
 
             //Act
             var result = await SendAsync(new GetAllCreatedExercisesQuery() { PageNumber = 1, PageSize = 8 });
@@ -42,9 +42,9 @@ namespace WebAPI.IntegrationTests.Exercises.Queries
             int userId = await RunAsDefaultUserAsync();
             for (int i = 0; i < 10; i++)
             {
-                await AddAsync<Exercise>(GetValidExercise(true, userId));
+                await AddAsync<Exercise>(GetValidFootballersExercise(true, userId));
             }
-            await AddAsync<Exercise>(GetValidExercise(false, userId));
+            await AddAsync<Exercise>(GetValidFootballersExercise(false, userId));
 
             //Act
             var result = await SendAsync(new GetAllCreatedExercisesQuery() { PageNumber = 1, PageSize = 8 });

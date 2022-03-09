@@ -26,10 +26,10 @@ namespace WebAPI.IntegrationTests.Exercises.Queries
 
             for (int i = 0; i < 10; i++)
             {
-                await AddAsync(GetValidExercise(false, users["user1"]));
+                await AddAsync(GetValidFootballersExercise(false, users["user1"]));
             }
-            await AddAsync(GetValidExercise(false, userId));
-            await AddAsync(GetValidExercise(true, userId));
+            await AddAsync(GetValidFootballersExercise(false, userId));
+            await AddAsync(GetValidFootballersExercise(true, userId));
 
             //Act
             var result = await SendAsync(new GetAllPublicExercisesQuery() { PageNumber = 1, PageSize = 8 });

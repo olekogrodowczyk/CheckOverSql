@@ -82,6 +82,7 @@ namespace WebAPI
                 FirstName = "Super",
                 LastName = "User",
                 RoleId = adminRoleId,
+                Login = "superuser",
                 Email = "superuser@gmail.com",
                 PasswordHash = "dsandnsauindasuidnusa",
                 DateOfBirth = DateTime.UtcNow.AddYears(-21)

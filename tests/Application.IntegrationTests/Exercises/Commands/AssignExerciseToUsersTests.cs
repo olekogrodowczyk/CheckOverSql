@@ -46,7 +46,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands.AssignExerciseToUsers
                 await AddAsync(new Assignment(users["user4"], group1.Id, groupRoles["User"])),
                 await AddAsync(new Assignment(users["user1"], group2.Id, groupRoles["User"])),
             };
-            var exercise = await AddAsync<Exercise>(GetValidExercise(false));
+            var exercise = await AddAsync<Exercise>(GetValidFootballersExercise(false));
             var command = new AssignExerciseToUsersCommand
             {
                 DeadLine = DateTime.UtcNow.AddMinutes(deadLineMinutesAhead),

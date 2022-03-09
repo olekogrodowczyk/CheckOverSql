@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.IntegrationTests.Helpers;
+using Domain.Entities;
 using Domain.ValueObjects;
 using Infrastructure.Data;
 using MediatR;
@@ -25,6 +26,7 @@ namespace WebAPI.IntegrationTests.Helpers
                 };
                 await context.Databases.AddAsync(newDatabase);
                 await context.SaveChangesAsync();
+                DatabasesIdsHelper.NorthwindSimpleDatabaseId = newDatabase.Id;
             }
         }
 
@@ -43,8 +45,9 @@ namespace WebAPI.IntegrationTests.Helpers
         {
             if (!context.Exercises.Any())
             {
-                int creatorId = 99;
-                var exercises = Seeder.getPublicExercises(creatorId);
+                int? superUserId = (await context.Users.FirstOrDefaultAsync(x => x.Email == "superuser@gmail.com")).Id;
+                var northWindSimpleDatabaseId = (await context.Databases.SingleOrDefaultAsync(x => x.Name == "NorthwindSimple")).Id;
+                var exercises = Seeder.getNorthwindSimplePublicExercises(superUserId ?? 0, northWindSimpleDatabaseId);
                 await context.Exercises.AddRangeAsync(exercises);
             }
         }
@@ -121,17 +124,6 @@ namespace WebAPI.IntegrationTests.Helpers
                     PasswordHash = "dsandnsauindasuidnusa",
                     DateOfBirth = DateTime.UtcNow.AddYears(-23)
                 },
-                new User
-                {
-                    Id = 1,
-                    Login="superuser",
-                    FirstName = "Super",
-                    LastName = "User",
-                    RoleId = 1,
-                    Email = "superuser@gmail.com",
-                    PasswordHash = "dsandnsauindasuidnusa",
-                    DateOfBirth = DateTime.UtcNow.AddYears(-21)
-                }
             };
             return users;
 

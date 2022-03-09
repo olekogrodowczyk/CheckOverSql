@@ -40,8 +40,8 @@ namespace WebAPI.IntegrationTests
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            //Include potential logged user
-            if (await context.Users.CountAsync() < 2)
+            //Include potential logged user and super user
+            if (await context.Users.CountAsync() < 3)
             {
                 await context.AddRangeAsync(SeedDataHelper.GetUsers());
                 await context.SaveChangesAsync();
@@ -57,7 +57,7 @@ namespace WebAPI.IntegrationTests
             return usersDict;
         }
 
-        protected Exercise GetValidExercise(bool isPrivate = false, int creatorId = 104)
+        protected Exercise GetValidFootballersExercise(bool isPrivate = false, int creatorId = 104)
         {
             var model = new Exercise
             {
@@ -70,5 +70,20 @@ namespace WebAPI.IntegrationTests
             };
             return model;
         }
+
+        protected Exercise GetValidNoDataReturnsExercise(int databaseId, bool isPrivate = false, int creatorId = 104)
+        {
+            var model = new Exercise
+            {
+                DatabaseId = databaseId,
+                Title = "This exercise only returns 1",
+                Description = "This exercise only returns 1 description",
+                ValidAnswer = "SELECT 1",
+                IsPrivate = isPrivate,
+                CreatorId = creatorId
+            };
+            return model;
+        }
+
     }
 }
