@@ -1,7 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HeaderService } from 'src/app/shared/header.service';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetSolvingDto, SolvingClient } from 'src/app/web-api-client';
+
+export enum TaskStatus {
+  ToDo = 1,
+  Overdue,
+  Done,
+  DoneButOverdue,
+  Checked,
+}
 
 @Component({
   selector: 'app-tasks-list',
@@ -9,6 +17,7 @@ import { GetSolvingDto, SolvingClient } from 'src/app/web-api-client';
   styleUrls: ['./tasks-list.component.css'],
 })
 export class TasksListComponent implements OnInit {
+  @Input() taskStatus!: TaskStatus;
   tasks!: GetSolvingDto[];
   constructor(
     private solvingClient: SolvingClient,
@@ -18,11 +27,11 @@ export class TasksListComponent implements OnInit {
 
   ngOnInit(): void {
     this.headerService.headerTitle$.next('Tasks');
-    this.getAllTasks();
+    this.getTasksByStatus();
   }
 
-  getAllTasks() {
-    this.solvingClient.getAll().subscribe({
+  getTasksByStatus() {
+    this.solvingClient.getAllByStatus(TaskStatus[this.taskStatus]).subscribe({
       next: ({ value }) => {
         this.tasks = value!;
       },

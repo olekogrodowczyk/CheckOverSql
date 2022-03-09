@@ -1,0 +1,27 @@
+<mat-tab-group dynamicHeight>
+  <mat-tab label="ToDo Tasks">
+    <ng-template matTabContent>
+      <app-tasks-list [taskStatus]="taskStatusToDo"> </app-tasks-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Done Tasks">
+    <ng-template matTabContent>
+      <app-tasks-list [taskStatus]="taskStatusDone"> </app-tasks-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Overdue Tasks">
+    <ng-template matTabContent>
+      <app-tasks-list [taskStatus]="taskStatusOverdue"> </app-tasks-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Done But Overdue Tasks">
+    <ng-template matTabContent>
+      <app-tasks-list [taskStatus]="taskStatusDoneButOverdue"> </app-tasks-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Checked Tasks">
+    <ng-template matTabContent>
+      <app-tasks-list [taskStatus]="taskStatusChecked"> </app-tasks-list>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

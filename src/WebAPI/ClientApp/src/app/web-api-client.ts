@@ -370,113 +370,6 @@ export class DatabaseClient {
    * @param body (optional)
    * @return Success
    */
-  sendQueryAdmin(
-    body: SendQueryAdminCommand | undefined
-  ): Observable<Int32Result> {
-    let url_ = this.baseUrl + '/api/Database/SendQueryAdmin';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = JSON.stringify(body);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Accept: 'text/plain',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processSendQueryAdmin(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processSendQueryAdmin(response_ as any);
-            } catch (e) {
-              return _observableThrow(e) as any as Observable<Int32Result>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<Int32Result>;
-        })
-      );
-  }
-
-  protected processSendQueryAdmin(
-    response: HttpResponseBase
-  ): Observable<Int32Result> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Int32Result.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result400: any = null;
-          let resultData400 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result400 = ErrorResult.fromJS(resultData400);
-          return throwException(
-            'Bad Request',
-            status,
-            _responseText,
-            _headers,
-            result400
-          );
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(null as any);
-  }
-
-  /**
-   * @param body (optional)
-   * @return Success
-   */
   getQueryValue(
     body: GetQueryValueQuery | undefined
   ): Observable<StringIEnumerableIEnumerableResult> {
@@ -3238,10 +3131,17 @@ export class SolvingClient {
   }
 
   /**
+   * @param status (optional)
    * @return Success
    */
-  getAllToDo(): Observable<GetSolvingDtoIEnumerableResult> {
-    let url_ = this.baseUrl + '/api/Solving/GetAllToDo';
+  getAllByStatus(
+    status: string | undefined
+  ): Observable<GetSolvingDtoIEnumerableResult> {
+    let url_ = this.baseUrl + '/api/Solving/GetAllByStatus?';
+    if (status === null)
+      throw new Error("The parameter 'status' cannot be null.");
+    else if (status !== undefined)
+      url_ += 'Status=' + encodeURIComponent('' + status) + '&';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
@@ -3256,14 +3156,14 @@ export class SolvingClient {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processGetAllToDo(response_);
+          return this.processGetAllByStatus(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processGetAllToDo(response_ as any);
+              return this.processGetAllByStatus(response_ as any);
             } catch (e) {
               return _observableThrow(
                 e
@@ -3277,7 +3177,7 @@ export class SolvingClient {
       );
   }
 
-  protected processGetAllToDo(
+  protected processGetAllByStatus(
     response: HttpResponseBase
   ): Observable<GetSolvingDtoIEnumerableResult> {
     const status = response.status;
@@ -5161,46 +5061,6 @@ export class Result implements IResult {
 export interface IResult {
   message?: string | undefined;
   success?: boolean;
-}
-
-export class SendQueryAdminCommand implements ISendQueryAdminCommand {
-  query?: string | undefined;
-  database?: string | undefined;
-
-  constructor(data?: ISendQueryAdminCommand) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.query = _data['Query'];
-      this.database = _data['Database'];
-    }
-  }
-
-  static fromJS(data: any): SendQueryAdminCommand {
-    data = typeof data === 'object' ? data : {};
-    let result = new SendQueryAdminCommand();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['Query'] = this.query;
-    data['Database'] = this.database;
-    return data;
-  }
-}
-
-export interface ISendQueryAdminCommand {
-  query?: string | undefined;
-  database?: string | undefined;
 }
 
 export class StringIEnumerableIEnumerableResult
