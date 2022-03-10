@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Common.QueryEvaluation;
+using Domain.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,15 +15,16 @@ namespace Infrastructure.Repositories
     {
         private readonly IConfiguration _configuration;
         private string _connectionString = string.Empty;
-        
+
 
         public DatabaseQuery(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<int> ExecuteQueryNoData(string query, string connectionString)
+        public async Task<int> ExecuteQueryNoData(string query, string connectionString, int? numberOfRows)
         {
+            if (numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
             SqlConnection connection = new SqlConnection(connectionString.Replace("\\\\", "\\"));
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
@@ -66,15 +68,15 @@ namespace Infrastructure.Repositories
 
 
         public async Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows)
-        {    
-            if(numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
+        {
+            if (numberOfRows is not null) { query = limitQueryResult(query, (int)numberOfRows); }
             SqlConnection connection = new SqlConnection(connectionString);
 
             connection.Open();
 
-            SqlCommand command = new SqlCommand(query, connection);            
-            var queryResult =  await getDataInMatrix(command);
+            SqlCommand command = new SqlCommand(query, connection);
             var columnNames = await GetColumnNames(query, connectionString);
+            var queryResult = await getDataInMatrix(command);
             queryResult.Insert(0, columnNames);
 
             await command.DisposeAsync();
@@ -85,8 +87,9 @@ namespace Infrastructure.Repositories
 
         private string limitQueryResult(string query, int numberOfRows)
         {
-            query = query.TrimEnd().TrimEnd(';');
-            return $"SELECT TOP({numberOfRows}) * FROM({query}) data;";
+            QueryBuilder qb = new QueryBuilder(query);
+            qb.CheckOrderBy().AddLimit(numberOfRows);
+            return qb.GetResult();
         }
 
         private async Task<List<List<string>>> getDataInMatrix(SqlCommand command)
@@ -114,17 +117,17 @@ namespace Infrastructure.Repositories
             connection.Open();
             DataTable dataTable = null;
             using (SqlCommand command = new SqlCommand(query, connection))
-            {               
+            {
                 using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SchemaOnly))
                 {
                     dataTable = await reader.GetSchemaTableAsync();
                 }
-            }              
+            }
             List<string> columnNames = new List<string>();
             dataTable?.Rows?.Cast<DataRow>().ToList().ForEach(row =>
             {
                 columnNames.Add(row.ItemArray[0].ToString());
-            });         
+            });
             connection.Close();
             return columnNames;
         }
