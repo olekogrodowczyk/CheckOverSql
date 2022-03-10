@@ -67,7 +67,15 @@ namespace WebAPI.Middleware
                         break;
                     case SqlException sqlException:
                         code = HttpStatusCode.BadRequest;
-                        result = new ErrorResult(sqlException.Message);
+                        switch (sqlException.Number)
+                        {
+                            case 8155:
+                                result = new ErrorResult("Query cannot be with a blank column name");
+                                break;
+                            default:
+                                result = new ErrorResult(sqlException.Message);
+                                break;
+                        }
                         break;
                     case Exception:
                         code = HttpStatusCode.InternalServerError;
@@ -80,9 +88,9 @@ namespace WebAPI.Middleware
                 string jsonResponse = JsonSerializer.Serialize(result);
 
                 await context.Response.WriteAsync(jsonResponse);
-
             }
 
         }
+
     }
 }
