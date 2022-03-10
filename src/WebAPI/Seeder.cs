@@ -160,9 +160,9 @@ namespace WebAPI
                     DatabaseId = databaseId,
                     IsPrivate =false,
                     Title = "Grouping",
-                    Description = "For every OrderId in OrderItems table show amount of UnitPrices. "+
-                    "Do not use aliases",
-                    ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) FROM OrderItems GROUP BY OrderId;"
+                    Description = "For every OrderId in OrderItems table show amount of UnitPrices. " +
+                    "For amount use \"Amount\" alias",
+                    ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) Amount FROM OrderItems GROUP BY OrderId;"
                 },
             };
         }
