@@ -47,13 +47,13 @@ namespace Application.Common.QueryEvaluation
 
         public QueryBuilder AddLimit(int limit)
         {
-            _query = $"SELECT TOP({limit}) * FROM ({_query})";
+            _query = $"SELECT TOP({limit}) * FROM ({_query}) data;";
             return this;
         }
 
         public QueryBuilder GetSpecificRow(int rowNumber)
         {
-            _query = "SELECT * FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber"+
+            _query = "SELECT * FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber" +
                 $" FROM ({_query}) QUERY ) AS myTable WHERE RowNumber = {rowNumber}";
             return this;
         }
