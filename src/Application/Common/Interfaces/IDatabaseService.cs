@@ -10,5 +10,6 @@ namespace Application.Interfaces
     {
         Task<int> SendQueryNoData(string query, string databaseName);
         Task<List<List<string>>> SendQueryWithData(string query, string databaseName, int? numberOfRows = null);
+        Task<bool> ValidateQuery(string query, string databaseName);
     }
 }
