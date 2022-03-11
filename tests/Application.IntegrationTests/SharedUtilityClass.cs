@@ -43,13 +43,14 @@ namespace WebAPI.IntegrationTests
             return value;
         }
 
-        protected async Task AddRangeAsync<T>(IEnumerable<T> values) where T : class, new()
+        protected async Task<IEnumerable<T>> AddRangeAsync<T>(IEnumerable<T> values) where T : class, new()
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
             await context.Set<T>().AddRangeAsync(values);
             await context.SaveChangesAsync();
+            return values;
         }
 
         protected async Task<bool> AnyAsync<T>(Expression<Func<T, bool>> predicate) where T : class, new()
