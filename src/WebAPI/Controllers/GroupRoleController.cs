@@ -1,4 +1,5 @@
 ﻿using Application.GroupRoles.Queries;
+using Application.GroupRoles.Queries.CheckPermission;
 using Application.GroupRoles.Queries.GetAllGroupRoles;
 using Application.Responses;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(new GetAllGroupRolesQuery());
             return Ok(new Result<IEnumerable<GroupRoleDto>>(result, "All group roles returned successfully"));
+        }
+
+        [HttpGet("CheckPermission")]
+        [ProducesResponseType(200, Type = typeof(Result<bool>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetGroupRoles([FromQuery] CheckPermissionQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return Ok(new Result<bool>(result, "Result returned successfully"));
         }
 
     }
