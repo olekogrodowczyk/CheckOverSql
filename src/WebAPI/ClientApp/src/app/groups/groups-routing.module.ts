@@ -6,6 +6,7 @@ import { GroupsComponent } from './groups/groups.component';
 import { HomeComponent } from './home/home.component';
 import { InvitationsComponent } from './invitations/invitations.component';
 import { HomeComponent as TasksHomeComponent } from '../tasks/home/home.component';
+import { HomeComponent as TasksToCheckHomeComponent } from '../tasks-to-check/home/home.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
       { path: 'groups', component: GroupsComponent, outlet: 'side' },
       { path: 'group/:groupId', component: GroupComponent, outlet: 'side' },
       { path: 'tasks', component: TasksHomeComponent, outlet: 'side' },
+      {
+        path: 'tasks-to-check',
+        component: TasksToCheckHomeComponent,
+        outlet: 'side',
+      },
     ],
   },
 ];

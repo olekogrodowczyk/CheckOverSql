@@ -1,0 +1,33 @@
+<mat-card class="exercise-card">
+  <div fxLayout="row" class="header">
+    <div *ngIf="model.sentAt">Sent: {{ model.sentAt | date: "short" }}</div>
+    <div style="margin-left: auto">
+      <p>{{ model.exercise?.databaseName }}</p>
+    </div>
+  </div>
+
+  <div class="card-container">
+    <mat-card-title>{{ model.exercise?.title }}</mat-card-title>
+    <mat-card-content>
+      <p class="description">{{ shortenedDescription }}</p>
+      <mat-divider></mat-divider>
+      <p class="answer">{{ shortenedAnswer }}</p>
+      <mat-divider></mat-divider>
+      <div class="task-content">
+        <div fxLayout="row">
+          Deadline: {{ model.deadLine | date: "short" }}
+          <p style="margin-left: auto">Group: {{ model.group }}</p>
+        </div>
+        <div fxLayout="row">
+          Status: {{ model.status }}
+          <p style="margin-left: auto">By: {{ model.assignedBy }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </div>
+  <mat-divider></mat-divider>
+  <ng-content></ng-content>
+  <mat-card-actions>
+    <button mat-button>Check</button>
+  </mat-card-actions>
+</mat-card>

@@ -1,0 +1,27 @@
+.exercise-card {
+  width: 400px;
+  max-width: 400px;
+  min-width: 400px;
+}
+
+.mat-card-content {
+  margin-bottom: 0.2em;
+}
+
+.header {
+  margin-bottom: 0.2rem;
+}
+
+.description {
+  margin-top: 1em;
+}
+
+.answer {
+  margin-top: 1.5rem;
+}
+
+.task-content {
+  margin-top: 2em;
+  margin-bottom: 0.2em;
+  color: #ffffffb3;
+}

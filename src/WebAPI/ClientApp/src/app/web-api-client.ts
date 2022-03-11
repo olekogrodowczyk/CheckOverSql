@@ -4581,6 +4581,7 @@ export class GetSolvingDto implements IGetSolvingDto {
   deadLine?: Date | undefined;
   status?: string | undefined;
   group?: string | undefined;
+  solution?: GetSolutionDto;
   exercise?: GetExerciseDto;
 
   constructor(data?: IGetSolvingDto) {
@@ -4608,6 +4609,9 @@ export class GetSolvingDto implements IGetSolvingDto {
         : <any>undefined;
       this.status = _data['Status'];
       this.group = _data['Group'];
+      this.solution = _data['Solution']
+        ? GetSolutionDto.fromJS(_data['Solution'])
+        : <any>undefined;
       this.exercise = _data['Exercise']
         ? GetExerciseDto.fromJS(_data['Exercise'])
         : <any>undefined;
@@ -4635,6 +4639,7 @@ export class GetSolvingDto implements IGetSolvingDto {
       : <any>undefined;
     data['Status'] = this.status;
     data['Group'] = this.group;
+    data['Solution'] = this.solution ? this.solution.toJSON() : <any>undefined;
     data['Exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
     return data;
   }
@@ -4649,6 +4654,7 @@ export interface IGetSolvingDto {
   deadLine?: Date | undefined;
   status?: string | undefined;
   group?: string | undefined;
+  solution?: GetSolutionDto;
   exercise?: GetExerciseDto;
 }
 
@@ -5437,7 +5443,7 @@ export interface FileParameter {
 }
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any };

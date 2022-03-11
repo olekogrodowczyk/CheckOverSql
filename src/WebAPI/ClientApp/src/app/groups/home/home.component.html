@@ -17,6 +17,12 @@
       >
         Tasks
       </a>
+      <a
+        mat-list-item
+        [routerLink]="['/groups', { outlets: { side: ['tasks-to-check'] } }]"
+      >
+        Tasks to check
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
