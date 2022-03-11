@@ -24,7 +24,10 @@ namespace WebAPI.IntegrationTests
         {
             using var scope = _scopeFactory.CreateScope();
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            await SeedDataHelper.SeedPermissionWithGroupRoles(context);
+            if (!(await context.GroupRolePermissions.AnyAsync()))
+            {
+                await SeedDataHelper.SeedPermissionWithGroupRoles(context);
+            }
             return await GetGroupRolesDict();
         }
 
