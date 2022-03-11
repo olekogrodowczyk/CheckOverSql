@@ -1,5 +1,6 @@
 ﻿using Application.Exercises.Queries;
 using Application.Mappings;
+using Application.Solutions.Queries;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -20,6 +21,7 @@ namespace Application.Groups.Queries
         public DateTime? DeadLine { get; set; }
         public string Status { get; set; }
         public string Group { get; set; }
+        public GetSolutionDto Solution { get; set; }
         public GetExerciseDto Exercise { get; set; }
 
         public void Mapping(Profile profile)
@@ -29,7 +31,8 @@ namespace Application.Groups.Queries
                 .ForMember(x => x.AssignedBy, y => y.MapFrom(z => z.Creator.FirstName + " " + z.Creator.LastName))
                 .ForMember(x => x.AssignedAt, y => y.MapFrom(z => z.Created))
                 .ForMember(x => x.Exercise, y => y.MapFrom(z => z.Exercise))
-                .ForMember(x => x.Group, opt => opt.MapFrom(y => y.Assignment.Group.Name));
+                .ForMember(x => x.Group, opt => opt.MapFrom(y => y.Assignment.Group.Name))
+                .ForMember(x => x.Solution, opt => opt.MapFrom(y => y.Solution));
         }
     }
 }
