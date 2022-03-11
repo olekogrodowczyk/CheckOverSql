@@ -14,6 +14,6 @@ namespace Application.Interfaces
         Task<bool> Compare(int solutionId, string query);
         Task<Comparison> CreateComparison(int solutionId, int exerciseId);
         Task<string> GetLatestSolutionQuerySentIntoExercise(int exerciseId);
-        Task HandlePossibleSolvingToDo(int exerciseId, Solution solution);
+
     }
 }

@@ -10,8 +10,8 @@ namespace Domain.Interfaces
     {
         Task<int> ExecuteQueryGetOneIntValue(string query, string connectionString);
         Task<List<string>> ExecuteQueryGetOneRow(string query, string connectionString);
-        Task<int> ExecuteQueryNoData(string query, string connectionString);
-        Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows=null);
+        Task<int> ExecuteQueryNoData(string query, string connectionString, int? numberOfRows = null);
+        Task<List<List<string>>> ExecuteQueryWithData(string query, string connectionString, int? numberOfRows = null);
         Task<List<string>> GetColumnNames(string query, string connectionString);
     }
 }
