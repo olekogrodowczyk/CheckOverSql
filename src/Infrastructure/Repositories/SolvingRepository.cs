@@ -80,34 +80,33 @@ namespace Infrastructure.Repositories
             return solvings;
         }
 
+        public async Task<IEnumerable<Solving>> GetAllSolvingsToCheckInGroup(int groupId)
+        {
+            return await _context.Solvings
+                .Include(x => x.Creator)
+                .Include(x => x.Exercise)
+                .ThenInclude(x => x.Database)
+                .Include(x => x.Assignment)
+                .ThenInclude(x => x.User)
+                .Include(x => x.Assignment)
+                .ThenInclude(x => x.Group)
+                .Include(x => x.Solution)
+                .Where(x => x.Assignment.GroupId == groupId &&
+                (x.Status == SolvingStatusEnum.Done || x.Status == SolvingStatusEnum.DoneButOverdue)).ToListAsync();
+        }
+
         public async Task<IEnumerable<Solving>> GetAllSolvingsToCheck(int userId, int? groupId)
         {
-            var userAssignments = _context.Assignments
-                .Where(x => groupId == null ? x.UserId == userId : x.UserId == userId && x.GroupId == groupId);
+            var userAssignments = await _context.Assignments
+                .Where(x => groupId == null ? x.UserId == userId : x.UserId == userId && x.GroupId == groupId).ToListAsync();
             var availableAssignments = new List<Assignment>();
+            var solvingsToCheck = new List<Solving>();
             foreach (var assignment in userAssignments)
             {
                 if (await _assignmentRepository.CheckIfAssignmentHasPermission(assignment.Id, PermissionEnum.CheckingExercises))
                 {
-                    availableAssignments.Add(assignment);
+                    solvingsToCheck.AddRange(await GetAllSolvingsToCheckInGroup(assignment.GroupId));
                 }
-            }
-            var solvingsToCheck = new List<Solving>();
-            foreach (var assignment in availableAssignments)
-            {
-                solvingsToCheck.AddRange(await _context.Assignments
-                    .Include(x => x.Solvings)
-                    .Where(x => x.Id == assignment.Id)
-                    .SelectMany(x => x.Solvings)
-                    .Include(x => x.Creator)
-                    .Include(x => x.Exercise)
-                    .ThenInclude(x => x.Database)
-                    .Include(x => x.Assignment)
-                    .ThenInclude(x => x.User)
-                    .Include(x => x.Assignment)
-                    .ThenInclude(x => x.Group)
-                    .Where(x => x.Status == SolvingStatusEnum.Done || x.Status == SolvingStatusEnum.DoneButOverdue)
-                    .ToListAsync());
             }
             return solvingsToCheck;
         }
