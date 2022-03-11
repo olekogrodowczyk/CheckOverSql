@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Application.Solvings.Queries.GetAllSolvingsToCheck;
 
 namespace WebAPI.Controllers
 {
@@ -49,6 +50,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings to do returned successfully"));
+        }
+
+        [HttpGet("GetAllToCheck")]
+        [ProducesResponseType(200, Type = typeof(Result<IEnumerable<GetSolvingDto>>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetAllSolvingsToCheck([FromQuery] GetAllSolvingsToCheckQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings to check returned successfully"));
         }
     }
 }
