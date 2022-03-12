@@ -4,6 +4,10 @@
   min-width: 400px;
 }
 
+.mat-card {
+  height: 305px;
+}
+
 .mat-card-content {
   margin-bottom: 0.2em;
 }
@@ -14,10 +18,12 @@
 
 .description {
   margin-top: 1em;
+  height: 40px;
 }
 
 .answer {
   margin-top: 1.5rem;
+  height: 40px;
 }
 
 .task-content {
