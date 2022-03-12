@@ -55,11 +55,8 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T> GetByIdAsync(int id)
         {
-            var query = _context.Set<T>().AsQueryable();
-            query = includeProperties?.Aggregate(query, (current, include) => current.Include(include));
-
             var result = await _context.Set<T>().FindAsync(id);
             return result;
         }
