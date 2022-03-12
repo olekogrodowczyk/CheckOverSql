@@ -22,6 +22,7 @@ using WebAPI;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 using Application.IntegrationTests.Helpers;
+using System.Security.Claims;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 
@@ -45,8 +46,14 @@ namespace WebAPI.IntegrationTests
                 {
                     services.Remove(currentUserServiceDescriptor);
                 }
+
+
+
                 services.AddTransient(provider =>
-                Mock.Of<IUserContextService>(s => s.GetUserId == SharedUtilityClass.CurrentUserId));
+                Mock.Of<IUserContextService>(s => s.UserClaimPrincipal == getClaims()
+                && s.GetUserId == SharedUtilityClass.CurrentUserId));
+
+
                 services.BuildServiceProvider();
 
                 var sp = services.BuildServiceProvider();
@@ -60,6 +67,14 @@ namespace WebAPI.IntegrationTests
                     SeedDataHelper.SeedDatabases(context, "NorthwindSimple").Wait();
                 }
             });
+        }
+
+        private ClaimsPrincipal getClaims()
+        {
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, SharedUtilityClass.CurrentUserId.ToString()));
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            return claimsPrincipal;
         }
 
 
