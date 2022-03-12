@@ -1,4 +1,6 @@
-﻿using Application.IntegrationTests.Helpers;
+﻿using Application.Common.Exceptions;
+using Application.Groups.Queries;
+using Application.IntegrationTests.Helpers;
 using Application.Solvings.Queries.GetAllSolvingsToCheck;
 using Domain.Entities;
 using Domain.Enums;
@@ -66,6 +68,21 @@ namespace Application.IntegrationTests.Solvings.Queries
 
             //Assert
             result.Should().HaveCount(expectedResult);
+        }
+
+        [Fact]
+        public async Task ForNonExistingGroup_ThrowsNotFoundException()
+        {
+            //Arrange
+            await ClearNotNecesseryData();
+            var usedId = await RunAsDefaultUserAsync();
+
+            //Act
+            Func<Task<IEnumerable<GetSolvingDto>>> func
+                = async () => await SendAsync(new GetAllSolvingsToCheckQuery() { GroupId = 99 });
+
+            //Assert
+            await func.Should().ThrowAsync<NotFoundException>();
         }
 
 
