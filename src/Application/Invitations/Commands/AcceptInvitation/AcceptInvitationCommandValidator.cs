@@ -27,7 +27,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
                 .NotEmpty().WithMessage("Invitation id cannot be empty")
                 .MustAsync(checkForLoggedUser).WithMessage("You cannot accept this invitation")
                 .MustAsync(checkStatus).WithMessage("The invitation isn't pending");
-            
+
         }
 
         private async Task<bool> checkForLoggedUser(int invitationId, CancellationToken cancellationToken)
@@ -35,17 +35,17 @@ namespace Application.Invitations.Commands.AcceptInvitation
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if(invitation is null) { throw new NotFoundException(nameof(Invitation), invitation.Id); }
+            if (invitation is null) { throw new NotFoundException(nameof(Invitation), invitationId); }
 
             if (invitation.ReceiverId != (int)loggedUserId) { return false; }
             return true;
-            
+
         }
 
         private async Task<bool> checkStatus(int invitationId, CancellationToken cancellationToken)
         {
             var invitation = await _invitationRepository.GetByIdAsync(invitationId);
-            if (invitation is null) { throw new NotFoundException(nameof(Invitation), invitation.Id); }
+            if (invitation is null) { throw new NotFoundException(nameof(Invitation), invitationId); }
 
             if (invitation.Status != InvitationStatusEnum.Sent) { return false; }
             return true;

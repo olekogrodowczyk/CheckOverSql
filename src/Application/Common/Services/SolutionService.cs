@@ -50,7 +50,7 @@ namespace Application.Services
         public async Task<bool> Compare(int exerciseId, string query)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
-            if (exercise is null) { throw new NotFoundException(nameof(exercise), exercise.Id); }
+            if (exercise is null) { throw new NotFoundException(nameof(exercise), exerciseId); }
             string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
             string databaseConnectionString = await _databaseRepository.GetDatabaseConnectionString(databaseName);
             bool comparisonResult = await _queryEvaluatorDriver.Evaluate(query, exercise.ValidAnswer, databaseConnectionString);
@@ -61,7 +61,9 @@ namespace Application.Services
         public async Task<Comparison> CreateComparison(int solutionId, int exerciseId)
         {
             var solution = await _solutionRepository.GetByIdAsync(solutionId);
+            if (solution is null) { throw new NotFoundException(nameof(solution), solutionId); }
             var exercise = await _exerciseRepository.GetByIdAsync(exerciseId);
+            if (solution is null) { throw new NotFoundException(nameof(exercise), exerciseId); }
             var comparisonResult = await Compare(exerciseId, solution.Query);
 
             Comparison comparison = new Comparison

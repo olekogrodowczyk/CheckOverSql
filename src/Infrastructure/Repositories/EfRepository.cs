@@ -61,7 +61,6 @@ namespace Infrastructure.Repositories
             query = includeProperties?.Aggregate(query, (current, include) => current.Include(include));
 
             var result = await _context.Set<T>().FindAsync(id);
-            if (result == null) { throw new NotFoundException($"Result is not found with id:{id} with given type: {typeof(T)}"); }
             return result;
         }
 

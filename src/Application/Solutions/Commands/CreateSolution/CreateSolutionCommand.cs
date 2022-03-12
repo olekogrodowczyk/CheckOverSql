@@ -59,7 +59,7 @@ namespace Application.Solutions.Commands.CreateSolution
         public async Task<GetComparisonDto> Handle(CreateSolutionCommand command, CancellationToken cancellationToken)
         {
             var exercise = await _exerciseRepository.GetByIdAsync(command.ExerciseId);
-            if (exercise.DatabaseId is null) { throw new NotFoundException("Defined exercises doesn't have an assigned database"); }
+            if (exercise.DatabaseId is null) { throw new NotFoundException(nameof(exercise), command.ExerciseId); }
 
             Solution solution = _mapper.Map<Solution>(command);
             solution.Creator = _userContextService.User;

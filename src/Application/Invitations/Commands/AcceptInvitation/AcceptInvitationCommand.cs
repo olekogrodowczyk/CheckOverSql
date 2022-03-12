@@ -25,7 +25,7 @@ namespace Application.Invitations.Commands.AcceptInvitation
         private readonly IUserContextService _userContextService;
 
         public AcceptInvitationQueryHandler(IInvitationRepository invitationRepository, IAssignmentRepository assignmentRepository
-            ,IUserContextService userContextService)
+            , IUserContextService userContextService)
         {
             _invitationRepository = invitationRepository;
             _assignmentRepository = assignmentRepository;
@@ -34,7 +34,8 @@ namespace Application.Invitations.Commands.AcceptInvitation
 
         public async Task<Unit> Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
         {
-            var invitation = await _invitationRepository.GetByIdAsync(request.InvitationId);            
+            var invitation = await _invitationRepository.GetByIdAsync(request.InvitationId);
+            if (invitation is null) { throw new NotFoundException(nameof(invitation), request.InvitationId); }
 
             await _assignmentRepository.AddAsync(new Assignment
             {
@@ -46,6 +47,6 @@ namespace Application.Invitations.Commands.AcceptInvitation
             invitation.Status = InvitationStatusEnum.Accepted;
             await _invitationRepository.UpdateAsync(invitation);
             return Unit.Value;
-        }  
+        }
     }
 }

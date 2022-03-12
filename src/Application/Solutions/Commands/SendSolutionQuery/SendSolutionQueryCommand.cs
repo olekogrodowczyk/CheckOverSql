@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Interfaces;
 using Domain.Interfaces;
 using MediatR;
 using System;
@@ -30,6 +31,7 @@ namespace Application.Solutions.Commands.SendSolutionQuery
         public async Task<IEnumerable<IEnumerable<string>>> Handle(SendSolutionQueryCommand command, CancellationToken cancellationToken)
         {
             var solution = await _solutionRepository.GetByIdAsync(command.SolutionId);
+            if (solution is null) { throw new NotFoundException(nameof(solution), command.SolutionId); }
             string databaseName = await _solutionRepository.GetDatabaseName(command.SolutionId);
             var result = await _databaseService.SendQueryWithData(solution.Query, databaseName);
             return result;
