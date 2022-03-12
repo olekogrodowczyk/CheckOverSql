@@ -1,5 +1,6 @@
 ﻿using Application.Authorization;
 using Application.Common.Authorization;
+using Application.Common.Exceptions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -29,10 +30,11 @@ namespace Application.Groups.Queries.GetUserSolvingById
         private readonly IAssignmentRepository _assignmentRepository;
         private readonly IMapper _mapper;
         private readonly ISolutionService _solutionService;
+        private readonly IGroupRepository _groupRepository;
 
         public GetUserSolvingByIdQueryHandler(ISolvingRepository solvingRepository, IAuthorizationService authorizationService
-            ,IUserContextService userContextService, IAssignmentRepository assignmentRepository, IMapper mapper
-            ,ISolutionService solutionService)
+            , IUserContextService userContextService, IAssignmentRepository assignmentRepository, IMapper mapper
+            , ISolutionService solutionService, IGroupRepository groupRepository)
         {
             _solvingRepository = solvingRepository;
             _authorizationService = authorizationService;
@@ -40,6 +42,7 @@ namespace Application.Groups.Queries.GetUserSolvingById
             _assignmentRepository = assignmentRepository;
             _mapper = mapper;
             _solutionService = solutionService;
+            _groupRepository = groupRepository;
         }
 
         public async Task<GetSolvingDto> Handle(GetUserSolvingByIdQuery request, CancellationToken cancellationToken)
@@ -52,7 +55,7 @@ namespace Application.Groups.Queries.GetUserSolvingById
             if (solving.Exercise is not null)
             {
                 solvingDto.Exercise.Passed = await _solutionService.CheckIfUserPassedExercise(solvingDto.Exercise.Id);
-                solvingDto.Exercise.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(solvingDto.Exercise.Id); 
+                solvingDto.Exercise.LastAnswer = await _solutionService.GetLatestSolutionQuerySentIntoExercise(solvingDto.Exercise.Id);
             }
             return solvingDto;
         }
@@ -63,10 +66,12 @@ namespace Application.Groups.Queries.GetUserSolvingById
                             (_userContextService.UserClaimPrincipal, solving, new GetSolvingByIdRequirement());
             if (!authorizationGetSolvingByIdResult.Succeeded)
             {
-                var loggedUserAssignment =
-                await _assignmentRepository.GetUserAssignmentBasedOnOtherAssignment((int)loggedUserId, (int)solving.AssignmentId);
-                var authorizationPermissionRequirement = await _authorizationService.AuthorizeAsync
-                (_userContextService.UserClaimPrincipal, loggedUserAssignment, new PermissionRequirement(PermissionEnum.CheckingExercises));
+                int groupId = (await _solvingRepository
+                .SingleOrDefaultAsync(x => x.Id == solving.Id, x => x.Assignment)).Assignment.GroupId;
+                var group = await _groupRepository.GetByIdAsync(groupId);
+                var authorizationPermissionRequirementResult = await _authorizationService.AuthorizeAsync
+                (_userContextService.UserClaimPrincipal, group, new PermissionRequirement(PermissionEnum.CheckingExercises));
+                if (!authorizationPermissionRequirementResult.Succeeded) { throw new ForbidException(PermissionEnum.CheckingExercises); }
             }
         }
     }

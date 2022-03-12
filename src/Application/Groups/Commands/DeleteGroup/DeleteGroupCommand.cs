@@ -28,7 +28,7 @@ namespace Application.Groups.Commands.DeleteGroup
         private readonly IGroupRepository _groupRepository;
 
         public DeleteGroupCommandHandler(IAssignmentRepository assignmentRepository, IUserContextService userContextService
-            ,IAuthorizationService authorizationService, IGroupRepository groupRepository)
+            , IAuthorizationService authorizationService, IGroupRepository groupRepository)
         {
             _assignmentRepository = assignmentRepository;
             _userContextService = userContextService;
@@ -40,13 +40,14 @@ namespace Application.Groups.Commands.DeleteGroup
         {
             Assignment userAssignment = await _assignmentRepository
                 .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == command.GroupId);
-            if (userAssignment == null) { throw new ForbidException("You're not in the group", true); }
 
-            await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
-                , userAssignment, new PermissionRequirement(PermissionEnum.DeletingGroup));
+            var group = await _groupRepository.GetByIdAsync(command.GroupId);
+            if (group is null) { throw new NotFoundException(nameof(group), command.GroupId); }
 
-            //Assignments are needed to be included first
-            await _assignmentRepository.GetAllAsync(x => x.Group);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
+                , group, new PermissionRequirement(PermissionEnum.DeletingGroup));
+            if (!authorizationResult.Succeeded) { throw new ForbidException(PermissionEnum.DeletingGroup); }
+
             await _groupRepository.DeleteAsync(command.GroupId);
             return Unit.Value;
         }

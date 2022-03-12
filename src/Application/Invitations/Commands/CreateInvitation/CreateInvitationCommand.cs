@@ -52,8 +52,9 @@ namespace Application.Invitations.Commands.CreateInvitation
             var groupRole = await getGroupRole(command.RoleName);
             var group = await getGroup(command.GroupId);
             var assignment = await getAssignment(command.GroupId);
-            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, group
                 , new PermissionRequirement(PermissionEnum.SendingInvitations));
+            if (!authorizationResult.Succeeded) { throw new ForbidException(PermissionEnum.SendingInvitations); }
 
             var invitation = new Invitation
             {

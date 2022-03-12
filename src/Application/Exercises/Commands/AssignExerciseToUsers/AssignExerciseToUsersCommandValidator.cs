@@ -1,4 +1,5 @@
 ﻿using Application.Authorization;
+using Application.Common.Exceptions;
 using Application.Dto.AssignExerciseToUsersTo;
 using Application.Interfaces;
 using Domain.Enums;
@@ -22,7 +23,7 @@ namespace Application.Dto.AssignExerciseToUsers
         private readonly IUserContextService _userContextService;
 
         public AssignExerciseToUsersCommandValidator(IGroupRepository groupRepository, IAssignmentRepository assignmentRepository
-            ,IAuthorizationService authorizationService, IUserContextService userContextService)
+            , IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _groupRepository = groupRepository;
             _assignmentRepository = assignmentRepository;
@@ -36,26 +37,24 @@ namespace Application.Dto.AssignExerciseToUsers
             RuleFor(x => x.GroupId)
                 .MustAsync(CheckIfUserCanAssignExerciseToUsers)
                 .WithMessage("You don't belong to the group or don't have permission");
-            
+
         }
 
         public async Task<bool> CheckIfUserCanAssignExerciseToUsers(int groupId, CancellationToken cancellationToken)
         {
             int? loggedUserId = _userContextService.GetUserId;
-            if(loggedUserId is null) { throw new UnauthorizedAccessException(); }
-            bool groupExists = await _groupRepository.AnyAsync(x => true);
-            if (!groupExists) { return false; }
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
 
-            var assignment = await _assignmentRepository
-                .SingleOrDefaultAsync(x => x.UserId == (int)loggedUserId && x.GroupId == groupId);
-            if (assignment == null) { return false; }
+            var group = await _groupRepository.GetByIdAsync(groupId);
+            if (group is null) { throw new NotFoundException(nameof(group), groupId); }
 
-            await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal, assignment
-                , new PermissionRequirement(PermissionEnum.AssigningExercises));
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal,
+                group, new PermissionRequirement(PermissionEnum.AssigningExercises));
+            if (!authorizationResult.Succeeded) { return false; }
 
             return true;
         }
     }
 
-    
+
 }

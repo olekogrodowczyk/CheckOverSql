@@ -30,7 +30,7 @@ namespace Application.Groups.Queries.GetAllAssignmentsInGroup
         private readonly IMapper _mapper;
 
         public GetAllAssignmentsInGroupQueryHandler(IAssignmentRepository assignmentRepository, IUserContextService userContextService
-            ,IAuthorizationService authorizationService, IGroupRepository groupRepository, IMapper mapper)
+            , IAuthorizationService authorizationService, IGroupRepository groupRepository, IMapper mapper)
         {
             _assignmentRepository = assignmentRepository;
             _userContextService = userContextService;
@@ -45,10 +45,14 @@ namespace Application.Groups.Queries.GetAllAssignmentsInGroup
                 .SingleOrDefaultAsync(x => x.UserId == _userContextService.GetUserId && x.GroupId == request.GroupId);
             if (userAssignment == null) { throw new ForbidException("You're not in the group", true); }
 
-            await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
-                , userAssignment, new PermissionRequirement(PermissionEnum.GettingAssignments));
+            var group = await _groupRepository.GetByIdAsync(request.GroupId);
+            if (group is null) { throw new NotFoundException(nameof(group), request.GroupId); }
 
-            var assignments = await _assignmentRepository.GetWhereAsync(x => x.GroupId == request.GroupId, x => x.User, x=>x.GroupRole);
+            var authorizationResult = await _authorizationService.AuthorizeAsync(_userContextService.UserClaimPrincipal
+                , group, new PermissionRequirement(PermissionEnum.GettingAssignments));
+            if (!authorizationResult.Succeeded) { throw new ForbidException(PermissionEnum.GettingAssignments); }
+
+            var assignments = await _assignmentRepository.GetWhereAsync(x => x.GroupId == request.GroupId, x => x.User, x => x.GroupRole);
             var assignmentDtos = _mapper.Map<IEnumerable<GetAssignmentDto>>(assignments);
             return assignmentDtos;
         }
