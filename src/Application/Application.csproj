@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Databases\Commands\" />
-    <Folder Include="Solvings\Commands\" />
   </ItemGroup>
 
 </Project>
