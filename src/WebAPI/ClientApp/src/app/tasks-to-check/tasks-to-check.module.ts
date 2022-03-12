@@ -10,15 +10,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SharedModule } from '../shared/shared.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CheckTaskDialogComponent } from './check-task-dialog/check-task-dialog.component';
 
 @NgModule({
   declarations: [
+    CheckTaskDialogComponent,
     TaskToCheckListComponent,
     TaskToCheckCardComponent,
     HomeComponent,
   ],
   imports: [
     CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatButtonModule,
     MatCardModule,
     ExercisesModule,
@@ -26,6 +35,9 @@ import { SharedModule } from '../shared/shared.module';
     FlexLayoutModule,
     SharedModule,
     MatTabsModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatDialogModule,
   ],
 })
 export class TasksToCheckModule {}

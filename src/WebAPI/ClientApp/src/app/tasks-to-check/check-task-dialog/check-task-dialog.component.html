@@ -1,0 +1,16 @@
+<h1>{{ data.title }}</h1>
+<p>{{ data.description }}</p>
+<br />
+<p>{{ data.answer }}</p>
+<br />
+<form fxLayout="column" [formGroup]="checkDialogForm" (ngSubmit)="onSubmit()">
+  <mat-form-field color="accent" appearance="fill">
+    <mat-label>Points</mat-label>
+    <input formControlName="points" matInput />
+  </mat-form-field>
+  <mat-form-field color="accent" appearance="fill">
+    <mat-label>Remarks</mat-label>
+    <textarea rows="5" formControlName="remarks" matInput></textarea>
+  </mat-form-field>
+  <button type="submit" mat-flat-button color="primary">Send</button>
+</form>
