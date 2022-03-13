@@ -78,6 +78,34 @@ namespace Application.IntegrationTests.Solvings.Commands
             await func.Should().ThrowAsync<NotFoundException>();
         }
 
+        [Fact]
+        public async Task ForNegativePoints_ThrowsNotFoundException()
+        {
+            //Arrange
+            Solving solving = await arrangeData("Checker");
+
+            //Act
+            Func<Task<int>> func = async () => await SendAsync
+                (new CheckSolvingCommand() { Points = -2, Remarks = "Nice!", SolvingId = solving.Id });
+
+            //Assert
+            await func.Should().ThrowAsync<ValidationException>();
+        }
+
+        [Fact]
+        public async Task ForPointsLargerThanMaxPoints_ThrowsNotFoundException()
+        {
+            //Arrange
+            Solving solving = await arrangeData("Checker");
+
+            //Act
+            Func<Task<int>> func = async () => await SendAsync
+                (new CheckSolvingCommand() { Points = 101, Remarks = "Nice!", SolvingId = solving.Id });
+
+            //Assert
+            await func.Should().ThrowAsync<ValidationException>();
+        }
+
         private async Task<Solving> arrangeData(string roleName)
         {
             await ClearNotNecesseryData();
@@ -93,6 +121,7 @@ namespace Application.IntegrationTests.Solvings.Commands
                 CreatorId = userId,
                 AssignmentId = assignment.Id,
                 ExerciseId = exercise.Id,
+                MaxPoints = 100,
             });
             return solving;
         }
