@@ -60,6 +60,7 @@ export class TaskToCheckCardComponent implements OnInit {
         title: this.model.exercise?.title,
         description: this.model.exercise?.description,
         answer: this.model.solution?.query,
+        maxPoints: this.model.maxPoints,
       },
     });
   }

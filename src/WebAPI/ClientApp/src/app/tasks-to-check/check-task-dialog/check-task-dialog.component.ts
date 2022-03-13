@@ -13,13 +13,19 @@ export class CheckTaskDialogComponent implements OnInit {
     points: new FormControl(0, [
       Validators.required,
       Validators.pattern('^[0-9]*$'),
+      Validators.max(this.data.maxPoints),
     ]),
   });
 
   constructor(
     private dialogRef: MatDialogRef<CheckTaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { title: string; description: string; answer: string }
+    public data: {
+      title: string;
+      description: string;
+      answer: string;
+      maxPoints: number;
+    }
   ) {}
 
   ngOnInit(): void {}

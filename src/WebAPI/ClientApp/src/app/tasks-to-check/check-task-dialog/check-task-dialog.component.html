@@ -1,7 +1,12 @@
 <h1>{{ data.title }}</h1>
+<h2>Exercise:</h2>
 <p>{{ data.description }}</p>
 <br />
+<h2>Answer:</h2>
 <p>{{ data.answer }}</p>
+<br />
+<h2>Max Points:</h2>
+<p>{{ data.maxPoints }}</p>
 <br />
 <form fxLayout="column" [formGroup]="checkDialogForm" (ngSubmit)="onSubmit()">
   <mat-form-field color="accent" appearance="fill">
