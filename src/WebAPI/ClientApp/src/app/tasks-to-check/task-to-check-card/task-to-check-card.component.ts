@@ -61,6 +61,7 @@ export class TaskToCheckCardComponent implements OnInit {
         description: this.model.exercise?.description,
         answer: this.model.solution?.query,
         maxPoints: this.model.maxPoints,
+        solvingId: this.model.id,
       },
     });
   }

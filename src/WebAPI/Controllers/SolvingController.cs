@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Application.Solvings.Queries.GetAllSolvingsToCheck;
+using Application.Solvings.Commands.CheckExercise;
 
 namespace WebAPI.Controllers
 {
@@ -59,6 +60,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<IEnumerable<GetSolvingDto>>(result, "All solvings to check returned successfully"));
+        }
+
+        [HttpPost("CheckSolving")]
+        [ProducesResponseType(200, Type = typeof(Result<int>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> CheckSolving([FromBody] CheckSolvingCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(new Result<int>(result, "Solving checked successfully"));
         }
     }
 }
