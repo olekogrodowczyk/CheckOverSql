@@ -16,7 +16,8 @@ namespace Application.Dto.AssignExerciseToUsersTo
     {
         public int ExerciseId { get; set; }
         public int GroupId { get; set; }
-        public DateTime DeadLine { get; set; }    
+        public DateTime DeadLine { get; set; }
+        public int MaxPoints { get; set; }
     }
 
     public class AssignExerciseToUsersCommandHandler : IRequestHandler<AssignExerciseToUsersCommand, IEnumerable<int>>
@@ -42,14 +43,15 @@ namespace Application.Dto.AssignExerciseToUsersTo
             var solvingsIds = new List<int>();
             foreach (Assignment assignment in assignmentsChosenToGetExercise)
             {
-                if(!(await checkIfAssignmentCanDoExercise(assignment))) { continue; }
+                if (!(await checkIfAssignmentCanDoExercise(assignment))) { continue; }
                 var solving = new Solving
                 {
                     ExerciseId = request.ExerciseId,
                     Status = SolvingStatusEnum.ToDo,
                     DeadLine = request.DeadLine,
                     AssignmentId = assignment.Id,
-                    CreatorId = (int)_userContextService.GetUserId
+                    CreatorId = (int)_userContextService.GetUserId,
+                    MaxPoints = request.MaxPoints,
                 };
                 await _solvingRepository.AddAsync(solving);
                 solvingsIds.Add(solving.Id);

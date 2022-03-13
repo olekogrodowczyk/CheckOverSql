@@ -3468,6 +3468,7 @@ export class AssignExerciseToUsersCommand
   exerciseId?: number;
   groupId?: number;
   deadLine?: Date;
+  maxPoints?: number;
 
   constructor(data?: IAssignExerciseToUsersCommand) {
     if (data) {
@@ -3485,6 +3486,7 @@ export class AssignExerciseToUsersCommand
       this.deadLine = _data['DeadLine']
         ? new Date(_data['DeadLine'].toString())
         : <any>undefined;
+      this.maxPoints = _data['MaxPoints'];
     }
   }
 
@@ -3502,6 +3504,7 @@ export class AssignExerciseToUsersCommand
     data['DeadLine'] = this.deadLine
       ? this.deadLine.toISOString()
       : <any>undefined;
+    data['MaxPoints'] = this.maxPoints;
     return data;
   }
 }
@@ -3510,6 +3513,7 @@ export interface IAssignExerciseToUsersCommand {
   exerciseId?: number;
   groupId?: number;
   deadLine?: Date;
+  maxPoints?: number;
 }
 
 export class BooleanResult implements IBooleanResult {

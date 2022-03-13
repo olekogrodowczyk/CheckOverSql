@@ -13,9 +13,13 @@ import {
   styleUrls: ['./assign-dialog.component.css'],
 })
 export class AssignDialogComponent implements OnInit {
-  deadLineForm = new FormGroup({
+  assignExerciseForm = new FormGroup({
     date: new FormControl(new Date(), [Validators.required]),
     time: new FormControl(new String(), [Validators.required]),
+    maxPoints: new FormControl(100, [
+      Validators.required,
+      Validators.pattern('^[0-9]*$'),
+    ]),
   });
   constructor(
     private dialogRef: MatDialogRef<AssignDialogComponent>,
@@ -37,6 +41,7 @@ export class AssignDialogComponent implements OnInit {
         exerciseId: this.data.exerciseId,
         groupId: this.data.groupId,
         deadLine: deadLine,
+        maxPoints: this.assignExerciseForm.get('maxPoints')?.value,
       })
       .subscribe({
         next: (response) => {
@@ -52,7 +57,7 @@ export class AssignDialogComponent implements OnInit {
   }
 
   submit() {
-    if (this.deadLineForm.invalid) {
+    if (this.assignExerciseForm.invalid) {
       return;
     }
     let deadLine = this.injectTimeIntoDate();
@@ -60,8 +65,8 @@ export class AssignDialogComponent implements OnInit {
   }
 
   injectTimeIntoDate() {
-    let date = this.deadLineForm.get('date')?.value;
-    let time = this.deadLineForm.get('time')?.value;
+    let date = this.assignExerciseForm.get('date')?.value;
+    let time = this.assignExerciseForm.get('time')?.value;
     date.setHours(time.slice(0, 2));
     date.setMinutes(time.slice(3, 5));
     date.setSeconds(0);
