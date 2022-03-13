@@ -4585,6 +4585,7 @@ export class GetSolvingDto implements IGetSolvingDto {
   deadLine?: Date | undefined;
   status?: string | undefined;
   group?: string | undefined;
+  maxPoints?: number;
   solution?: GetSolutionDto;
   exercise?: GetExerciseDto;
 
@@ -4613,6 +4614,7 @@ export class GetSolvingDto implements IGetSolvingDto {
         : <any>undefined;
       this.status = _data['Status'];
       this.group = _data['Group'];
+      this.maxPoints = _data['MaxPoints'];
       this.solution = _data['Solution']
         ? GetSolutionDto.fromJS(_data['Solution'])
         : <any>undefined;
@@ -4643,6 +4645,7 @@ export class GetSolvingDto implements IGetSolvingDto {
       : <any>undefined;
     data['Status'] = this.status;
     data['Group'] = this.group;
+    data['MaxPoints'] = this.maxPoints;
     data['Solution'] = this.solution ? this.solution.toJSON() : <any>undefined;
     data['Exercise'] = this.exercise ? this.exercise.toJSON() : <any>undefined;
     return data;
@@ -4658,6 +4661,7 @@ export interface IGetSolvingDto {
   deadLine?: Date | undefined;
   status?: string | undefined;
   group?: string | undefined;
+  maxPoints?: number;
   solution?: GetSolutionDto;
   exercise?: GetExerciseDto;
 }

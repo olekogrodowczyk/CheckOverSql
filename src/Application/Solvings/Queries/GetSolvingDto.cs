@@ -21,6 +21,7 @@ namespace Application.Groups.Queries
         public DateTime? DeadLine { get; set; }
         public string Status { get; set; }
         public string Group { get; set; }
+        public int MaxPoints { get; set; }
         public GetSolutionDto Solution { get; set; }
         public GetExerciseDto Exercise { get; set; }
 
