@@ -10,7 +10,7 @@ import { DatabaseClient, QueryDto } from 'src/app/web-api-client';
 })
 export class QueryListComponent implements OnInit {
   queryModels!: QueryDto[];
-  pageSize = 9;
+  pageSize = 6;
   totalCount!: number;
 
   constructor(
