@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Application.Common.QueryEvaluation
@@ -42,6 +43,12 @@ namespace Application.Common.QueryEvaluation
         public QueryBuilder AddCount()
         {
             _query = $"SELECT COUNT(*) AS COUNT FROM ({_query}) QUERY";
+            return this;
+        }
+
+        public QueryBuilder HandleSpaces()
+        {
+            _query = Regex.Replace(_query, @"\s", " ");
             return this;
         }
 

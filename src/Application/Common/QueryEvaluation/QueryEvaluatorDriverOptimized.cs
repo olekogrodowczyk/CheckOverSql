@@ -24,10 +24,18 @@ namespace Application.Common.QueryEvaluation
         public async Task<bool> Evaluate(string query1, string query2, string connectionString)
         {
             this.connectionString = connectionString;
+            if (compareBodies(query1, query2)) { return true; }
             if (!(await compareColumnNames(query1, query2))) { return false; }
-            if (!(await compareQueriesCount(query1, query2))){ return false; }
+            if (!(await compareQueriesCount(query1, query2))) { return false; }
             if (!(await compareFirstMiddleLastRows(query1, query2))) { return false; }
             return true;
+        }
+
+        private bool compareBodies(string query1, string query2)
+        {
+            QueryBuilder qb = new QueryBuilder(query1);
+            QueryBuilder qb2 = new QueryBuilder(query2);
+            return qb.HandleSpaces().GetResult().Equals(qb2.HandleSpaces().GetResult());
         }
 
         private async Task<bool> compareColumnNames(string query1, string query2)
@@ -38,7 +46,7 @@ namespace Application.Common.QueryEvaluation
 
         private async Task<bool> compareFirstMiddleLastRows(string query1, string query2)
         {
-            if(query1Count <1 || query2Count < 1) { return false; }
+            if (query1Count < 1 || query2Count < 1) { return false; }
             var matrix1 = await _queryEvaluator.GetFirstMiddleLastRows(query1, query1Count, connectionString);
             var matrix2 = await _queryEvaluator.GetFirstMiddleLastRows(query2, query2Count, connectionString);
             return await _dataComparerService.compareValues(matrix1, matrix2);
@@ -48,9 +56,9 @@ namespace Application.Common.QueryEvaluation
         {
             query1Count = await _queryEvaluator.GetCountOfQuery(query1, connectionString);
             query2Count = await _queryEvaluator.GetCountOfQuery(query2, connectionString);
-            if(query1Count != query2Count) { return false; }
+            if (query1Count != query2Count) { return false; }
             int intersectedQueryCount = await _queryEvaluator.GetIntersectQueryCount(query1, query2, connectionString);
-            if(query1Count != intersectedQueryCount) { return false; }
+            if (query1Count != intersectedQueryCount) { return false; }
             return true;
         }
 
