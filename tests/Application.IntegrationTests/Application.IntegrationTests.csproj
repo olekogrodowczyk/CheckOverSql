@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\AccountControllerTests.cs" />
+    <Compile Remove="Controllers\GroupControllerTests.cs" />
+    <Compile Remove="Controllers\InvitationControllerTests.cs" />
+    <Compile Remove="Controllers\SolutionControllerTests.cs" />
+    <Compile Remove="Controllers\SolvingControllerTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.11" />
@@ -29,6 +37,10 @@
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\WebAPI\WebAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
   
