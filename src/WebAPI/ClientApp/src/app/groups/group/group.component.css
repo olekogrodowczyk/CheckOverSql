@@ -1,9 +1,7 @@
 .assignments-container {
   padding: 1.5rem;
-}
-
-.border {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #424242;
+  border: solid 1px rgba(255, 255, 255, 0.12);
 }
 
 .mat-list-base {
