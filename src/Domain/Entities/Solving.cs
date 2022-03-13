@@ -17,6 +17,7 @@ namespace Domain.Entities
         public int CreatorId { get; set; }
         public virtual User Creator { get; set; }
         public SolvingStatusEnum Status { get; set; }
+        public int MaxPoints { get; set; }
         public DateTime? SentAt { get; set; }
         public DateTime? DeadLine { get; set; }
         public virtual Checking Checking { get; set; }
