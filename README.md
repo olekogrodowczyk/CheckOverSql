@@ -1,3 +1,5 @@
+<img align="center" width="150" height="81" src="https://user-images.githubusercontent.com/15310742/158210434-25cd8e54-1903-449e-a57b-611929ba405b.png" />
+
 # CheckOverSql
 CheckOverSql is an application created in purpose to learn SQL by solving exercises checked automatically by an algorithm.
 The goal of the project is to make training SQL easier and more fun by the exercises and testing queries.
@@ -60,6 +62,8 @@ The project is also extended by the possibility to create groups and assign task
 - Changing roles of users
 - Changing a name and a picture of a group
 - Add more control of assigning exercises like: Not needed to check by a person (Only for the algorithm) and max points for that automatically
+- Add badges into links to show pending tasks, invitations etc.
+- Implement notification system via WebSockets.
 
 ## How the application is secured against unallowed queries?
 Checking the query on C# level for keywords like ```GRANT``` or ```INSERT``` can be bypassed easily and is not secured properly.
@@ -105,10 +109,22 @@ The next step is to compare the count of rows of two queries.
 The example of this was shown in a QueryBuilder section.
 ### Fourth phase
 Probably the most important phase is where the algorithm compares values. In this case the key is an Intersect keyword in an SQL.
-Intersect will show you how many rows are common among two queries. In practice it is checking the count of rows of the first query and second query as it in third phase.
-Comparing them, if they're not equal, return false, if they're equal, the algorithm checks the the count of the intersection of them. There is no need for getting all the common 
-data of the two queries. We only need the count of rows and compare it with either the amount of rows of the first or second query. If they're not equal, then return false what means
-query is invalid.
+Intersect will show you how many rows are common among two queries. <br /> In practice it is checking the count of rows of the first query and second query as it in third phase.
+Comparing them, if they're not equal, return false, if they're equal, the algorithm checks the the count of the intersection of them. <br /> There is no need for getting all the common 
+data of the two queries. We only need the count of rows and compare it with either the amount of rows of the first or second query. If they're not equal, then return false what means that query is invalid.
+There is the function which is responsible for that:
+```
+private async Task<bool> compareQueriesCount(string query1, string query2)
+{
+    query1Count = await _queryEvaluator.GetCountOfQuery(query1, connectionString);
+    query2Count = await _queryEvaluator.GetCountOfQuery(query2, connectionString);
+    if (query1Count != query2Count) { return false; }
+    
+    int intersectedQueryCount = await _queryEvaluator.GetIntersectQueryCount(query1, query2, connectionString);
+    if (query1Count != intersectedQueryCount) { return false; }
+    return true;
+}
+```
 ### Fifth phase (optional)
 This step is optional and that comes from getting only three rows from the database: first, middle and last and comparing them. It can be rather useful when checking up
 the order by clauses.
