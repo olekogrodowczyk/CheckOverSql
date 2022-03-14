@@ -74,7 +74,7 @@ namespace Application.Common.QueryEvaluation
 
         public QueryBuilder CheckOrderBy()
         {
-            if (_query.ToLower().Contains("order by"))
+            if (_query.Contains("order by", StringComparison.OrdinalIgnoreCase))
             {
                 _query = $"{_query} OFFSET 0 ROW";
             }
