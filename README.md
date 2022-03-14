@@ -4,8 +4,6 @@ The goal of the project is to make training SQL easier and more fun by the exerc
 The project is also extended by the possibility to create groups and assign tasks for other users. This solution includes also permission-based authorization.<br /><br />
 *Still in development*
 
-<br />
-
 ## Technologies
 - ASP.NET Core 5
 - Entity Framework Core 5
