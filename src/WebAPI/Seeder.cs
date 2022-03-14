@@ -24,6 +24,15 @@ namespace WebAPI
         {
             if (_context.Database.CanConnect())
             {
+                if (_context.Database.IsSqlServer())
+                {
+                    var pendingMigrations = _context.Database.GetPendingMigrations();
+                    if (pendingMigrations != null && pendingMigrations.Any())
+                    {
+                        _context.Database.Migrate();
+                    }
+                }
+
                 if (!_context.Roles.Any())
                 {
                     var roles = getRoles();
