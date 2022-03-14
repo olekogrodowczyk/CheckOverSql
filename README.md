@@ -27,7 +27,7 @@ The project is also extended by the possibility to create groups and assign task
 7. Create a new database in SQL Server Management studio and execute the tables creation queries there
 8. Create a new login in your SQL Server instance 
 9. Click twice at the login, click User Mapping and add the login into your NorthwindSimple database with db_readonly role
-10. Insert the database and readonly user data into the Databases table in the application database  
+10. In src/WebAPI in Seeder.cs in function ```getDatabases()``` specify your NorthwindSimple database data
 11. With Command Prompt navigate into src/WebAPI/ClientApp and run ```npm install```
 12. Navigate to src/WebAPI/ClientApp and run ```npm start``` to launch an Angular app.
 13. Navigate to src/WebAPI and run dotnet run to launch the ASP.NET Core app.
