@@ -4,6 +4,7 @@ using Domain.Entities;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,17 +47,43 @@ namespace Application.IntegrationTests.Solutions.Commands
                 IsPrivate = false,
                 ValidAnswer = queryTest.ValidQuery
             });
-            CreateSolutionCommand command = new CreateSolutionCommand()
+
+            //Act
+            var result = await SendAsync(new CreateSolutionCommand()
             {
                 ExerciseId = exercise.Id,
                 Query = queryTest.SolutionQuery
-            };
-
-            //Act
-            var result = await SendAsync(command);
+            });
 
             //Assert
             result.Result.Should().Be(queryTest.Result);
+        }
+
+
+        [Fact]
+        public async Task ForUnallowedQuery_ThrowsSqlException()
+        {
+            //Arrange
+            int userId = await RunAsDefaultUserAsync();
+            var exercise = await AddAsync(new Exercise()
+            {
+                DatabaseId = northwindSimpleDbId,
+                Title = "Test",
+                Description = "Test description",
+                CreatorId = userId,
+                IsPrivate = false,
+                ValidAnswer = "SELECT * FROM Orders;"
+            });
+
+            //Act
+            Func<Task> func = () => SendAsync(new CreateSolutionCommand()
+            {
+                ExerciseId = exercise.Id,
+                Query = "INSERT INTO OrderItems VALUES (1, 11, 14.0, 10)",
+            });
+
+            //Assert
+            await func.Should().ThrowAsync<SqlException>();
         }
 
         public static IEnumerable<object[]> GetSampleNorthwindSimpleQueries()
@@ -153,7 +180,7 @@ namespace Application.IntegrationTests.Solutions.Commands
                     DatabaseId = northwindSimpleDbId,
                     ValidQuery = @"SELECT OrderId, COUNT(UnitPrice) FROM OrderItems
                     GROUP BY OrderId;",
-                    SolutionQuery = @"SELECT ProductId, COUNT(UnitPrice) FROM OrderItems
+                    SolutionQuery = @"SELECT ProductId, COUNT(UnitPrice) COUNT FROM OrderItems
                     GROUP BY ProductId;",
                     Result = false
                 },
