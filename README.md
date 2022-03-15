@@ -9,6 +9,7 @@ The project is also extended by the possibility to create groups and assign task
 ## Technologies
 - ASP.NET Core 5
 - Entity Framework Core 5
+- SQL Server
 - Angular 13
 - Angular Material 13
 - MediatR
