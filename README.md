@@ -27,10 +27,11 @@ The project is also extended by the possibility to create groups and assign task
 7. Create a new database in SQL Server Management studio and execute the tables creation queries there
 8. Create a new login in your SQL Server instance 
 9. Click twice at the login, click User Mapping and add the login into your NorthwindSimple database with db_readonly role
-10. Insert the database and readonly user data into the Databases table in the application database  
-11. With Command Prompt navigate into src/WebAPI/ClientApp and run ```npm install```
-12. Navigate to src/WebAPI/ClientApp and run ```npm start``` to launch an Angular app.
-13. Navigate to src/WebAPI and run dotnet run to launch the ASP.NET Core app.
+10. Clone the project
+11. In src/WebAPI in Seeder.cs in function ```getDatabases()``` specify your NorthwindSimple database data
+12. With Command Prompt navigate into src/WebAPI/ClientApp and run ```npm install```
+13. Navigate to src/WebAPI/ClientApp and run ```npm start``` to launch an Angular app.
+14. Navigate to src/WebAPI and run ```dotnet run``` to launch the ASP.NET Core app.
 
 ## Features
 ### Queries
@@ -77,9 +78,9 @@ with this exercise so the assigned task will be solved immediately.
 
 ## How the checking algorithm works?
 In the project there are two implementations for the algorithm. You can just change a one line and implementation will be different.
-QueryEvaluatorDriverNaive.cs file contains a naive implementation, this way of checking exercises is slow and not recommended. However, it may be useful in checking 
+```QueryEvaluatorDriverNaive.cs``` file contains a naive implementation, this way of checking exercises is slow and not recommended. However, it may be useful in checking 
 the small amount of rows because of its accuracy.
-QueryEvaluatorDriverOptimized.cs file contains an optimized implementation of checking two queries. in contrast to naive approach it works on a database level, 
+```QueryEvaluatorDriverOptimized.cs``` file contains an optimized implementation of checking two queries. in contrast to naive approach it works on a database level, 
 not the application one. <br />
 ### QueryBuilder
 Firstly, the query is properly built by QueryBuilder designed as a builder design pattern. Mostly it is wrapped into a subquery, for example function there:
