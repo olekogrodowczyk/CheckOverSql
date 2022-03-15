@@ -131,7 +131,7 @@ This step is optional and that comes from getting only three rows from the datab
 the order by clauses.
 ### How the algorithm handles order by?
 Unfortunately, subqueries don't work with order by and it needs to be treated with a special approach.
-If the query contains "ORDER BY" clause, we have to add "OFFSET 0 ROW" at the end of the query, by this, query can be executed.
+If the query contains ```ORDER BY``` clause, we have to add ```OFFSET 0 ROW``` at the end of the query, by this, query can be executed.
 ### How the algorithm handles duplicates?
 Also, unfortunately, intersect doesn't include duplicates, so outcomes can be different.
 Because of that we are forced to wrap a query with this code:
@@ -144,6 +144,47 @@ public QueryBuilder AddRowNumberColumn()
 }
 ```
 In this way the query result gains additional unique row number column so no more duplicates.
+### Example
+Let's take these two queries:
+```
+Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi                   
+INNER JOIN Orders ord ON ord.Id = oi.OrderId
+INNER JOIN Products p ON p.Id = oi.ProductId          
+ORDER BY p.UnitPrice ASC;
+```
+AND
+```
+Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi
+INNER JOIN Orders ord ON ord.Id = oi.OrderId                
+INNER JOIN Products p ON p.Id = oi.ProductId                  
+ORDER BY p.UnitPrice DESC;
+```
+They shouldn't be the same because of different sorting. <br />
+Firstly, the algorithm will check if the bodies are the same and will keep checking. <br />
+Secondly, the algorithm will check columns and they're the same so also will keep checking. <br />
+Thirdly, the algorithm will check only number of columns of these two queries and result is 2155 and 2155 so it will keep checking. <br />
+Fourthly, the algorithm will check values and make an intersection of these two queries so this query will be created and executed: <br />
+```
+SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber FROM 
+(Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi 
+INNER JOIN Orders ord ON ord.Id = oi.OrderId                  
+INNER JOIN Products p ON p.Id = oi.ProductId                  
+ORDER BY p.UnitPrice ASC OFFSET 0 ROW) QUERY ) AS MyTable 
+INTERSECT 
+SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber FROM 
+(Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi                   
+INNER JOIN Orders ord ON ord.Id = oi.OrderId               
+INNER JOIN Products p ON p.Id = oi.ProductId             
+ORDER BY p.UnitPrice DESC OFFSET 0 ROW) QUERY ) AS MyTable
+```
+There are the query results: <br />
+![dane](https://user-images.githubusercontent.com/15310742/158289976-04408092-6708-4270-8c2a-87bf94969011.PNG)
+
+What means there are only two common rows and the rest is different.
+Obviously, the algorithm will only get the count of this query and compare it with query1 count.
+```2155 != 2``` So the queries cannot be the same. 
+
+
 
 ## Database Schema
 ![DBMS ER diagram (UML notation) (1)](https://user-images.githubusercontent.com/15310742/158085866-68029818-715d-4425-ab54-20dd2275f486.png)
