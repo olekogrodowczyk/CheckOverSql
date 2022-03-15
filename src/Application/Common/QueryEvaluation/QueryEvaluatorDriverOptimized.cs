@@ -38,7 +38,7 @@ namespace Application.Common.QueryEvaluation
         {
             string queryToCheck1 = _queryBuilder.SetInitQuery(query1).HandleSpaces().GetResult();
             string queryToCheck2 = _queryBuilder.SetInitQuery(query2).HandleSpaces().GetResult();
-            return queryToCheck1.Equals(queryToCheck2);
+            return queryToCheck1.Equals(queryToCheck2, StringComparison.OrdinalIgnoreCase);
         }
 
         private async Task<bool> compareColumnNames(string query1, string query2)
