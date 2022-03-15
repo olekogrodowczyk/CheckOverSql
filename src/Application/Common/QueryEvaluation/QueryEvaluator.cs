@@ -10,11 +10,13 @@ namespace Application.Common.QueryEvaluation
     public class QueryEvaluator : IQueryEvaluator
     {
         private readonly IDatabaseQuery _databaseQuery;
+        private readonly IQueryBuilder _queryBuilder;
         private string _connectionString;
 
-        public QueryEvaluator(IDatabaseQuery databaseQuery)
+        public QueryEvaluator(IDatabaseQuery databaseQuery, IQueryBuilder queryBuilder)
         {
             _databaseQuery = databaseQuery;
+            _queryBuilder = queryBuilder;
         }
 
         public void InitConnectionString(string connectionString)
@@ -22,19 +24,18 @@ namespace Application.Common.QueryEvaluation
             _connectionString = connectionString;
         }
 
+
         public async Task<int> GetCountOfQuery(string query)
         {
-            QueryBuilder qb = new QueryBuilder(query);
-            qb.CheckOrderBy().AddCount();
-            return await _databaseQuery.ExecuteQueryGetOneIntValue(qb.GetResult(), _connectionString);
+            _queryBuilder.SetInitQuery(query).CheckOrderBy().AddCount();
+            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionString);
         }
 
         public async Task<int> GetIntersectQueryCount(string query1, string query2)
         {
             string intersectedQuery = interesectBetweenQueries(prepareQueryToIntersect(query1), prepareQueryToIntersect(query2));
-            QueryBuilder qb = new QueryBuilder(intersectedQuery);
-            qb.AddCount();
-            return await _databaseQuery.ExecuteQueryGetOneIntValue(qb.GetResult(), _connectionString);
+            _queryBuilder.SetInitQuery(intersectedQuery).AddCount();
+            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionString);
         }
 
         public async Task<bool> CompareColumnNames(string query1, string query2)
@@ -58,18 +59,15 @@ namespace Application.Common.QueryEvaluation
 
         private async Task<List<string>> getSpecificRow(string query, int rowCount)
         {
-            QueryBuilder qb = new QueryBuilder(query);
-            qb.CheckOrderBy().GetSpecificRow(10);
-            var row = await _databaseQuery.ExecuteQueryGetOneRow(qb.GetResult(), _connectionString);
+            _queryBuilder.SetInitQuery(query).CheckOrderBy().GetSpecificRow(10);
+            var row = await _databaseQuery.ExecuteQueryGetOneRow(_queryBuilder.GetResult(), _connectionString);
             return row;
         }
 
         private string prepareQueryToIntersect(string query)
         {
-            QueryBuilder qb = new QueryBuilder(query);
-            qb.CheckOrderBy();
-            qb.AddRowNumberColumn();
-            return qb.GetResult();
+            _queryBuilder.SetInitQuery(query).CheckOrderBy().AddRowNumberColumn();
+            return _queryBuilder.GetResult();
         }
 
         private string interesectBetweenQueries(string query1, string query2)

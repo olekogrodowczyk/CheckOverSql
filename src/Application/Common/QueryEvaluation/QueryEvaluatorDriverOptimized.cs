@@ -11,13 +11,16 @@ namespace Application.Common.QueryEvaluation
     {
         private readonly IQueryEvaluator _queryEvaluator;
         private readonly IDataComparerService _dataComparerService;
+        private readonly IQueryBuilder _queryBuilder;
         private int query1Count = 0;
         private int query2Count = 0;
 
-        public QueryEvaluatorDriverOptimized(IQueryEvaluator queryEvaluator, IDataComparerService dataComparerService)
+        public QueryEvaluatorDriverOptimized(IQueryEvaluator queryEvaluator, IDataComparerService dataComparerService
+            , IQueryBuilder queryBuilder)
         {
             _queryEvaluator = queryEvaluator;
             _dataComparerService = dataComparerService;
+            _queryBuilder = queryBuilder;
         }
 
         public async Task<bool> Evaluate(string query1, string query2, string connectionString)
@@ -33,9 +36,9 @@ namespace Application.Common.QueryEvaluation
 
         private bool compareBodies(string query1, string query2)
         {
-            QueryBuilder qb = new QueryBuilder(query1);
-            QueryBuilder qb2 = new QueryBuilder(query2);
-            return qb.HandleSpaces().GetResult().Equals(qb2.HandleSpaces().GetResult());
+            string queryToCheck1 = _queryBuilder.SetInitQuery(query1).HandleSpaces().GetResult();
+            string queryToCheck2 = _queryBuilder.SetInitQuery(query2).HandleSpaces().GetResult();
+            return queryToCheck1.Equals(queryToCheck2);
         }
 
         private async Task<bool> compareColumnNames(string query1, string query2)

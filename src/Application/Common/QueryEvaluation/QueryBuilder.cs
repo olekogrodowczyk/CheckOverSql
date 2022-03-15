@@ -13,6 +13,8 @@ namespace Application.Common.QueryEvaluation
         QueryBuilder AddLimit(int limit);
         QueryBuilder CheckOrderBy();
         QueryBuilder AddRowNumberColumn();
+        QueryBuilder SetInitQuery(string query);
+        string GetResult();
     }
 
     public class QueryBuilder : IQueryBuilder
@@ -29,6 +31,7 @@ namespace Application.Common.QueryEvaluation
             this.Trim();
         }
 
+
         private void Trim()
         {
             _query = _query.Trim();
@@ -38,6 +41,12 @@ namespace Application.Common.QueryEvaluation
         public void Reset()
         {
             this._query = String.Empty;
+        }
+        public QueryBuilder SetInitQuery(string query)
+        {
+            _query = query;
+            Trim();
+            return this;
         }
 
         public QueryBuilder AddCount()

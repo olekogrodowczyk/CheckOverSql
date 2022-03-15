@@ -28,17 +28,18 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddAuthorization();
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);         
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
             services.AddScoped<IAuthorizationHandler, GetSolvingByIdRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, PermissionRequirementHandler>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<ISolutionService , SolutionService>();
+            services.AddScoped<ISolutionService, SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerService>();
             services.AddScoped<IQueryEvaluator, QueryEvaluator>();
             services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriverOptimized>();
             services.AddScoped<IUploadFileService, UploadFileService>();
+            services.AddTransient<IQueryBuilder, QueryBuilder>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
