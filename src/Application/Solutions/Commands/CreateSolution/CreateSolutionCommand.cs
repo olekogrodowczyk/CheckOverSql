@@ -77,7 +77,7 @@ namespace Application.Solutions.Commands.CreateSolution
         private async Task validateSolution(CreateSolutionCommand command, Exercise exercise, Solution solution)
         {
             string databaseName = await _databaseRepository.GetDatabaseNameById((int)exercise.DatabaseId);
-            solution.Checked = true; solution.IsValid = false;
+            solution.IsValid = false;
             await _solutionRepository.UpdateAsync(solution);
             await _databaseService.ValidateQuery(command.Query, databaseName);
             solution.IsValid = true;
