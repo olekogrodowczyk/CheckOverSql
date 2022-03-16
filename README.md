@@ -145,6 +145,14 @@ public QueryBuilder AddRowNumberColumn()
 }
 ```
 In this way the query result gains additional unique row number column so no more duplicates.
+### How the algorithm will be handling executing queries with prepared data? (To implement)
+For now there's a possibility to execute query with well prepared data earlier and pass the exercise. <br />
+For example count manually rows with orders of some customer and send solution: ```"SELECT 'Martin', 'Smith', 5"``` <br />
+Of course in groups there's also a checking section where checker can see sent solution 
+and purpose of self learning is rather not to cheat. <br />
+However, the application will be equipped with a better way of checking exercises 
+and it's all about an additional database hidden for users where result will be different so in this way it will work like unit tests.
+
 ### Example
 Let's take these two queries:
 ```
