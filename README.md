@@ -118,11 +118,11 @@ There is the function which is responsible for that:
 ```
 private async Task<bool> compareQueriesCount(string query1, string query2)
 {
-    query1Count = await _queryEvaluator.GetCountOfQuery(query1, connectionString);
-    query2Count = await _queryEvaluator.GetCountOfQuery(query2, connectionString);
+    query1Count = await _queryEvaluator.GetCountOfQuery(query1);
+    query2Count = await _queryEvaluator.GetCountOfQuery(query2);
     if (query1Count != query2Count) { return false; }
     
-    int intersectedQueryCount = await _queryEvaluator.GetIntersectQueryCount(query1, query2, connectionString);
+    int intersectedQueryCount = await _queryEvaluator.GetIntersectQueryCount(query1, query2);
     if (query1Count != intersectedQueryCount) { return false; }
     return true;
 }
