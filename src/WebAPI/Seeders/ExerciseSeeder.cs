@@ -59,12 +59,77 @@ namespace WebAPI.Seeders
                 {
                     CreatorId = superUserId,
                     DatabaseId = databaseId,
-                    IsPrivate =false,
+                    IsPrivate = false,
                     Title = "Grouping",
                     Description = "For every OrderId in OrderItems table show amount of UnitPrices. " +
                     "For amount use \"Amount\" alias",
                     ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) Amount FROM OrderItems GROUP BY OrderId;"
                 },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Number of orders",
+                    Description = "Show the number of orders of every customer. " +
+                    "Customers data must be their Ids, FirstNames and LastNames, column with number of order " +
+                    "call as NumberOfOrders",
+                    ValidAnswer = @"SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "The best customer",
+                    Description = "Show Id, FirstName and LastName of the customer who " +
+                    "made the most number of orders.",
+                    ValidAnswer = @"SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName
+                    HAVING COUNT(o.Id) = (SELECT MAX(NumberOfOrders) Max FROM (
+                    SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "The second best customer",
+                    Description = "Show Id, FirstName and LastName of the customer who " +
+                    "made the second-most number of orders.",
+                    ValidAnswer = @"SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName HAVING COUNT(o.Id) = (
+                    SELECT MAX(NumberOfOrders) Count FROM (
+                    SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName
+                    HAVING COUNT(o.Id) NOT IN (SELECT MAX(NumberOfOrders) Max FROM (
+                    SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)) QUERY ) "
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Specific customers and their products",
+                    Description = "For every customer with name beginning with " +
+                    "\"L\" show their FirstName, LastName and number of products ordered ever" +
+                    "(column name of products is \"NumberOfProducts\") ",
+                    ValidAnswer = @"SELECT c.FirstName, c.LastName, COUNT(oi.Id) NumberOfProducts FROM OrderItems oi
+                    INNER JOIN Orders o ON o.Id = oi.OrderId
+                    INNER JOIN Customers c ON c.Id = o.CustomerId
+                    WHERE FirstName LIKE 'L%'
+                    GROUP BY c.FirstName, c.LastName
+                    ORDER BY COUNT(oi.Id) DESC;"
+                }
             };
         }
 
