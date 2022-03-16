@@ -15,20 +15,16 @@ namespace WebAPI.IntegrationTests.Helpers
 {
     public static class SeedDataHelper
     {
-        public static async Task SeedDatabases(ApplicationDbContext context, string databaseName)
+        public static async Task SeedDatabase(ApplicationDbContext context, string databaseName, int databaseId)
         {
-            if (!context.Databases.Any())
+            Database newDatabase = new Database
             {
-                Database newDatabase = new Database
-                {
-                    Id = 1,
-                    Name = databaseName,
-                    ConnectionString = GetSecretDataHelper.GetConnectionString(databaseName)
-                };
-                await context.Databases.AddAsync(newDatabase);
-                await context.SaveChangesAsync();
-                DatabasesIdsHelper.NorthwindSimpleDatabaseId = newDatabase.Id;
-            }
+                Id = databaseId,
+                Name = databaseName,
+                ConnectionString = GetSecretDataHelper.GetConnectionString(databaseName)
+            };
+            await context.Databases.AddAsync(newDatabase);
+            await context.SaveChangesAsync();
         }
 
 

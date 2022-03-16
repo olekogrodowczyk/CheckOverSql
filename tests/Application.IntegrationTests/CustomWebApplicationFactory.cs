@@ -64,7 +64,8 @@ namespace WebAPI.IntegrationTests
                     var context = scopedServices.GetRequiredService<ApplicationDbContext>();
 
                     context.Database.EnsureCreated();
-                    SeedDataHelper.SeedDatabases(context, "NorthwindSimple").Wait();
+                    SeedDataHelper.SeedDatabase(context, "NorthwindSimple", DatabasesIdsHelper.NorthwindSimpleDatabaseId)
+                    .Wait();
                 }
             });
         }

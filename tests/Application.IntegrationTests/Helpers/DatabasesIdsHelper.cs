@@ -8,6 +8,7 @@ namespace Application.IntegrationTests.Helpers
 {
     public static class DatabasesIdsHelper
     {
-        public static int NorthwindSimpleDatabaseId { get; set; }
+        public static int NorthwindSimpleDatabaseId { get; set; } = 1;
+        public static int FootballLeagueId { get; set; } = 2;
     }
 }
