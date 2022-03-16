@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Seeders;
 
 namespace WebAPI.IntegrationTests.Helpers
 {
@@ -47,7 +48,7 @@ namespace WebAPI.IntegrationTests.Helpers
             {
                 int? superUserId = (await context.Users.FirstOrDefaultAsync(x => x.Email == "superuser@gmail.com")).Id;
                 var northWindSimpleDatabaseId = (await context.Databases.SingleOrDefaultAsync(x => x.Name == "NorthwindSimple")).Id;
-                var exercises = Seeder.getNorthwindSimplePublicExercises(superUserId ?? 0, northWindSimpleDatabaseId);
+                var exercises = ExerciseSeeder.GetNorthwindSimplePublicExercises(superUserId ?? 0, northWindSimpleDatabaseId);
                 await context.Exercises.AddRangeAsync(exercises);
             }
         }
