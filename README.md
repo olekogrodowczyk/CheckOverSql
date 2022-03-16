@@ -164,8 +164,9 @@ They shouldn't be the same because of different sorting. <br />
 Firstly, the algorithm will check if the bodies are the same and will keep checking. <br />
 Secondly, the algorithm will check columns and they're the same so also will keep checking. <br />
 Thirdly, the algorithm will check only number of columns of these two queries and result is 2155 and 2155 so it will keep checking. <br />
-Fourthly, the algorithm will check values and make an intersection of these two queries so this query will be created and executed: <br />
+Fourthly, the algorithm will check values and make an intersection of these two queries so the following query will be created and executed: <br />
 ```
+SELECT COUNT(*) AS COUNT FROM (
 SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber FROM 
 (Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi 
 INNER JOIN Orders ord ON ord.Id = oi.OrderId                  
@@ -177,8 +178,9 @@ SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber F
 INNER JOIN Orders ord ON ord.Id = oi.OrderId               
 INNER JOIN Products p ON p.Id = oi.ProductId             
 ORDER BY p.UnitPrice DESC OFFSET 0 ROW) QUERY ) AS MyTable
+) QUERY
 ```
-There are the query results: <br />
+There are the query results (the subquery of the whole count): <br />
 ![dane](https://user-images.githubusercontent.com/15310742/158289976-04408092-6708-4270-8c2a-87bf94969011.PNG)
 
 What means there are only two common rows and the rest is different.
