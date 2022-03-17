@@ -17,14 +17,17 @@ namespace WebAPI.IntegrationTests.Helpers
     {
         public static async Task SeedDatabase(ApplicationDbContext context, string databaseName, int databaseId)
         {
-            Database newDatabase = new Database
+            if (!(await context.Databases.AnyAsync(x => x.Name == databaseName)))
             {
-                Id = databaseId,
-                Name = databaseName,
-                ConnectionString = GetSecretDataHelper.GetConnectionString(databaseName)
-            };
-            await context.Databases.AddAsync(newDatabase);
-            await context.SaveChangesAsync();
+                Database newDatabase = new Database
+                {
+                    Id = databaseId,
+                    Name = databaseName,
+                    ConnectionString = GetSecretDataHelper.GetConnectionString(databaseName)
+                };
+                await context.Databases.AddAsync(newDatabase);
+                await context.SaveChangesAsync();
+            }
         }
 
 

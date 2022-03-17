@@ -76,9 +76,9 @@ namespace WebAPI
                 }
                 if (!_context.Exercises.Where(x => !x.IsPrivate).Any())
                 {
-                    int superUserId = _context.Users.FirstOrDefault(x => x.Email == "superuser@gmail.com").Id;
+                    int? superUserId = _context.Users.FirstOrDefault(x => x.Email == "superuser@gmail.com")?.Id;
                     int nortwindSimpleDatabaseId = _context.Databases.SingleOrDefault(x => x.Name == "NorthwindSimple").Id;
-                    var exercises = ExerciseSeeder.GetNorthwindSimplePublicExercises(superUserId, nortwindSimpleDatabaseId);
+                    var exercises = ExerciseSeeder.GetNorthwindSimplePublicExercises(superUserId ?? 0, nortwindSimpleDatabaseId);
                     _context.Exercises.AddRange(exercises);
                     _context.SaveChanges();
                 }

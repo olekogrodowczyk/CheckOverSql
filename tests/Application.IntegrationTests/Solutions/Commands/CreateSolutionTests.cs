@@ -37,6 +37,7 @@ namespace Application.IntegrationTests.Solutions.Commands
         public async Task ForTwoQueriesAndNorthWindSimpleDb_ReturnsValidResult(QueryTest queryTest)
         {
             //Arrange
+            await ClearNotNecesseryData();
             int userId = await RunAsDefaultUserAsync();
             var exercise = await AddAsync(new Exercise()
             {

@@ -23,7 +23,7 @@ namespace WebAPI.IntegrationTests.Exercises.Commands.AssignExerciseToUsers
         [InlineData(1, 1000, null)]
         [InlineData(2, 110, null)]
         [InlineData(3, 150, null)]
-        [InlineData(4, 120, typeof(ForbidException))]
+        [InlineData(4, 120, typeof(ValidationException))]
         [InlineData(1, 100, null)]
         [InlineData(1, 30, typeof(ValidationException))]
         public async Task ForGivenParameteres_ReturnsValidData
