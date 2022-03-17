@@ -46,8 +46,9 @@ namespace WebAPI
                 });
 
             services.AddApplication();
+            services.AddQueryEvaluator();
             services.AddInfrastructure(Configuration);
-            
+
             services.AddScoped<Seeder>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddCors(options =>
@@ -93,7 +94,7 @@ namespace WebAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
         {
             app.UseCors("FrontEndClient");
-            
+
             seeder.Seed();
             if (env.IsDevelopment())
             {
@@ -118,7 +119,7 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
-            
+
         }
     }
 }

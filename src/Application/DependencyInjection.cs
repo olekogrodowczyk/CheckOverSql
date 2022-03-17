@@ -20,6 +20,7 @@ using Infrastructure.Authorization;
 using Application.Common.QueryEvaluation;
 using Application.Common.Services;
 using Application.Common.Interfaces;
+using Application.Common.QueryEvaluation.Handlers;
 
 namespace Application
 {
@@ -36,15 +37,12 @@ namespace Application
             services.AddScoped<ISolutionService, SolutionService>();
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IDataComparerService, DataComparerService>();
-            services.AddScoped<IQueryEvaluator, QueryEvaluator>();
-            services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriverOptimized>();
             services.AddScoped<IUploadFileService, UploadFileService>();
-            services.AddTransient<IQueryBuilder, QueryBuilder>();
-            services.AddScoped<IConnectionStringService, ConnectionStringService>();
-            services.AddScoped<IQueryEvaluatorService, QueryEvaluatorService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+
+
             return services;
         }
     }
