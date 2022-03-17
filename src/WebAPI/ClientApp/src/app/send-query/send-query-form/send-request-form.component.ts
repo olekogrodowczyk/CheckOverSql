@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { DialogData } from 'src/app/exercises/solve-exercise-form/solve-exercise-form.component';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { DatabaseClient, GetQueryValueQuery } from 'src/app/web-api-client';
 import { SendQueryService } from '../send-query.service';
@@ -12,22 +13,39 @@ import { SendQueryService } from '../send-query.service';
   styleUrls: ['./send-request-form.component.css'],
 })
 export class SendQueryFormComponent implements OnInit {
+  disableForm: boolean = false;
+  databaseNames!: string[];
   SendQueryAdminForm = new FormGroup({
-    databaseName: new FormControl('', [Validators.required]),
-    query: new FormControl('', [Validators.required]),
+    databaseName: new FormControl(
+      {
+        value: this.data ? this.data.databaseName : '',
+        disabled: this.data ? true : false,
+      },
+      [Validators.required]
+    ),
+    query: new FormControl(
+      {
+        value: this.data ? this.data.query : '',
+        disabled: this.data ? true : false,
+      },
+      [Validators.required]
+    ),
   });
-  databaseNames: string[] = [];
   constructor(
     private databaseClient: DatabaseClient,
     private snackBar: SnackbarService,
     private sendQueryService: SendQueryService,
     private router: Router,
-    private dialogRef: MatDialogRef<SendQueryFormComponent>
+    private dialogRef: MatDialogRef<SendQueryFormComponent>,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      databaseName: string;
+      query: string;
+    }
   ) {}
 
   ngOnInit(): void {
     this.getDatabaseNames();
-    console.log(this.databaseNames);
   }
 
   getDatabaseNames() {
@@ -50,7 +68,7 @@ export class SendQueryFormComponent implements OnInit {
     this.sendQueryService.model = <GetQueryValueQuery>{
       databaseName: this.SendQueryAdminForm.get('databaseName')?.value,
       query: this.SendQueryAdminForm.get('query')?.value,
-      toQueryHistory: true,
+      toQueryHistory: this.data ? false : true,
     };
     this.router.navigateByUrl('send-query/query-result');
 

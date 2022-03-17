@@ -6,10 +6,17 @@
     </p></mat-card-subtitle
   >
   <mat-card-content>
-    {{ queryModel.queryValue }}
+    {{ shortenedQuery }}
   </mat-card-content>
   <mat-divider></mat-divider>
   <mat-card-actions>
     <button (click)="executeQuery()" mat-flat-button>Execute</button>
+    <button
+      *ngIf="showQueryButton"
+      (click)="openShowQueryDialog()"
+      mat-flat-button
+    >
+      Show Query
+    </button>
   </mat-card-actions>
 </mat-card>
