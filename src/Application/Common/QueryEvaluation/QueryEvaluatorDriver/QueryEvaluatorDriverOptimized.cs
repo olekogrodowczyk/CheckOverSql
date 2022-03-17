@@ -1,4 +1,5 @@
 ﻿using Application.Common.QueryEvaluation.Handlers;
+using Application.Common.QueryEvaluation.Logging;
 using Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -23,13 +24,16 @@ namespace Application.Common.QueryEvaluation
         private readonly IUserContextService _userContextService;
         private readonly IConnectionStringService _connectionStringService;
         private readonly IEnumerable<IEvaluationHandler> _handlers;
+        private readonly IQueryEvaluationLogging _queryEvaluationLogging;
 
         public QueryEvaluatorDriverOptimized(IUserContextService userContextService,
-             IConnectionStringService connectionStringService, IEnumerable<IEvaluationHandler> handlers)
+             IConnectionStringService connectionStringService, IEnumerable<IEvaluationHandler> handlers,
+            IQueryEvaluationLogging queryEvaluationLogging)
         {
             _userContextService = userContextService;
             _connectionStringService = connectionStringService;
             _handlers = handlers;
+            _queryEvaluationLogging = queryEvaluationLogging;
         }
 
         public async Task<bool> Evaluate(string query1, string query2, string connectionString)
@@ -49,7 +53,7 @@ namespace Application.Common.QueryEvaluation
                 await handler.Handle(data);
                 if (data.Stop) { break; }
             }
-
+            _queryEvaluationLogging.Log(data);
 
             return data.FinalResult;
         }

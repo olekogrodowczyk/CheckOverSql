@@ -1,5 +1,6 @@
 ﻿using Application.Common.QueryEvaluation;
 using Application.Common.QueryEvaluation.Handlers;
+using Application.Common.QueryEvaluation.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Application
             services.AddTransient<IQueryBuilder, QueryBuilder>();
             services.AddScoped<IConnectionStringService, ConnectionStringService>();
             services.AddScoped<IQueryEvaluatorService, QueryEvaluatorService>();
+            services.AddScoped<IQueryEvaluationLogging, QueryEvaluationLogging>();
 
             //Order of below injections matters
             services.AddScoped<IEvaluationHandler, BodiesHandler>();
