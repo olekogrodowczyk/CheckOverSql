@@ -40,6 +40,8 @@ namespace Application
             services.AddScoped<IQueryEvaluatorDriver, QueryEvaluatorDriverOptimized>();
             services.AddScoped<IUploadFileService, UploadFileService>();
             services.AddTransient<IQueryBuilder, QueryBuilder>();
+            services.AddScoped<IConnectionStringService, ConnectionStringService>();
+            services.AddScoped<IQueryEvaluatorService, QueryEvaluatorService>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavour<>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));

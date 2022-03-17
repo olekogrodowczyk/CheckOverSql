@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace Application.Common.QueryEvaluation
 {
-    public interface IQueryEvaluator
+    public interface IQueryEvaluatorService
     {
         Task<bool> CompareColumnNames(string query1, string query2);
         Task<int> GetCountOfQuery(string query);
         Task<List<List<string>>> GetFirstMiddleLastRows(string query, int queryResultCount);
         Task<int> GetIntersectQueryCount(string query1, string query2);
-        void InitConnectionString(string connectionString);
+        Task<List<string>> GetSpecificRow(string query, int rowCount);
     }
 }

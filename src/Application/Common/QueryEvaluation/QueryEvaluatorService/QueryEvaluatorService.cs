@@ -7,41 +7,37 @@ using System.Threading.Tasks;
 
 namespace Application.Common.QueryEvaluation
 {
-    public class QueryEvaluator : IQueryEvaluator
+    public class QueryEvaluatorService : IQueryEvaluatorService
     {
         private readonly IDatabaseQuery _databaseQuery;
         private readonly IQueryBuilder _queryBuilder;
-        private string _connectionString;
+        private readonly IConnectionStringService _connectionStringService;
 
-        public QueryEvaluator(IDatabaseQuery databaseQuery, IQueryBuilder queryBuilder)
+        public QueryEvaluatorService(IDatabaseQuery databaseQuery, IQueryBuilder queryBuilder
+            , IConnectionStringService connectionStringService)
         {
             _databaseQuery = databaseQuery;
             _queryBuilder = queryBuilder;
+            _connectionStringService = connectionStringService;
         }
-
-        public void InitConnectionString(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
 
         public async Task<int> GetCountOfQuery(string query)
         {
             _queryBuilder.SetInitQuery(query).CheckOrderBy().AddCount();
-            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionString);
+            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionStringService.ConnectionString);
         }
 
         public async Task<int> GetIntersectQueryCount(string query1, string query2)
         {
             string intersectedQuery = interesectBetweenQueries(prepareQueryToIntersect(query1), prepareQueryToIntersect(query2));
             _queryBuilder.SetInitQuery(intersectedQuery).AddCount();
-            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionString);
+            return await _databaseQuery.ExecuteQueryGetOneIntValue(_queryBuilder.GetResult(), _connectionStringService.ConnectionString);
         }
 
         public async Task<bool> CompareColumnNames(string query1, string query2)
         {
-            var columnNames1 = await _databaseQuery.GetColumnNames(query1, _connectionString);
-            var columnNames2 = await _databaseQuery.GetColumnNames(query2, _connectionString);
+            var columnNames1 = await _databaseQuery.GetColumnNames(query1, _connectionStringService.ConnectionString);
+            var columnNames2 = await _databaseQuery.GetColumnNames(query2, _connectionStringService.ConnectionString);
             return columnNames1.SequenceEqual(columnNames2);
         }
 
@@ -51,16 +47,16 @@ namespace Application.Common.QueryEvaluation
             List<List<string>> values = new List<List<string>>();
             foreach (int item in new int[] { 1, queryResultCount / 2, queryResultCount })
             {
-                var rows = await getSpecificRow(query, queryResultCount);
+                var rows = await GetSpecificRow(query, queryResultCount);
                 values.Add(rows);
             }
             return values;
         }
 
-        private async Task<List<string>> getSpecificRow(string query, int rowCount)
+        public async Task<List<string>> GetSpecificRow(string query, int rowCount)
         {
             _queryBuilder.SetInitQuery(query).CheckOrderBy().GetSpecificRow(10);
-            var row = await _databaseQuery.ExecuteQueryGetOneRow(_queryBuilder.GetResult(), _connectionString);
+            var row = await _databaseQuery.ExecuteQueryGetOneRow(_queryBuilder.GetResult(), _connectionStringService.ConnectionString);
             return row;
         }
 

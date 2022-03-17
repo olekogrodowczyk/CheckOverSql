@@ -7,16 +7,6 @@ using System.Threading.Tasks;
 
 namespace Application.Common.QueryEvaluation
 {
-    public interface IQueryBuilder
-    {
-        QueryBuilder AddCount();
-        QueryBuilder AddLimit(int limit);
-        QueryBuilder CheckOrderBy();
-        QueryBuilder AddRowNumberColumn();
-        QueryBuilder SetInitQuery(string query);
-        string GetResult();
-    }
-
     public class QueryBuilder : IQueryBuilder
     {
         private string _query;
