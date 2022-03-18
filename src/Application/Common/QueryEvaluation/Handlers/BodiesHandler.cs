@@ -23,6 +23,7 @@ namespace Application.Common.QueryEvaluation
             string queryToCheck2 = _queryBuilder.SetInitQuery(data.Query2).HandleSpaces().GetResult();
             bool result = queryToCheck1.Equals(queryToCheck2, StringComparison.OrdinalIgnoreCase);
             if (result) { data.Stop = true; data.FinalResult = true; }
+            await Task.CompletedTask;
         }
     }
 }
