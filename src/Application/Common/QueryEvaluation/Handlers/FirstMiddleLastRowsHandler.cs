@@ -29,7 +29,6 @@ namespace Application.Common.QueryEvaluation.Handlers
             bool result = await _dataComparerService.compareValues(matrix1, matrix2);
 
             if (!result) { data.Stop = true; data.FinalResult = false; }
-            else { data.Stop = true; data.FinalResult = true; }
         }
     }
 }

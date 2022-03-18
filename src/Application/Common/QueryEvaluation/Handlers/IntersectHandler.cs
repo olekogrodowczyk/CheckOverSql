@@ -19,7 +19,8 @@ namespace Application.Common.QueryEvaluation.Handlers
         {
             data.Phase = QueryEvaluationPhase.IntersectedCount;
             data.IntersectCount = await _queryEvaluatorService.GetIntersectQueryCount(data.Query1, data.Query2);
-            if (data.Query1Count != data.IntersectCount) { data.Stop = true; data.FinalResult = false; }
+            if (data.Query1Count != data.IntersectCount) { data.FinalResult = false; }
+            else { data.FinalResult = true; }
         }
     }
 }
