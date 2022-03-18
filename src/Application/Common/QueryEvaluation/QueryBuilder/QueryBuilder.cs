@@ -47,7 +47,7 @@ namespace Application.Common.QueryEvaluation
 
         public QueryBuilder HandleSpaces()
         {
-            _query = Regex.Replace(_query, @"\s", " ");
+            _query = Regex.Replace(_query, @"\s+", " ");
             return this;
         }
 
