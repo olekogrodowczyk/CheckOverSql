@@ -96,6 +96,18 @@ will wrap query: ```SELECT * FROM Orders```  INTO  ```"SELECT COUNT(*) FROM ( SE
 ### FirstPhase
 The first phase is to check if the two queries are the same so a query is trimmed for spaces and semicolons and all multiple spaces
 are converted into one. It's the first and most obvious step and there is no need check anything in a database.
+```
+The code:
+public async Task Handle(QueryEvaluationData data)
+{
+    data.Phase = QueryEvaluationPhase.Bodies;
+    string queryToCheck1 = _queryBuilder.SetInitQuery(data.Query1).HandleSpaces().GetResult();
+    string queryToCheck2 = _queryBuilder.SetInitQuery(data.Query2).HandleSpaces().GetResult();
+    bool result = queryToCheck1.Equals(queryToCheck2, StringComparison.OrdinalIgnoreCase);
+    if (result) { data.Stop = true; data.FinalResult = true; }
+    await Task.CompletedTask;
+}
+```
 ### Second phase
 The second phase is to check column names and compare them via this code:
 ```
@@ -104,32 +116,64 @@ using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.S
     dataTable = await reader.GetSchemaTableAsync();
 }
 ```
+The code:
+```
+public async Task Handle(QueryEvaluationData data)
+{
+    data.Phase = QueryEvaluationPhase.Columns;
+    bool result = await _queryEvaluatorService.CompareColumnNames(data.Query1, data.Query2);
+    if (!result) { data.FinalResult = false; data.Stop = true; }
+}
+```
 Columns can be obtained easily without getting other query data.
 Next, comparing is even easier with .SequenceEqual method.
 ### Third phase
 The next step is to compare the count of rows of two queries.
 The example of this was shown in a QueryBuilder section.
-### Fourth phase
-Probably the most important phase is where the algorithm compares values. In this case the key is an Intersect keyword in an SQL.
-Intersect will show you how many rows are common among two queries. <br /> In practice it is checking the count of rows of the first query and second query as it in third phase.
-Comparing them, if they're not equal, return false, if they're equal, the algorithm checks the the count of the intersection of them. <br /> There is no need for getting all the common 
-data of the two queries. We only need the count of rows and compare it with either the amount of rows of the first or second query. If they're not equal, then return false what means that query is invalid.
-There is the function which is responsible for that:
+The code:
 ```
-private async Task<bool> compareQueriesCount(string query1, string query2)
+public async Task Handle(QueryEvaluationData data)
 {
-    query1Count = await _queryEvaluator.GetCountOfQuery(query1);
-    query2Count = await _queryEvaluator.GetCountOfQuery(query2);
-    if (query1Count != query2Count) { return false; }
-    
-    int intersectedQueryCount = await _queryEvaluator.GetIntersectQueryCount(query1, query2);
-    if (query1Count != intersectedQueryCount) { return false; }
-    return true;
+    data.Phase = QueryEvaluationPhase.QueriesCounts;
+    data.Query1Count = await _queryEvaluatorService.GetCountOfQuery(data.Query1);
+    data.Query2Count = await _queryEvaluatorService.GetCountOfQuery(data.Query2);
+    if (data.Query1Count != data.Query2Count) { data.Stop = true; data.FinalResult = false; }
 }
 ```
-### Fifth phase (optional)
-This step is optional and that comes from getting only three rows from the database: first, middle and last and comparing them. It can be rather useful when checking up
-the order by clauses.
+### Fourth phase 
+This step is easy and that comes from getting only three rows from the database: first, middle and last and comparing them. It can be rather useful when checking up the order by clauses. Instead of comparing all rows one by one, the algorithm will only get three of them and compare the results. There's a good chance to catch inequalities without using intersect which is represent in the next phase. 
+The code:
+```
+public async Task Handle(QueryEvaluationData data)
+{
+    data.Phase = QueryEvaluationPhase.FirstMiddleLastRows;
+    if (data.Query1Count < 1 || data.Query2Count < 1) { data.Stop = true; return; }
+    if (data.Query1Count is null || data.Query2Count is null) { data.Stop = true; return; }
+
+    var matrix1 = await _queryEvaluatorService.GetFirstMiddleLastRows(data.Query1, (int)data.Query1Count);
+    var matrix2 = await _queryEvaluatorService.GetFirstMiddleLastRows(data.Query2, (int)data.Query2Count);
+    bool result = await _dataComparerService.compareValues(matrix1, matrix2);
+
+    if (!result) { data.Stop = true; data.FinalResult = false; }
+    else { data.Stop = true; data.FinalResult = true; }
+}
+```
+### Fifth phase
+This phase is last phase because of checking all the values in the results. It requires the most of calculations that's why it is at the end. <br />
+Eveything is happening on the database level which doesn't couse a memory problem by allocating the data by C# like it is in a naive implementation. <br />
+Intersecting two queries returns the same rows collected from two queries. If the two queries results are the same then the intersected one query number of rows
+will be the same as it is in both the first and the second query.
+The code:
+```
+public async Task Handle(QueryEvaluationData data)
+{
+    data.Phase = QueryEvaluationPhase.IntersectedCount;
+    data.IntersectCount = await _queryEvaluatorService.GetIntersectQueryCount(data.Query1, data.Query2);
+    if (data.Query1Count != data.IntersectCount) { data.Stop = true; data.FinalResult = false; }
+}
+```
+
+
 ### How the algorithm handles order by?
 Unfortunately, subqueries don't work with order by and it needs to be treated with a special approach.
 If the query contains ```ORDER BY``` clause, we have to add ```OFFSET 0 ROW``` at the end of the query, by this, query can be executed.
