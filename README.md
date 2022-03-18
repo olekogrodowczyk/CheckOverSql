@@ -156,7 +156,6 @@ public async Task Handle(QueryEvaluationData data)
     bool result = await _dataComparerService.compareValues(matrix1, matrix2);
 
     if (!result) { data.Stop = true; data.FinalResult = false; }
-    else { data.Stop = true; data.FinalResult = true; }
 }
 ```
 ### Fifth phase
@@ -170,7 +169,8 @@ public async Task Handle(QueryEvaluationData data)
 {
     data.Phase = QueryEvaluationPhase.IntersectedCount;
     data.IntersectCount = await _queryEvaluatorService.GetIntersectQueryCount(data.Query1, data.Query2);
-    if (data.Query1Count != data.IntersectCount) { data.Stop = true; data.FinalResult = false; }
+    if (data.Query1Count != data.IntersectCount) { data.FinalResult = false; }
+    else { data.FinalResult = true; }
 }
 ```
 
