@@ -24,8 +24,9 @@ namespace Application
             services.AddScoped<IEvaluationHandler, BodiesHandler>();
             services.AddScoped<IEvaluationHandler, ColumnsHandler>();
             services.AddScoped<IEvaluationHandler, CountsHandler>();
-            services.AddScoped<IEvaluationHandler, IntersectHandler>();
             services.AddScoped<IEvaluationHandler, FirstMiddleLastRowsHandler>();
+            services.AddScoped<IEvaluationHandler, IntersectHandler>();
+
             return services;
         }
     }
