@@ -116,7 +116,9 @@ using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.S
     dataTable = await reader.GetSchemaTableAsync();
 }
 ```
-The code:
+Columns can be obtained easily without getting other query data.
+Next, comparing is even easier with .SequenceEqual method.
+The comparison code:
 ```
 public async Task Handle(QueryEvaluationData data)
 {
@@ -125,8 +127,7 @@ public async Task Handle(QueryEvaluationData data)
     if (!result) { data.FinalResult = false; data.Stop = true; }
 }
 ```
-Columns can be obtained easily without getting other query data.
-Next, comparing is even easier with .SequenceEqual method.
+
 ### Third phase
 The next step is to compare the count of rows of two queries.
 The example of this was shown in a QueryBuilder section.
@@ -173,7 +174,46 @@ public async Task Handle(QueryEvaluationData data)
 }
 ```
 
-
+### How the chaining of phases works?
+Implementing typical chain of responsibility design pattern is hard due to dependency injection but in this case a dependency injection is highly efficient.
+By the shared interface:
+```
+public interface IEvaluationHandler
+{
+    Task Handle(QueryEvaluationData data);
+}
+```
+There is possibility to make as many implementations as it is needed.
+```
+//Order of below injections matters
+services.AddScoped<IEvaluationHandler, BodiesHandler>();
+services.AddScoped<IEvaluationHandler, ColumnsHandler>();
+services.AddScoped<IEvaluationHandler, CountsHandler>();
+services.AddScoped<IEvaluationHandler, FirstMiddleLastRowsHandler>();
+services.AddScoped<IEvaluationHandler, IntersectHandler>();
+```
+Next, the injection is following:
+```
+public class QueryEvaluatorDriverOptimized : IQueryEvaluatorDriver
+{
+   private readonly IEnumerable<IEvaluationHandler> _handlers;
+   public QueryEvaluatorDriverOptimized(IEnumerable<IEvaluationHandler> handlers)
+   {
+      _handlers = handlers;
+   }
+}
+```
+Then handlers are just being iterated over and the result is being logged.
+The data object contains data about query evaluation like: queries, userId, phase or queries counts. 
+```
+foreach (var handler in _handlers)
+{
+    await handler.Handle(data);
+    if (data.Stop) { break; }
+}
+_queryEvaluationLogging.Log(data);
+```
+            
 ### How the algorithm handles order by?
 Unfortunately, subqueries don't work with order by and it needs to be treated with a special approach.
 If the query contains ```ORDER BY``` clause, we have to add ```OFFSET 0 ROW``` at the end of the query, by this, query can be executed.
