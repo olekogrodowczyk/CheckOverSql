@@ -1,8 +1,7 @@
 <mat-card
   class="exercise-card"
   [ngClass]="{
-    'mat-card-passed': model.passed,
-    'mat-card-failed': model.lastAnswer && !model.passed
+    'mat-card-passed': model.passed
   }"
 >
   <div fxLayout="row" class="header">
