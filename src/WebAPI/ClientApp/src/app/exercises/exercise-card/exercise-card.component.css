@@ -4,6 +4,16 @@
   min-width: 400px;
 }
 
+.mat-card-passed {
+  border: 1px solid green;
+  border-radius: 10px;
+}
+
+.mat-card-failed {
+  border: 1px solid #b00020;
+  border-radius: 10px;
+}
+
 .mat-card-content {
   height: 70px;
   margin-top: 20px;

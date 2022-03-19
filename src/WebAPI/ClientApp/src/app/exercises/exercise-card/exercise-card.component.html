@@ -1,4 +1,10 @@
-<mat-card class="exercise-card">
+<mat-card
+  class="exercise-card"
+  [ngClass]="{
+    'mat-card-passed': model.passed,
+    'mat-card-failed': model.lastAnswer && !model.passed
+  }"
+>
   <div fxLayout="row" class="header">
     <div *ngIf="model.creationTime">Created: {{ model.creationTime }}</div>
     <div style="margin-left: auto">
