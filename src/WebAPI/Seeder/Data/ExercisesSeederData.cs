@@ -7,44 +7,47 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Seeders
 {
-    public static class ExerciseSeeder
+    public static class ExercisesSeederData
     {
-        public static IEnumerable<Exercise> GetNorthwindSimplePublicExercises(int superUserId, int databaseId)
+        public static IEnumerable<Exercise> GetNorthwindSimplePublicExercises(int creatorId, int databaseId)
         {
             return new List<Exercise>()
             {
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Get all data from table Orders",
                     Description = " Get all the data from table orders without any aliases",
-                    ValidAnswer = "SELECT * FROM Orders"
+                    ValidAnswer = "SELECT * FROM Orders",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Get all customers with valid data",
                     Description = "Get all customers with only Id, FirstName and LastName columns "+
                     "with following aliases: id, first, last",
-                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers"
+                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId=superUserId,
+                    CreatorId=creatorId,
                     DatabaseId = databaseId,
                     IsPrivate=false,
                     Title="Get all data from table Products sorted",
                     Description = "Get all data from table Products sorted by firstly ProductName "+
                     "and secondly by UnitPrice all in descending type",
-                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers"
+                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Get data with JOINS",
@@ -53,21 +56,23 @@ namespace WebAPI.Seeders
                     ValidAnswer = @"Select ord.Id OrderId, oi.UnitPrice UnitPriceOrderItem, p.Package from OrderItems oi
                     INNER JOIN Orders ord ON ord.Id = oi.OrderId
                     INNER JOIN Products p ON p.Id = oi.ProductId
-                    ORDER BY p.UnitPrice DESC;"
+                    ORDER BY p.UnitPrice DESC;",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Grouping",
                     Description = "For every OrderId in OrderItems table show amount of UnitPrices. " +
                     "For amount use \"Amount\" alias",
-                    ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) Amount FROM OrderItems GROUP BY OrderId;"
+                    ValidAnswer = "SELECT OrderId, COUNT(UnitPrice) Amount FROM OrderItems GROUP BY OrderId;",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Number of orders",
@@ -76,11 +81,12 @@ namespace WebAPI.Seeders
                     "call as NumberOfOrders",
                     ValidAnswer = @"SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
                     INNER JOIN Customers c ON c.Id = o.CustomerId
-                    GROUP BY c.Id, c.FirstName, c.LastName"
+                    GROUP BY c.Id, c.FirstName, c.LastName",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "The best customer",
@@ -92,11 +98,12 @@ namespace WebAPI.Seeders
                     HAVING COUNT(o.Id) = (SELECT MAX(NumberOfOrders) Max FROM (
                     SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
                     INNER JOIN Customers c ON c.Id = o.CustomerId
-                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)"
+                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "The second best customer",
@@ -112,11 +119,12 @@ namespace WebAPI.Seeders
                     HAVING COUNT(o.Id) NOT IN (SELECT MAX(NumberOfOrders) Max FROM (
                     SELECT c.Id, c.FirstName, c.LastName, COUNT(o.Id) NumberOfOrders FROM Orders o
                     INNER JOIN Customers c ON c.Id = o.CustomerId
-                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)) QUERY ) "
+                    GROUP BY c.Id, c.FirstName, c.LastName) QUERY)) QUERY ) ",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Specific customers and their products",
@@ -128,11 +136,12 @@ namespace WebAPI.Seeders
                     INNER JOIN Customers c ON c.Id = o.CustomerId
                     WHERE FirstName LIKE 'L%'
                     GROUP BY c.FirstName, c.LastName
-                    ORDER BY COUNT(oi.Id) DESC;"
+                    ORDER BY COUNT(oi.Id) DESC;",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Cities' delivers",
@@ -142,33 +151,36 @@ namespace WebAPI.Seeders
                     ValidAnswer = @"SELECT s.City, COUNT(p.Id) NumberOfProducts FROM Suppliers s
                     INNER JOIN Products p ON p.SupplierId = s.Id
                     GROUP BY s.City
-                    ORDER BY Count(p.Id) ASC;"
+                    ORDER BY Count(p.Id) ASC;",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Delivers of Paris",
                     Description = "Show all delivers of products from Paris (City, ProductName, UnitPrice)",
                     ValidAnswer = @"SELECT s.City, p.ProductName, p.UnitPrice FROM Suppliers s
                     INNER JOIN Products p ON p.SupplierId = s.Id
-                    WHERE s.City = 'Paris'"
+                    WHERE s.City = 'Paris'",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Sum of orders amounts",
                     Description = "Show all delivers of products from Paris (City, ProductName, UnitPrice)",
                     ValidAnswer = @"SELECT s.City, p.ProductName, p.UnitPrice FROM Suppliers s
                     INNER JOIN Products p ON p.SupplierId = s.Id
-                    WHERE s.City = 'Paris'"
+                    WHERE s.City = 'Paris'",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Best orders",
@@ -188,20 +200,22 @@ namespace WebAPI.Seeders
                     GROUP BY c2.Id, c2.FirstName, c2.LastName, o2.OrderDate
                     ) QUERY
                     WHERE QUERY.Id = c.Id
-                    )) QUERY2"
+                    )) QUERY2",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "TotalAmounts",
                     Description = "Show sum of total amounts of all orders, column should be named as \"TotalAmounts\"",
-                    ValidAnswer="SELECT SUM(TotalAmount) AS TotalAmounts FROM Orders"
+                    ValidAnswer="SELECT SUM(TotalAmount) AS TotalAmounts FROM Orders",
+                    Created = DateTime.Now,
                 },
                 new Exercise()
                 {
-                    CreatorId = superUserId,
+                    CreatorId = creatorId,
                     DatabaseId = databaseId,
                     IsPrivate = false,
                     Title = "Most expensive products",
@@ -215,7 +229,8 @@ namespace WebAPI.Seeders
                     INNER JOIN Products p2 on p2.SupplierId = s2.Id 
                     GROUP BY s2.Country) QUERY
                     WHERE Query.Country = s.Country
-                    )"
+                    )",
+                    Created = DateTime.Now,
                 },
             };
         }

@@ -49,7 +49,7 @@ namespace WebAPI
             services.AddQueryEvaluator();
             services.AddInfrastructure(Configuration);
 
-            services.AddScoped<Seeder>();
+            services.AddScoped<SeederBase>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddCors(options =>
             {
@@ -91,7 +91,7 @@ namespace WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seeder seeder)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeederBase seeder)
         {
             app.UseCors("FrontEndClient");
 

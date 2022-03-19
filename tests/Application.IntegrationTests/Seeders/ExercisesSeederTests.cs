@@ -47,7 +47,7 @@ namespace Application.IntegrationTests.Seeders
 
         public static IEnumerable<object[]> getNorthwindSimpleExercises()
         {
-            var list = ExerciseSeeder.GetNorthwindSimplePublicExercises(0, DatabasesIdsHelper.NorthwindSimpleDatabaseId);
+            var list = ExercisesSeederData.GetNorthwindSimplePublicExercises(0, DatabasesIdsHelper.NorthwindSimpleDatabaseId);
             return list.Select(x => new object[] { x });
         }
     }

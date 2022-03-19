@@ -47,15 +47,15 @@ namespace WebAPI.IntegrationTests.Helpers
             {
                 int? superUserId = (await context.Users.FirstOrDefaultAsync(x => x.Email == "superuser@gmail.com")).Id;
                 var northWindSimpleDatabaseId = (await context.Databases.SingleOrDefaultAsync(x => x.Name == "NorthwindSimple")).Id;
-                var exercises = ExerciseSeeder.GetNorthwindSimplePublicExercises(superUserId ?? 0, northWindSimpleDatabaseId);
+                var exercises = Seeders.ExercisesSeederData.GetNorthwindSimplePublicExercises(superUserId ?? 0, northWindSimpleDatabaseId);
                 await context.Exercises.AddRangeAsync(exercises);
             }
         }
 
         public static async Task SeedPermissionWithGroupRoles(ApplicationDbContext context)
         {
-            var permissions = Seeder.getPermissions();
-            var groupRoles = Seeder.getGroupRoles();
+            var permissions = PermissionsSeederData.GetPermissions();
+            var groupRoles = GroupRolesSeederData.GetGroupRoles();
             if (!await context.Permissions.AnyAsync())
             {
                 await context.Permissions.AddRangeAsync(permissions);
@@ -66,7 +66,7 @@ namespace WebAPI.IntegrationTests.Helpers
             }
             await context.SaveChangesAsync();
 
-            var groupRolesPermissions = Seeder.GetGroupRolePermissions(permissions, groupRoles);
+            var groupRolesPermissions = GroupRolePermissionsSeederData.GetGroupRolePermissions(permissions, groupRoles);
 
             if (!await context.GroupRolePermissions.AnyAsync())
             {
