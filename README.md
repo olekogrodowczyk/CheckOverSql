@@ -298,7 +298,7 @@ Obviously, the algorithm will only get the count of this query and compare it wi
 ![queryresult](https://user-images.githubusercontent.com/15310742/158085968-b572925f-13ce-4e0c-9a16-cbcf0baeea11.PNG)
 
 ### Exercises
-![exercises](https://user-images.githubusercontent.com/15310742/159134092-c131bb60-ac71-46fc-9622-9aa34ca0df05.png)
+![exercises](https://user-images.githubusercontent.com/15310742/159136824-c805b61d-62f3-477e-bed4-e56310b56af2.png)
 
 ### Create Exercise
 ![createexercise](https://user-images.githubusercontent.com/15310742/158086017-e1b0a12d-fb60-4e9c-94e9-a36ff97e5db2.PNG)
