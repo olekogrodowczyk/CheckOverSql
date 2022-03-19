@@ -129,7 +129,94 @@ namespace WebAPI.Seeders
                     WHERE FirstName LIKE 'L%'
                     GROUP BY c.FirstName, c.LastName
                     ORDER BY COUNT(oi.Id) DESC;"
-                }
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Cities' delivers",
+                    Description = "For each supplier's city show how many products the city delivered. " +
+                    "The column of amount should be called as \"NumberOfProducts\". Sort results by the amounts " +
+                    "in ascending order.",
+                    ValidAnswer = @"SELECT s.City, COUNT(p.Id) NumberOfProducts FROM Suppliers s
+                    INNER JOIN Products p ON p.SupplierId = s.Id
+                    GROUP BY s.City
+                    ORDER BY Count(p.Id) ASC;"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Delivers of Paris",
+                    Description = "Show all delivers of products from Paris (City, ProductName, UnitPrice)",
+                    ValidAnswer = @"SELECT s.City, p.ProductName, p.UnitPrice FROM Suppliers s
+                    INNER JOIN Products p ON p.SupplierId = s.Id
+                    WHERE s.City = 'Paris'"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Sum of orders amounts",
+                    Description = "Show all delivers of products from Paris (City, ProductName, UnitPrice)",
+                    ValidAnswer = @"SELECT s.City, p.ProductName, p.UnitPrice FROM Suppliers s
+                    INNER JOIN Products p ON p.SupplierId = s.Id
+                    WHERE s.City = 'Paris'"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Best orders",
+                    Description = "For every customer show their order with the biggest number of items" +
+                    " (FirstName, LastName, OrderDate, Quantity). Remember to include all the items of the order",
+                    ValidAnswer = @"SELECT FirstName, LastName, Date AS OrderDate, Quantity FROM (
+                    SELECT c.Id, c.FirstName, c.LastName, o.OrderDate Date, SUM(oi.Quantity) Quantity from Customers c
+                    INNER JOIN Orders o ON o.CustomerId = c.Id
+                    INNER JOIN OrderItems oi ON oi.OrderId = o.Id
+                    GROUP BY c.Id, c.FirstName, c.LastName, o.OrderDate
+                    HAVING SUM(oi.Quantity) =
+                    (
+                    SELECT MAX(Quantity) FROM (
+                    SELECT c2.Id, c2.FirstName, c2.LastName, o2.OrderDate, SUM(oi2.Quantity) Quantity from Customers c2
+                    INNER JOIN Orders o2 ON o2.CustomerId = c2.Id
+                    INNER JOIN OrderItems oi2 ON oi2.OrderId = o2.Id
+                    GROUP BY c2.Id, c2.FirstName, c2.LastName, o2.OrderDate
+                    ) QUERY
+                    WHERE QUERY.Id = c.Id
+                    )) QUERY2"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "TotalAmounts",
+                    Description = "Show sum of total amounts of all orders, column should be named as \"TotalAmounts\"",
+                    ValidAnswer="SELECT SUM(TotalAmount) AS TotalAmounts FROM Orders"
+                },
+                new Exercise()
+                {
+                    CreatorId = superUserId,
+                    DatabaseId = databaseId,
+                    IsPrivate = false,
+                    Title = "Most expensive products",
+                    Description = "For every country of suppliers show the product with" +
+                    " the biggest UnitPrice (Coutry, ProductName, UnitPrice)",
+                    ValidAnswer = @"SELECT s.Country, p.ProductName, p.UnitPrice FROM Suppliers s
+                    INNER JOIN Products p on p.SupplierId = s.Id
+                    WHERE p.UnitPrice = (
+                    SELECT MAX(UnitPrice) FROM (
+                    SELECT s2.Country, MAX(p2.UnitPrice) UnitPrice FROM Suppliers s2
+                    INNER JOIN Products p2 on p2.SupplierId = s2.Id 
+                    GROUP BY s2.Country) QUERY
+                    WHERE Query.Country = s.Country
+                    )"
+                },
             };
         }
 
