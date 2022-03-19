@@ -42,7 +42,7 @@ namespace WebAPI.Seeders
                     Title="Get all data from table Products sorted",
                     Description = "Get all data from table Products sorted by firstly ProductName "+
                     "and secondly by UnitPrice all in descending type",
-                    ValidAnswer = "SELECT Id id, firstName first, lastName last FROM Customers",
+                    ValidAnswer = @"SELECT * FROM Products ORDER BY ProductName, UnitPrice DESC",
                     Created = DateTime.Now,
                 },
                 new Exercise()
