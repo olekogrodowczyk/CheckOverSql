@@ -29,7 +29,7 @@ The project is also extended by the possibility to create groups and assign task
 8. Create a new login in your SQL Server instance 
 9. Click twice at the login, click User Mapping and add the login into your NorthwindSimple database with db_readonly role
 10. Clone the project
-11. In src/WebAPI in Seeder.cs in function ```getDatabases()``` specify your NorthwindSimple database data
+11. In ```src/Seeder/Data/DatabasesSeederData.cs``` specify your own data of databases
 12. With Command Prompt navigate into src/WebAPI/ClientApp and run ```npm install```
 13. Navigate to src/WebAPI/ClientApp and run ```npm start``` to launch an Angular app.
 14. Navigate to src/WebAPI and run ```dotnet run``` to launch the ASP.NET Core app.
@@ -67,7 +67,7 @@ The project is also extended by the possibility to create groups and assign task
 - Add badges into links to show pending tasks, invitations etc.
 - Implement notification system via WebSockets.
 
-## How the application is secured against unallowed queries?
+## How is the application secured against unallowed queries?
 Checking the query on C# level for keywords like ```GRANT``` or ```INSERT``` can be bypassed easily and is not secured properly.
 The best solution there is to add a user into exercises based database with db_readonly role and keep it secured on a database level.
 In this way, user can only execute ```SELECT``` queries.
@@ -79,8 +79,7 @@ with this exercise so the assigned task will be solved immediately.
 
 ## How the checking algorithm works?
 In the project there are two implementations for the algorithm. You can just change a one line and implementation will be different.
-```QueryEvaluatorDriverNaive.cs``` file contains a naive implementation, this way of checking exercises is slow and not recommended. However, it may be useful in checking 
-the small amount of rows because of its accuracy.
+```QueryEvaluatorDriverNaive.cs``` file contains a naive implementation, this way of checking exercises is slow and not recommended. However, it may be useful in checking  the small amount of rows because of its accuracy.
 ```QueryEvaluatorDriverOptimized.cs``` file contains an optimized implementation of checking two queries. in contrast to naive approach it works on a database level, 
 not the application one. <br />
 ### QueryBuilder
@@ -95,9 +94,9 @@ public QueryBuilder AddCount()
 will wrap query: ```SELECT * FROM Orders```  INTO  ```"SELECT COUNT(*) FROM ( SELECT * FROM Orders ) QUERY``` and by that we can get amount of rows of the query.
 ### FirstPhase
 The first phase is to check if the two queries are the same so a query is trimmed for spaces and semicolons and all multiple spaces
-are converted into one. It's the first and most obvious step and there is no need check anything in a database.
+are converted into one. It's the first and most obvious step and there is no need check anything in a database. <br />
+The code: <br />
 ```
-The code:
 public async Task Handle(QueryEvaluationData data)
 {
     data.Phase = QueryEvaluationPhase.Bodies;
@@ -117,8 +116,8 @@ using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.S
 }
 ```
 Columns can be obtained easily without getting other query data.
-Next, comparing is even easier with .SequenceEqual method.
-The comparison code:
+Next, comparing is even easier with .SequenceEqual method. <br />
+The comparison code: <br />
 ```
 public async Task Handle(QueryEvaluationData data)
 {
@@ -130,8 +129,8 @@ public async Task Handle(QueryEvaluationData data)
 
 ### Third phase
 The next step is to compare the count of rows of two queries.
-The example of this was shown in a QueryBuilder section.
-The code:
+The example of this was shown in a QueryBuilder section. <br />
+The code: <br />
 ```
 public async Task Handle(QueryEvaluationData data)
 {
@@ -142,8 +141,8 @@ public async Task Handle(QueryEvaluationData data)
 }
 ```
 ### Fourth phase 
-This step is easy and that comes from getting only three rows from the database: first, middle and last and comparing them. It can be rather useful when checking up the order by clauses. Instead of comparing all rows one by one, the algorithm will only get three of them and compare the results. There's a good chance to catch inequalities without using intersect which is represent in the next phase. 
-The code:
+This step is easy and that comes from getting only three rows from the database: first, middle and last and comparing them. It can be rather useful when checking up the order by clauses. Instead of comparing all rows one by one, the algorithm will only get three of them and compare the results. There's a good chance to catch inequalities without using intersect which is represent in the next phase. <br />
+The code: <br />
 ```
 public async Task Handle(QueryEvaluationData data)
 {
@@ -162,8 +161,8 @@ public async Task Handle(QueryEvaluationData data)
 This phase is last phase because of checking all the values in the results. It requires the most of calculations that's why it is at the end. <br />
 Eveything is happening on the database level which doesn't couse a memory problem by allocating the data by C# like it is in a naive implementation. <br />
 Intersecting two queries returns the same rows collected from two queries. If the two queries results are the same then the intersected one query number of rows
-will be the same as it is in both the first and the second query.
-The code:
+will be the same as it is in both the first and the second query. <br />
+The code: <br />
 ```
 public async Task Handle(QueryEvaluationData data)
 {
@@ -256,7 +255,9 @@ They shouldn't be the same because of different sorting. <br />
 Firstly, the algorithm will check if the bodies are the same and will keep checking. <br />
 Secondly, the algorithm will check columns and they're the same so also will keep checking. <br />
 Thirdly, the algorithm will check only number of columns of these two queries and result is 2155 and 2155 so it will keep checking. <br />
-Fourthly, the algorithm will check values and make an intersection of these two queries so the following query will be created and executed: <br />
+Fourthly, the algorithm will check the first, middle and last row of two queries and compare them. 
+In this case just the first row of the first query differs from the first row of the second query so algorithm is done here.
+Fifthly, if the previous step don't catch any inequalities of rows the algorithm will check values and make an intersection of these two queries so the following query will be created and executed: <br />
 ```
 SELECT COUNT(*) AS COUNT FROM (
 SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) AS RowNumber FROM 
@@ -297,7 +298,7 @@ Obviously, the algorithm will only get the count of this query and compare it wi
 ![queryresult](https://user-images.githubusercontent.com/15310742/158085968-b572925f-13ce-4e0c-9a16-cbcf0baeea11.PNG)
 
 ### Exercises
-![exercises](https://user-images.githubusercontent.com/15310742/158085998-963931a0-12a7-4039-aef9-dabcb3c55502.PNG)
+![exercises](https://user-images.githubusercontent.com/15310742/159136824-c805b61d-62f3-477e-bed4-e56310b56af2.png)
 
 ### Create Exercise
 ![createexercise](https://user-images.githubusercontent.com/15310742/158086017-e1b0a12d-fb60-4e9c-94e9-a36ff97e5db2.PNG)
