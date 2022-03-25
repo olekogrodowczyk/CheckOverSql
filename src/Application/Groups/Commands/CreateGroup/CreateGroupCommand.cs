@@ -50,15 +50,18 @@ namespace Application.Groups.Commands.CreateGroup
 
         public async Task<int> Handle(CreateGroupCommand request, CancellationToken cancellationToken)
         {
-            var group = _mapper.Map<Group>(request);
-            group.CreatorId = (int)_userContextService.GetUserId;
+            int? loggedUserId = _userContextService.GetUserId;
+            if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
 
-            var newRole = await _groupRoleRepository.GetByName("Owner");   
+            var group = _mapper.Map<Group>(request);
+            group.CreatorId = (int)loggedUserId;
+
+            var newRole = await _groupRoleRepository.GetByName("Owner");
             group.ImageName = await _uploadFileService.UploadFile(request.Image, "wwwroot/images/groups");
 
             var newAssignment = new Assignment
             {
-                User = _userContextService.User,
+                UserId = (int)loggedUserId,
                 GroupRole = newRole,
                 Group = group,
             };
