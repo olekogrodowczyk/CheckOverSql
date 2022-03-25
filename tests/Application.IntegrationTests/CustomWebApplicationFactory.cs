@@ -23,6 +23,10 @@ using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 using Application.IntegrationTests.Helpers;
 using System.Security.Claims;
+using Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
 
 [assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
 
@@ -52,6 +56,12 @@ namespace WebAPI.IntegrationTests
                 services.AddTransient(provider =>
                 Mock.Of<IUserContextService>(s => s.UserClaimPrincipal == getClaims()
                 && s.GetUserId == SharedUtilityClass.CurrentUserId));
+
+                IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("dummy image")), 0, 0, "Data", "image.png");
+                var uploadMockService = Mock.Of<IUploadFileService>();
+                Mock.Get(uploadMockService).Setup(x => x.UploadFile(file, It.IsAny<string>())).ReturnsAsync("image.png");
+                services.AddScoped<IUploadFileService>(provider =>
+                uploadMockService);
 
 
                 services.BuildServiceProvider();
