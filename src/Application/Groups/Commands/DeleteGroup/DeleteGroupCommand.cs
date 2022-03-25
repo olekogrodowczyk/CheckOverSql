@@ -48,6 +48,8 @@ namespace Application.Groups.Commands.DeleteGroup
                 , group, new PermissionRequirement(PermissionEnum.DeletingGroup));
             if (!authorizationResult.Succeeded) { throw new ForbidException(PermissionEnum.DeletingGroup); }
 
+            //Assignments need to be loaded in purpose to get cascade deleting working
+            var assignments = await _assignmentRepository.GetAllAsync();
             await _groupRepository.DeleteAsync(command.GroupId);
             return Unit.Value;
         }
