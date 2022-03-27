@@ -8,8 +8,10 @@ using Domain.Entities;
 using Application.Common.Exceptions;
 using Microsoft.Data.SqlClient;
 using System;
+using WebAPI.IntegrationTests;
+using WebAPI;
 
-namespace WebAPI.IntegrationTests.Exercises.Commands
+namespace Application.IntegrationTests.Exercises.Commands
 {
     public class CreateExerciseTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {

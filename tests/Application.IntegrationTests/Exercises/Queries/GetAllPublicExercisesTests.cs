@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPI;
+using WebAPI.IntegrationTests;
 using Xunit;
 
-namespace WebAPI.IntegrationTests.Exercises.Queries
+namespace Application.IntegrationTests.Exercises.Queries
 {
-    public class GetAllPublicExercisesTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class GetAllPublicExercisesTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<WebAPI.Startup>>
     {
         public GetAllPublicExercisesTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
         {

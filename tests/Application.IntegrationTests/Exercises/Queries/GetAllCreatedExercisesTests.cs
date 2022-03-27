@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPI;
+using WebAPI.IntegrationTests;
 using Xunit;
 
-namespace WebAPI.IntegrationTests.Exercises.Queries
+namespace Application.IntegrationTests.Exercises.Queries
 {
     public class GetAllCreatedExercisesTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
@@ -39,6 +41,7 @@ namespace WebAPI.IntegrationTests.Exercises.Queries
         public async Task ForSampleData_ReturnsValidPaginationResult()
         {
             //Arrange
+            await ClearNotNecesseryData();
             int userId = await RunAsDefaultUserAsync();
             for (int i = 0; i < 10; i++)
             {

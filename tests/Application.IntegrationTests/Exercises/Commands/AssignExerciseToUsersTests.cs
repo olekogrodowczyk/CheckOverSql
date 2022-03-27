@@ -8,10 +8,12 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebAPI;
+using WebAPI.IntegrationTests;
 using WebAPI.IntegrationTests.Helpers;
 using Xunit;
 
-namespace WebAPI.IntegrationTests.Exercises.Commands.AssignExerciseToUsers
+namespace Application.IntegrationTests.Exercises.Commands.AssignExerciseToUsers
 {
     public class AssignExerciseToUsersTests : SharedUtilityClass, IClassFixture<CustomWebApplicationFactory<Startup>>
     {
