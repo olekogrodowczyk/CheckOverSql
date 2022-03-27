@@ -9,7 +9,6 @@
   <ItemGroup>
     <Compile Remove="Controllers\AccountControllerTests.cs" />
     <Compile Remove="Controllers\GroupControllerTests.cs" />
-    <Compile Remove="Controllers\InvitationControllerTests.cs" />
     <Compile Remove="Controllers\SolutionControllerTests.cs" />
     <Compile Remove="Controllers\SolvingControllerTests.cs" />
   </ItemGroup>
