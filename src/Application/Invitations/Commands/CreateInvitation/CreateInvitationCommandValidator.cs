@@ -24,8 +24,8 @@ namespace Application.Dto.CreateInvitationDto
         private IEnumerable<string> groupRoleNames;
 
         public CreateInvitationCommandValidator(IUserRepository userRepository, IGroupRoleRepository groupRoleRepository
-            ,IInvitationRepository invitationRepository, IUserContextService userContextService
-            ,IAssignmentRepository assignmentRepository, IGroupRepository groupRepository)
+            , IInvitationRepository invitationRepository, IUserContextService userContextService
+            , IAssignmentRepository assignmentRepository, IGroupRepository groupRepository)
         {
             _userRepository = userRepository;
             _groupRoleRepository = groupRoleRepository;
@@ -40,13 +40,15 @@ namespace Application.Dto.CreateInvitationDto
                 .NotEmpty().WithMessage("Role hasn't been specified");
 
             RuleFor(r => r.ReceiverEmail)
-                .NotEmpty().WithMessage("Receiver email hasn't been specified");
+                .NotEmpty().WithMessage("Receiver email hasn't been specified")
+                .MustAsync(checkIfReceiverExists).WithMessage("Specified receiver doesn't exist");
 
             RuleFor(g => g.GroupId)
                 .NotEmpty().WithMessage("The group hasn't been specified");
 
 
-            RuleFor(g => g.GroupId).MustAsync
+            RuleFor(g => g.GroupId)
+                .MustAsync
                 (async (model, groupId, cancellation) =>
                 {
                     return await checkIfInvitationAlreadyExists(model.ReceiverEmail, model.RoleName, groupId, cancellation);
@@ -89,6 +91,11 @@ namespace Application.Dto.CreateInvitationDto
 
             if (result) { return true; }
             return false;
-        }        
+        }
+
+        private async Task<bool> checkIfReceiverExists(string receiverEmail, CancellationToken cancellationToken)
+        {
+            return await _userRepository.AnyAsync(x => x.Email == receiverEmail);
+        }
     }
 }
