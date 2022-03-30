@@ -61,6 +61,14 @@ namespace WebAPI.IntegrationTests
             return await context.Set<T>().AnyAsync(predicate);
         }
 
+        protected async Task<IEnumerable<T>> WhereAsync<T>(Expression<Func<T, bool>> predicate) where T : class, new()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+
+            return await context.Set<T>().Where(predicate).ToListAsync();
+        }
+
         protected async Task<int> CountAsync<T>() where T : class
         {
             using var scope = _scopeFactory.CreateScope();
