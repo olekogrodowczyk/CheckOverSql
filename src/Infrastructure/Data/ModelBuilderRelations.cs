@@ -92,8 +92,9 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Solving>()
                 .HasOne<Solution>(x => x.Solution)
-                .WithOne(x => x.Solving)
-                .HasForeignKey<Solution>(x => x.SolvingId);
+                .WithMany(x => x.Solvings)
+                .HasForeignKey(x => x.SolutionId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Solution>()
                 .HasOne<Exercise>(x => x.Exercise)
@@ -108,7 +109,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Solution>()
                 .HasOne<Comparison>(x => x.Comparison)
                 .WithOne(x => x.Solution)
-                .HasForeignKey<Comparison>(x=>x.SolutionId)
+                .HasForeignKey<Comparison>(x => x.SolutionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Comparison>()
@@ -141,6 +142,6 @@ namespace Infrastructure.Data
                 .HasForeignKey(x => x.DatabaseId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
-        
+
     }
 }

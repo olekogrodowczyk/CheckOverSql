@@ -105,7 +105,7 @@ namespace Application.Solutions.Commands.CreateSolution
                 solvingAssignedToUser.Status = solvingAssignedToUser.DeadLine > DateTime.UtcNow ? SolvingStatusEnum.Done
                     : SolvingStatusEnum.DoneButOverdue;
                 solvingAssignedToUser.SentAt = DateTime.UtcNow;
-                solution.SolvingId = solvingAssignedToUser.Id;
+                solvingAssignedToUser.SolutionId = solution.Id;
                 solution.Outcome = true;
 
                 await _solutionRepository.UpdateAsync(solution);
