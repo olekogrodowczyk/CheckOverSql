@@ -34,11 +34,10 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetAllCreatedByUser()
         {
-            int userId = (int)_userContextService.GetUserId;
-            var result = await Mediator.Send(new GetAllSolutionsCreatedByUserQuery { UserId = userId });
+            var result = await Mediator.Send(new GetAllSolutionsCreatedByUserQuery());
             return Ok(new Result<IEnumerable<GetSolutionDto>>(result, "All solution returned successfully"));
         }
-        
+
         [HttpPost("CreateSolution")]
         [ProducesResponseType(200, Type = typeof(Result<GetComparisonDto>))]
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
