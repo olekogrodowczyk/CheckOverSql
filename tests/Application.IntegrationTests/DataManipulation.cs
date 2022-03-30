@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.IntegrationTests.Helpers;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,14 +61,14 @@ namespace WebAPI.IntegrationTests
             return usersDict;
         }
 
-        protected Exercise GetValidFootballersExercise(bool isPrivate = false, int creatorId = 104)
+        protected Exercise GetValidNorthwindSimpleExercise(bool isPrivate = false, int creatorId = 104)
         {
             var model = new Exercise
             {
-                DatabaseId = 1,
+                DatabaseId = DatabasesIdsHelper.NorthwindSimpleDatabaseId,
                 Description = "Opis2dsadsa",
                 Title = "Zadanie2 title",
-                ValidAnswer = "SELECT * FROM dbo.Footballers",
+                ValidAnswer = "SELECT * FROM Orders",
                 IsPrivate = isPrivate,
                 CreatorId = creatorId,
             };

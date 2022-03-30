@@ -26,9 +26,9 @@ namespace Application.IntegrationTests.Exercises.Queries
             int userId = await RunAsDefaultUserAsync();
             var users = await SeedUsers();
 
-            var exercise1 = await AddAsync<Exercise>(GetValidFootballersExercise(true, userId));
-            var exercise2 = await AddAsync<Exercise>(GetValidFootballersExercise(false, userId));
-            var exercise3 = await AddAsync<Exercise>(GetValidFootballersExercise(false, users["user3"]));
+            var exercise1 = await AddAsync<Exercise>(GetValidNorthwindSimpleExercise(true, userId));
+            var exercise2 = await AddAsync<Exercise>(GetValidNorthwindSimpleExercise(false, userId));
+            var exercise3 = await AddAsync<Exercise>(GetValidNorthwindSimpleExercise(false, users["user3"]));
 
             //Act
             var result = await SendAsync(new GetAllCreatedExercisesQuery() { PageNumber = 1, PageSize = 8 });
@@ -45,9 +45,9 @@ namespace Application.IntegrationTests.Exercises.Queries
             int userId = await RunAsDefaultUserAsync();
             for (int i = 0; i < 10; i++)
             {
-                await AddAsync<Exercise>(GetValidFootballersExercise(true, userId));
+                await AddAsync<Exercise>(GetValidNorthwindSimpleExercise(true, userId));
             }
-            await AddAsync<Exercise>(GetValidFootballersExercise(false, userId));
+            await AddAsync<Exercise>(GetValidNorthwindSimpleExercise(false, userId));
 
             //Act
             var result = await SendAsync(new GetAllCreatedExercisesQuery() { PageNumber = 1, PageSize = 8 });

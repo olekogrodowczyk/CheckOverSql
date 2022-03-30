@@ -28,10 +28,10 @@ namespace Application.IntegrationTests.Exercises.Queries
 
             for (int i = 0; i < 10; i++)
             {
-                await AddAsync(GetValidFootballersExercise(false, users["user1"]));
+                await AddAsync(GetValidNorthwindSimpleExercise(false, users["user1"]));
             }
-            await AddAsync(GetValidFootballersExercise(false, userId));
-            await AddAsync(GetValidFootballersExercise(true, userId));
+            await AddAsync(GetValidNorthwindSimpleExercise(false, userId));
+            await AddAsync(GetValidNorthwindSimpleExercise(true, userId));
 
             //Act
             var result = await SendAsync(new GetAllPublicExercisesQuery() { PageNumber = 1, PageSize = 8 });
