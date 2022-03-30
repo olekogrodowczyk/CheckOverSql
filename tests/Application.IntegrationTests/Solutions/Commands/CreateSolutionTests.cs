@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using WebAPI;
 using WebAPI.IntegrationTests;
 using Xunit;
+using Domain.Enums;
+using Application.Solutions;
+using Application.Common.Exceptions;
 
 namespace Application.IntegrationTests.Solutions.Commands
 {
@@ -29,6 +32,40 @@ namespace Application.IntegrationTests.Solutions.Commands
 
         public CreateSolutionTests(CustomWebApplicationFactory<Startup> factory) : base(factory)
         {
+        }
+
+        private async Task<(int, int)> InitForCreate(DateTime deadline)
+        {
+            await ClearNotNecesseryData();
+            var user = await RunAsDefaultUserAsync();
+            var users = await SeedUsers();
+            var groupRoles = await SeedPermissionWithGroupRoles();
+            var exercise = await AddAsync(GetValidNorthwindSimpleExercise());
+            var group1 = await AddAsync(new Group { Name = "Grupa1", CreatorId = 100 });
+            var group2 = await AddAsync(new Group { Name = "Grupa2", CreatorId = 102 });
+            var assignment1 = await AddAsync(new Assignment(users["user1"], group1.Id, groupRoles["Owner"]));
+            var assignment2 = await AddAsync(new Assignment(user, group1.Id, groupRoles["User"]));
+            var assignment3 = await AddAsync(new Assignment(user, group2.Id, groupRoles["User"]));
+
+            var solving1 = await AddAsync(new Solving
+            {
+                AssignmentId = assignment2.Id,
+                ExerciseId = exercise.Id,
+                CreatorId = users["user1"],
+                Status = SolvingStatusEnum.ToDo,
+                DeadLine = deadline,
+                SentAt = DateTime.UtcNow
+            });
+            var solving2 = await AddAsync(new Solving
+            {
+                AssignmentId = assignment3.Id,
+                ExerciseId = exercise.Id,
+                CreatorId = users["user1"],
+                Status = SolvingStatusEnum.ToDo,
+                DeadLine = deadline,
+                SentAt = DateTime.UtcNow
+            });
+            return (exercise.Id, solving1.Id);
         }
 
 
@@ -85,6 +122,67 @@ namespace Application.IntegrationTests.Solutions.Commands
 
             //Assert
             await func.Should().ThrowAsync<SqlException>();
+        }
+
+        [Fact]
+        public async Task ForValidData_CreatesValidAmountOfComparisonsAndSolvingData()
+        {
+            //Arrange
+            var initResult = await InitForCreate(DateTime.UtcNow.AddDays(1));
+
+            var command = new CreateSolutionCommand { Query = "SELECT * FROM Orders", ExerciseId = initResult.Item1 };
+
+            //Act
+            var result = await SendAsync(command);
+            var comparisonCount = await CountAsync<Comparison>();
+            var solvings = await WhereAsync<Solving>(x => x.SolutionId == result.SolutionId);
+
+            //Assert
+            comparisonCount.Should().Be(1);
+            solvings.Count().Should().Be(2);
+
+            foreach (var solving in solvings)
+            {
+                solving.Status.Should().Be(SolvingStatusEnum.Done);
+                solving.SolutionId.Should().Be(result.SolutionId);
+            }
+        }
+
+        [Fact]
+        public async Task ForValidDataWithOverdueSentSolution_ReturnsOkWithSentButOverdueStatus()
+        {
+            //Arrange
+            var initResult = await InitForCreate(DateTime.UtcNow.AddHours(-1));
+            var command = new CreateSolutionCommand { Query = "SELECT * FROM Orders", ExerciseId = initResult.Item1 };
+
+            //Act
+            var result = await SendAsync(command);
+            var comparisonCount = await CountAsync<Comparison>();
+            var solving = await FindAsync<Solving>(initResult.Item2);
+
+            //Assert
+            comparisonCount.Should().Be(1);
+            solving.Status.Should().Be(SolvingStatusEnum.DoneButOverdue);
+            solving.SolutionId.Should().Be(result.SolutionId);
+        }
+
+        [Fact]
+        public async Task ForInvalidModel_ThrowsValidationException()
+        {
+            //Arrange
+            var exercise = await AddAsync(GetValidNorthwindSimpleExercise());
+
+            var command = new CreateSolutionCommand
+            {
+                Query = "",
+                ExerciseId = exercise.Id
+            };
+
+            //Act
+            Func<Task<GetComparisonDto>> func = async () => await SendAsync(command);
+
+            //Assert
+            await func.Should().ThrowAsync<ValidationException>();
         }
 
         public static IEnumerable<object[]> GetSampleNorthwindSimpleQueries()
