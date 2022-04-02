@@ -283,7 +283,7 @@ Obviously, the algorithm will only get the count of this query and compare it wi
 
 
 ## Database Schema
-![DBMS ER diagram (UML notation) (1)](https://user-images.githubusercontent.com/15310742/158085866-68029818-715d-4425-ab54-20dd2275f486.png)
+![DBMS ER diagram (UML notation) (2)](https://user-images.githubusercontent.com/15310742/160845020-f81b0700-9d54-4115-a0b7-7aef5406d6a8.png)
 
 
 ## Screenshots
