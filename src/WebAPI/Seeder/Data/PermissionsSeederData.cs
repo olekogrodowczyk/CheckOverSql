@@ -45,6 +45,11 @@ namespace WebAPI
                 {
                     Title = PermissionEnum.DoingExercises.GetDisplayName(),
                     Description = "This permission lets a user to do an exercise",
+                },
+                new Permission()
+                {
+                    Title = PermissionEnum.ChangingRoles.GetDisplayName(),
+                    Description = "This permission lets a user to change other users' roles",
                 }
             };
         }

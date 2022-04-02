@@ -29,6 +29,7 @@ namespace WebAPI.Seeders
                 getGroupRolePermission("Owner", PermissionEnum.AssigningExercises.GetDisplayName()),
                 getGroupRolePermission("Owner", PermissionEnum.CheckingExercises.GetDisplayName()),
                 getGroupRolePermission("Owner", PermissionEnum.GettingAssignments.GetDisplayName()),
+                getGroupRolePermission("Owner", PermissionEnum.ChangingRoles.GetDisplayName()),
                 getGroupRolePermission("Moderator", PermissionEnum.SendingInvitations.GetDisplayName()),
                 getGroupRolePermission("Moderator", PermissionEnum.DeletingUsers.GetDisplayName()),
                 getGroupRolePermission("Moderator", PermissionEnum.AssigningExercises.GetDisplayName()),

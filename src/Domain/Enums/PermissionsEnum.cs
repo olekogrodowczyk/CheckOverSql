@@ -23,8 +23,10 @@ namespace Domain.Enums
         GettingAssignments,
         [Display(Name = "Doing Exercises")]
         DoingExercises,
+        [Display(Name = "Changing Roles")]
+        ChangingRoles,
     }
 
-    
+
 
 }
