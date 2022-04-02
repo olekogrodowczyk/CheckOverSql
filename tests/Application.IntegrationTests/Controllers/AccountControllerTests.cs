@@ -24,9 +24,11 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForValidModel_ReturnsOk()
         {
             // Arrange
+            await ClearNotNecesseryData();
             var httpContent = new RegisterUserCommand()
             {
-                Email = "test@test.com",
+                Email = "integrationtest@test.com",
+                Login = "integrationtesting",
                 Password = "password123",
                 ConfirmPassword = "password123",
                 FirstName = "John",
@@ -35,19 +37,21 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
+            var response = await _client.PostAsync("api/account/register", httpContent);
 
             //Assert
-            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);            
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
 
         [Fact]
         public async Task RegisterUser_ForInvalidModel_ReturnsBadRequest()
         {
             // Arrange
+            await ClearNotNecesseryData();
             var httpContent = new RegisterUserCommand()
             {
-                Email = "test@test.com",
+                Email = "",
+                Login = "integrationtesting",
                 Password = "password123",
                 ConfirmPassword = "password1234",
                 FirstName = "John",
@@ -56,7 +60,7 @@ namespace WebAPI.IntegrationTests.Controllers
             }.ToJsonHttpContent();
 
             //Act
-            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
+            var response = await _client.PostAsync("api/account/register", httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -66,9 +70,11 @@ namespace WebAPI.IntegrationTests.Controllers
         public async Task RegisterUser_ForTwoSameEmails_ReturnsBadRequest()
         {
             // Arrange
+            await ClearNotNecesseryData();
             var httpContent = new RegisterUserCommand()
             {
                 Email = "testsameemail@test.com",
+                Login = "integrationtesting",
                 Password = "password123",
                 ConfirmPassword = "password123",
                 FirstName = "John",
@@ -76,17 +82,16 @@ namespace WebAPI.IntegrationTests.Controllers
                 DateOfBirth = DateTime.UtcNow.AddYears(-20)
             }.ToJsonHttpContent();
 
-            await ClearTableInContext<User>();
 
             //Act
-            var response = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
-            var response2 = await _client.PostAsync(ApiRoutes.Account.Register, httpContent);
+            var response = await _client.PostAsync("api/account/register", httpContent);
+            var response2 = await _client.PostAsync("api/account/register", httpContent);
 
             //Assert
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             response2.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         }
 
-        
+
     }
 }
