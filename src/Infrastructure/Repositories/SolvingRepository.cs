@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Exceptions;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces;
 using Infrastructure.Data;
@@ -130,6 +131,21 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
 
             return solvings;
+        }
+
+        public async Task<Group> GetGroupBySolvingId(int solvingId)
+        {
+            var solving = await _context.Solvings.FindAsync(solvingId);
+            if (solving is null) { throw new NotFoundException(nameof(solving), solvingId); }
+            if (solving.AssignmentId is null) { throw new NotFoundException("solving.AssignmentId", solving.AssignmentId); }
+
+            var assignment = await _context.Assignments.SingleOrDefaultAsync(x => x.Id == solving.AssignmentId);
+            if (assignment is null) { throw new NotFoundException(nameof(assignment), solvingId); }
+
+            var group = await _context.FindAsync<Group>(assignment.GroupId);
+            if (group is null) { throw new NotFoundException(nameof(assignment), assignment.GroupId); }
+
+            return group;
         }
     }
 }

@@ -18,5 +18,6 @@ namespace Domain.Interfaces
         Task<IEnumerable<Solving>> GetAllSolvingsWithIncludes(Expression<Func<Solving, bool>> expression);
         Task<IEnumerable<Solving>> GetAllSolvingsToCheck(int userId, int? groupId = null);
         Task<IEnumerable<Solving>> GetAllSolvingsToCheckInGroup(int groupId);
+        Task<Group> GetGroupBySolvingId(int solvingId);
     }
 }

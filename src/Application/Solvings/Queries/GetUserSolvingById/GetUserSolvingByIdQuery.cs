@@ -50,7 +50,10 @@ namespace Application.Groups.Queries.GetUserSolvingById
             int? loggedUserId = _userContextService.GetUserId;
             if (loggedUserId is null) { throw new UnauthorizedAccessException(); }
             var solving = await _solvingRepository.GetSolvingWithIncludes(request.SolvingId);
+            if (solving is null) { throw new NotFoundException(nameof(solving), request.SolvingId); }
+
             await checkAuthorizations(loggedUserId, solving);
+
             var solvingDto = _mapper.Map<GetSolvingDto>(solving);
             if (solving.Exercise is not null)
             {
@@ -64,15 +67,29 @@ namespace Application.Groups.Queries.GetUserSolvingById
         {
             var authorizationGetSolvingByIdResult = await _authorizationService.AuthorizeAsync
                             (_userContextService.UserClaimPrincipal, solving, new GetSolvingByIdRequirement());
-            if (!authorizationGetSolvingByIdResult.Succeeded)
+            if (authorizationGetSolvingByIdResult.Succeeded) { return; }
+
+            await checkForSolvingAvailable(loggedUserId, solving);
+            await checkForPermissionInGroup(solving);
+        }
+
+        private async Task checkForSolvingAvailable(int? loggedUserId, Solving solving)
+        {
+            var solvingsToCheck = await _solvingRepository.GetAllSolvingsAvailable((int)loggedUserId);
+            bool ifExists = solvingsToCheck.Any(x => x.Id == solving.Id);
+            if (!ifExists)
             {
-                int groupId = (await _solvingRepository
-                .SingleOrDefaultAsync(x => x.Id == solving.Id, x => x.Assignment)).Assignment.GroupId;
-                var group = await _groupRepository.GetByIdAsync(groupId);
-                var authorizationPermissionRequirementResult = await _authorizationService.AuthorizeAsync
-                (_userContextService.UserClaimPrincipal, group, new PermissionRequirement(PermissionEnum.CheckingExercises));
-                if (!authorizationPermissionRequirementResult.Succeeded) { throw new ForbidException(PermissionEnum.CheckingExercises); }
+                throw new ForbidException("You don't have permission to this solving", true);
             }
+        }
+
+        private async Task checkForPermissionInGroup(Solving solving)
+        {
+            var group = await _solvingRepository.GetGroupBySolvingId(solving.Id);
+            var authorizationPermissionRequirementResult = await _authorizationService.AuthorizeAsync
+            (_userContextService.UserClaimPrincipal, group, new PermissionRequirement(PermissionEnum.CheckingExercises));
+            if (!authorizationPermissionRequirementResult.Succeeded)
+            { throw new ForbidException(PermissionEnum.CheckingExercises); }
         }
     }
 }

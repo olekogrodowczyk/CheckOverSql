@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Application.Authorization
         private readonly IAssignmentRepository _assignmentRepository;
 
         public GetSolvingByIdRequirementHandler(IUserContextService userContextService, ISolvingRepository solvingRepository
-            ,IUserRepository userRepository,  IAssignmentRepository assignmentRepository)
+            , IUserRepository userRepository, IAssignmentRepository assignmentRepository)
         {
             _userContextService = userContextService;
             _solvingRepository = solvingRepository;
@@ -30,22 +31,18 @@ namespace Application.Authorization
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, GetSolvingByIdRequirement requirement, Solving solving)
         {
-            int userId = (int)_userContextService.GetUserId;
+            if (context is null || context.User.Claims.Count() == 0) { throw new UnauthorizedAccessException(); }
+            var userId = int.Parse(context.User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier).Value);
+
             var userRoleName = await _userRepository.GetRoleName(userId);
-            if (userId == solving.CreatorId || userRoleName == "Admin" || userId == solving.CreatorId)
+            if (userId == solving.CreatorId || userRoleName == "Admin")
             {
                 context.Succeed(requirement);
                 return;
             }
 
-            var solvingsToCheck = await _solvingRepository.GetAllSolvingsAvailable(userId);
 
-            bool ifExists = solvingsToCheck.Any(x => x.Id == solving.Id);
-            if (!ifExists)
-            {
-                throw new ForbidException("You don't have permission to get this solution", true);
-            }
-            context.Succeed(requirement);
+            context.Fail();
         }
     }
 }
