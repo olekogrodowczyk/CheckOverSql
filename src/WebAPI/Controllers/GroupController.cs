@@ -15,6 +15,7 @@ using Application.Groups.Commands.DeleteGroup;
 using Application.Groups.Queries.GetAllAssignmentsInGroup;
 using Application.Groups.Queries.GetUserGroupRole;
 using Application.Groups.Queries.GetAllAssignableGroups;
+using Application.Groups.Commands.LeaveGroup;
 
 namespace WebAPI.Controllers
 {
@@ -27,7 +28,7 @@ namespace WebAPI.Controllers
         public GroupController()
         {
         }
-        
+
         [HttpPost("CreateGroup")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(200, Type = typeof(Result<int>))]
@@ -70,7 +71,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResult))]
         public async Task<IActionResult> GetUserRoleGroup([FromRoute] int groupId)
         {
-            var result = await Mediator.Send(new GetUserGroupRoleQuery { GroupId= groupId });
+            var result = await Mediator.Send(new GetUserGroupRoleQuery { GroupId = groupId });
             return Ok(new Result<string>(result, "User's group role returned successfully"));
         }
 
@@ -81,6 +82,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(new GetAllAssignableGroupsQuery());
             return Ok(new Result<IEnumerable<GetGroupDto>>(result, "All assignable groups returned successfully"));
+        }
+
+        [HttpDelete("LeaveGroup")]
+        [ProducesResponseType(200, Type = typeof(Result))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> LeaveGroup([FromQuery] LeaveGroupCommand command)
+        {
+            await Mediator.Send(command);
+            return Ok(new Result("You've left group successfully"));
         }
     }
 }
