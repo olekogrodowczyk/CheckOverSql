@@ -1901,6 +1901,107 @@ export class GroupClient {
     }
     return _observableOf(null as any);
   }
+
+  /**
+   * @param groupId (optional)
+   * @return Success
+   */
+  leaveGroup(groupId: number | undefined): Observable<Result> {
+    let url_ = this.baseUrl + '/api/Group/LeaveGroup?';
+    if (groupId === null)
+      throw new Error("The parameter 'groupId' cannot be null.");
+    else if (groupId !== undefined)
+      url_ += 'GroupId=' + encodeURIComponent('' + groupId) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('delete', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processLeaveGroup(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processLeaveGroup(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<Result>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<Result>;
+        })
+      );
+  }
+
+  protected processLeaveGroup(response: HttpResponseBase): Observable<Result> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Result.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
 }
 
 @Injectable()
@@ -2097,6 +2198,123 @@ export class GroupRoleClient {
               ? null
               : JSON.parse(_responseText, this.jsonParseReviver);
           result200 = BooleanResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
+   * @param roleName (optional)
+   * @param userId (optional)
+   * @param groupId (optional)
+   * @return Success
+   */
+  changeRole(
+    roleName: string | undefined,
+    userId: number | undefined,
+    groupId: number | undefined
+  ): Observable<Result_1> {
+    let url_ = this.baseUrl + '/api/GroupRole/ChangeRole?';
+    if (roleName === null)
+      throw new Error("The parameter 'roleName' cannot be null.");
+    else if (roleName !== undefined)
+      url_ += 'RoleName=' + encodeURIComponent('' + roleName) + '&';
+    if (userId === null)
+      throw new Error("The parameter 'userId' cannot be null.");
+    else if (userId !== undefined)
+      url_ += 'UserId=' + encodeURIComponent('' + userId) + '&';
+    if (groupId === null)
+      throw new Error("The parameter 'groupId' cannot be null.");
+    else if (groupId !== undefined)
+      url_ += 'GroupId=' + encodeURIComponent('' + groupId) + '&';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('patch', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processChangeRole(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processChangeRole(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<Result_1>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<Result_1>;
+        })
+      );
+  }
+
+  protected processChangeRole(
+    response: HttpResponseBase
+  ): Observable<Result_1> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Result_1.fromJS(resultData200);
           return _observableOf(result200);
         })
       );
@@ -5448,6 +5666,50 @@ export interface IResult {
   success?: boolean;
 }
 
+export class Result_1 implements IResult_1 {
+  message?: string | undefined;
+  success?: boolean;
+  value?: T;
+
+  constructor(data?: IResult_1) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value'] ? T.fromJS(_data['Value']) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): Result_1 {
+    data = typeof data === 'object' ? data : {};
+    let result = new Result_1();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IResult_1 {
+  message?: string | undefined;
+  success?: boolean;
+  value?: T;
+}
+
 export class StringIEnumerableIEnumerableResult
   implements IStringIEnumerableIEnumerableResult
 {
@@ -5593,6 +5855,33 @@ export interface IStringResult {
   success?: boolean;
   value?: string | undefined;
 }
+
+export class T implements IT {
+  constructor(data?: IT) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {}
+
+  static fromJS(data: any): T {
+    data = typeof data === 'object' ? data : {};
+    let result = new T();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    return data;
+  }
+}
+
+export interface IT {}
 
 export interface FileParameter {
   data: any;
