@@ -1,4 +1,5 @@
-﻿using Application.GroupRoles.Queries;
+﻿using Application.GroupRoles.Commands;
+using Application.GroupRoles.Queries;
 using Application.GroupRoles.Queries.CheckPermission;
 using Application.GroupRoles.Queries.GetAllGroupRoles;
 using Application.Responses;
@@ -29,6 +30,15 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<bool>(result, "Result returned successfully"));
+        }
+
+        [HttpPatch("ChangeRole")]
+        [ProducesResponseType(200, Type = typeof(Result<>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> ChangeRole([FromQuery] ChangeRoleCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(new Result<int>(result, "The resolt has been changed successfully"));
         }
 
     }
