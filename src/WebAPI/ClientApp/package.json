@@ -23,6 +23,7 @@
     "@angular/router": "~13.0.0",
     "@auth0/angular-jwt": "^5.0.2",
     "@ngrx/effects": "^13.1.0",
+    "@ngrx/entity": "^13.1.0",
     "@ngrx/store": "^13.1.0",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
