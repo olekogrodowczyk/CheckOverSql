@@ -23,8 +23,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { HomePageComponent } from './home-page/home-page.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { exerciseReducer } from './exercises/store/reducer';
-import { ExerciseEffects } from './exercises/store/effects';
+import { exerciseReducer } from './shared/root-store/store/exercises/store/reducer';
+import { ExerciseEffects } from './shared/root-store/store/exercises/store/effects';
 
 @NgModule({
   declarations: [AppComponent, HomePageComponent],

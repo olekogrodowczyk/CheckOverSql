@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { DatabaseClient, ExerciseClient } from 'src/app/web-api-client';
-import { addExercise } from '../store/actions';
+import { addExercise } from '../../shared/root-store/store/exercises/store/actions';
 
 @Component({
   selector: 'app-create-exercise-form',
