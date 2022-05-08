@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { DatabaseClient, ExerciseClient } from 'src/app/web-api-client';
+import { addExercise } from '../store/actions';
 
 @Component({
   selector: 'app-create-exercise-form',
@@ -9,6 +11,7 @@ import { DatabaseClient, ExerciseClient } from 'src/app/web-api-client';
   styleUrls: ['./create-exercise-form.component.css'],
 })
 export class CreateExerciseFormComponent implements OnInit {
+  title!: string;
   createExerciseForm = new FormGroup({
     title: new FormControl('', [
       Validators.required,
@@ -28,7 +31,7 @@ export class CreateExerciseFormComponent implements OnInit {
   constructor(
     private databaseClient: DatabaseClient,
     private snackBar: SnackbarService,
-    private exerciseClient: ExerciseClient
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -49,20 +52,10 @@ export class CreateExerciseFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createExerciseForm.value);
     if (this.createExerciseForm.invalid) {
       return;
     }
-    console.log(this.createExerciseForm.value);
-    this.exerciseClient
-      .createExercise(this.createExerciseForm.value)
-      .subscribe({
-        next: (result) => {
-          this.snackBar.openSnackBar('Exercise created successfully');
-        },
-        error: ({ message }) => {
-          this.snackBar.openSnackBar(message);
-        },
-      });
+
+    this.store.dispatch(addExercise(this.createExerciseForm.value));
   }
 }

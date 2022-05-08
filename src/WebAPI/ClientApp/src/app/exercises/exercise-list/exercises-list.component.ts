@@ -1,5 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  Type,
+} from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { select, Store } from '@ngrx/store';
+import { filter, map, Observable, tap } from 'rxjs';
 import { SnackbarService } from 'src/app/shared/snackbar.service';
 import {
   ExerciseClient,
@@ -7,6 +16,21 @@ import {
   GetExerciseDtoPaginatedList,
 } from 'src/app/web-api-client';
 import { TypeOfExercise } from '../home/home.component';
+import {
+  loadCreatedExercises,
+  loadPublicExercises,
+  loadCanAssignExercises,
+} from '../store/actions';
+import {
+  selectCanAssignExercises,
+  selectCreatedExercises,
+  selectCreatedExercisesDataModel,
+  selectExercisesDataModel,
+  selectPublicExercises,
+  selectPublicExercisesDataModel,
+  selectPublicExercisesPageNumber,
+  selectPublicExercisesPageSize,
+} from '../store/selectors';
 
 @Component({
   selector: 'app-exercise-list',
@@ -15,22 +39,44 @@ import { TypeOfExercise } from '../home/home.component';
 })
 export class ExerciseListComponent implements OnInit {
   @Input() typeOfExercise!: TypeOfExercise;
-  canAssign!: boolean;
-  data!: GetExerciseDtoPaginatedList;
-  pageSize: number = 8;
-  isBusy: boolean = false;
-  constructor(
-    private exerciseClient: ExerciseClient,
-    private snackBar: SnackbarService
-  ) {}
+
+  canAssign$ = this.store.select(selectCanAssignExercises);
+  exercisesData$: Observable<selectExercisesDataModel> | undefined;
+
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
-    this.getExercises(this.typeOfExercise, 1, this.pageSize);
-    this.checkIfUserCanAssignAtLeastOneExercise();
+    console.log(this.typeOfExercise.toString());
+    this.store.dispatch(loadCanAssignExercises());
+    this.select();
+    this.refresh();
   }
 
   onPageChange(event: PageEvent) {
-    this.getExercises(this.typeOfExercise, event.pageIndex + 1, this.pageSize);
+    this.getExercises(this.typeOfExercise, event.pageIndex, event.pageSize);
+  }
+
+  refresh(): void {
+    let pageSize: number = 8;
+    let pageNumber: number = 0;
+
+    this.exercisesData$?.subscribe((x) => (pageSize = x.pageSize));
+    this.exercisesData$?.subscribe((x) => (pageNumber = x.pageNumber));
+
+    this.getExercises(this.typeOfExercise, pageNumber, pageSize);
+  }
+
+  select(): void {
+    switch (this.typeOfExercise) {
+      case TypeOfExercise.Created:
+        this.exercisesData$ = this.store.select(
+          selectCreatedExercisesDataModel
+        );
+        break;
+      case TypeOfExercise.Public:
+        this.exercisesData$ = this.store.select(selectPublicExercisesDataModel);
+        break;
+    }
   }
 
   getExercises(
@@ -40,43 +86,25 @@ export class ExerciseListComponent implements OnInit {
   ) {
     switch (typeOfExercise) {
       case TypeOfExercise.Created: {
-        this.getAllCreatedExercises(pageNumber, pageSize);
+        console.log('Created');
+
+        this.store.dispatch(
+          loadCreatedExercises({ pageNumber: pageNumber, pageSize: pageSize })
+        );
+        this.exercisesData$ = this.store.select(
+          selectCreatedExercisesDataModel
+        );
         break;
       }
       case TypeOfExercise.Public: {
-        this.getAllPublicExercises(pageNumber, pageSize);
+        console.log('Public');
+
+        this.store.dispatch(
+          loadPublicExercises({ pageNumber: pageNumber, pageSize: pageSize })
+        );
+        this.exercisesData$ = this.store.select(selectPublicExercisesDataModel);
         break;
       }
     }
-  }
-
-  checkIfUserCanAssignAtLeastOneExercise() {
-    this.exerciseClient.checkIfUserCanAssignExercise().subscribe({
-      next: ({ value }) => {
-        this.canAssign = value!;
-      },
-    });
-  }
-
-  getAllCreatedExercises(pageNumber: number, pageSize: number) {
-    this.exerciseClient.getAllCreated(pageNumber, pageSize).subscribe({
-      next: ({ value }) => {
-        this.data = value!;
-      },
-      error: ({ message }) => {
-        this.snackBar.openSnackBar(message);
-      },
-    });
-  }
-
-  getAllPublicExercises(pageNumber: number, pageSize: number) {
-    this.exerciseClient.getAllPublic(pageNumber, pageSize).subscribe({
-      next: ({ value }) => {
-        this.data = value!;
-      },
-      error: ({ message }) => {
-        this.snackBar.openSnackBar(message);
-      },
-    });
   }
 }

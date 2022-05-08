@@ -13,7 +13,7 @@ import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercis
 export class ExerciseCardComponent implements OnInit {
   shortenedDescription: string = '';
   buttonText!: string;
-  @Input() canAssign!: boolean;
+  @Input() canAssign: boolean | undefined;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
   @Output() onSolve = new EventEmitter();
   constructor(

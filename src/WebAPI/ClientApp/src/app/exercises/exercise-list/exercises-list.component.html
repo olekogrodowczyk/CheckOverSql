@@ -1,4 +1,7 @@
-<div *ngIf="data" class="exercises-list">
+<div
+  *ngIf="exercisesData$ | async as data; else loading"
+  class="exercises-list"
+>
   <div
     fxLayout="row wrap"
     fxLayoutAlign="start start"
@@ -10,21 +13,25 @@
       fxFlex-lg="0 1 33.3%"
       fxFlex.sm="0 1 100%"
       fxFlex.xs="0 1 100%"
-      *ngFor="let exercise of data.items"
+      *ngFor="let exercise of data.exercises"
       [model]="exercise"
-      [canAssign]="canAssign"
+      [canAssign]="(canAssign$ | async) || undefined"
     >
     </app-exercise-card>
   </div>
 </div>
-<mat-spinner *ngIf="!data"></mat-spinner>
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>
 
-<mat-paginator
-  *ngIf="data"
-  [length]="data.totalCount"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[8, 4]"
-  (page)="onPageChange($event)"
-  aria-label="Select page"
->
-</mat-paginator>
+<ng-container *ngIf="exercisesData$ | async as data">
+  <mat-paginator
+    [pageIndex]="data.pageNumber"
+    [length]="100"
+    [pageSize]="data.pageSize"
+    [pageSizeOptions]="[8, 4]"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator>
+</ng-container>

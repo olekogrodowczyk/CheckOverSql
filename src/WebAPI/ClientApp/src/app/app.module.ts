@@ -21,6 +21,10 @@ import { AuthModule } from './auth/auth.module';
 import { BaseUrlInterceptor } from './base-url.interceptor';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { HomePageComponent } from './home-page/home-page.component';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { exerciseReducer } from './exercises/store/reducer';
+import { ExerciseEffects } from './exercises/store/effects';
 
 @NgModule({
   declarations: [AppComponent, HomePageComponent],
@@ -32,6 +36,8 @@ import { HomePageComponent } from './home-page/home-page.component';
     HttpClientModule,
     AuthModule,
     MatProgressBarModule,
+    StoreModule.forRoot({ exercise: exerciseReducer }),
+    EffectsModule.forRoot([ExerciseEffects]),
   ],
   providers: [
     AccountClient,

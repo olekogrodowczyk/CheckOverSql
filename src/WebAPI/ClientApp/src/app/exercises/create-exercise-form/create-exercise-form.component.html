@@ -12,10 +12,10 @@
           >
         </mat-select>
       </mat-form-field>
-
+      {{ title }}
       <mat-form-field color="accent" appearance="fill">
         <mat-label>Title</mat-label>
-        <input formControlName="title" matInput />
+        <input [(ngModel)]="title" formControlName="title" matInput />
       </mat-form-field>
       <mat-form-field color="accent" appearance="fill">
         <mat-label>Descriptiion</mat-label>
