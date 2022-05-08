@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './navbar/navbar.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FooterComponent } from './footer/footer.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { SnackbarService } from './snackbar.service';
@@ -11,9 +10,10 @@ import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { InvitationsModule } from '../invitations/invitations.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HeaderComponent } from './header/header.component';
 import { HeaderService } from './header.service';
 import { AuthModule } from '../auth/auth.module';
+import { HeaderComponent } from './components/header/header.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [NavbarComponent, FooterComponent, HeaderComponent],
