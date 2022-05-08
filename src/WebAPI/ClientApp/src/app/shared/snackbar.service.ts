@@ -13,4 +13,12 @@ export class SnackbarService {
       verticalPosition: 'top',
     });
   }
+
+  openErrorSnackBar(message: string, action: string = 'OK') {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+      verticalPosition: 'top',
+      panelClass: ['mat-toolbar', 'mat-primary'],
+    });
+  }
 }
