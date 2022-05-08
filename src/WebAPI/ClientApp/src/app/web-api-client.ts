@@ -709,6 +709,111 @@ export class ExerciseClient {
   }
 
   /**
+   * @return Success
+   */
+  getById(exerciseId: number): Observable<GetExerciseDtoResult> {
+    let url_ = this.baseUrl + '/api/Exercise/GetById/{exerciseId}';
+    if (exerciseId === undefined || exerciseId === null)
+      throw new Error("The parameter 'exerciseId' must be defined.");
+    url_ = url_.replace('{exerciseId}', encodeURIComponent('' + exerciseId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processGetById(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processGetById(response_ as any);
+            } catch (e) {
+              return _observableThrow(
+                e
+              ) as any as Observable<GetExerciseDtoResult>;
+            }
+          } else
+            return _observableThrow(
+              response_
+            ) as any as Observable<GetExerciseDtoResult>;
+        })
+      );
+  }
+
+  protected processGetById(
+    response: HttpResponseBase
+  ): Observable<GetExerciseDtoResult> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = GetExerciseDtoResult.fromJS(resultData200);
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 400) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result400: any = null;
+          let resultData400 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result400 = ErrorResult.fromJS(resultData400);
+          return throwException(
+            'Bad Request',
+            status,
+            _responseText,
+            _headers,
+            result400
+          );
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
    * @param body (optional)
    * @return Success
    */
@@ -4506,6 +4611,52 @@ export interface IGetExerciseDtoPaginatedListResult {
   message?: string | undefined;
   success?: boolean;
   value?: GetExerciseDtoPaginatedList;
+}
+
+export class GetExerciseDtoResult implements IGetExerciseDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDto;
+
+  constructor(data?: IGetExerciseDtoResult) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.message = _data['Message'];
+      this.success = _data['Success'];
+      this.value = _data['Value']
+        ? GetExerciseDto.fromJS(_data['Value'])
+        : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetExerciseDtoResult {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetExerciseDtoResult();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['Message'] = this.message;
+    data['Success'] = this.success;
+    data['Value'] = this.value ? this.value.toJSON() : <any>undefined;
+    return data;
+  }
+}
+
+export interface IGetExerciseDtoResult {
+  message?: string | undefined;
+  success?: boolean;
+  value?: GetExerciseDto;
 }
 
 export class GetGroupDto implements IGetGroupDto {

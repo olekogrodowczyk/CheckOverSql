@@ -19,8 +19,7 @@ namespace Application.Solutions.Commands.CreateSolution
             _solvingRepository = solvingRepository;
 
             RuleFor(x => x.Query)
-                .NotEmpty().WithMessage("Query cannot be empty")
-                .MaximumLength(500).WithMessage("Maximum length of query is 500");          
+                .NotEmpty().WithMessage("Query cannot be empty");
         }
     }
 }

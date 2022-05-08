@@ -2,7 +2,11 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { SnackbarService } from 'src/app/shared/services/snackbar.service';
-import { DatabaseClient, ExerciseClient } from 'src/app/web-api-client';
+import {
+  CreateExerciseCommand,
+  DatabaseClient,
+  ExerciseClient,
+} from 'src/app/web-api-client';
 import { addExercise } from '../../shared/root-store/store/exercises/store/actions';
 
 @Component({
@@ -11,7 +15,6 @@ import { addExercise } from '../../shared/root-store/store/exercises/store/actio
   styleUrls: ['./create-exercise-form.component.css'],
 })
 export class CreateExerciseFormComponent implements OnInit {
-  title!: string;
   createExerciseForm = new FormGroup({
     title: new FormControl('', [
       Validators.required,
@@ -55,7 +58,8 @@ export class CreateExerciseFormComponent implements OnInit {
     if (this.createExerciseForm.invalid) {
       return;
     }
-
-    this.store.dispatch(addExercise(this.createExerciseForm.value));
+    this.store.dispatch(
+      addExercise({ exercise: this.createExerciseForm.value })
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { GetExerciseDto } from 'src/app/web-api-client';
-import { ExerciseState } from './state';
+import { State } from './state';
 
 export interface selectExercisesDataModel {
   exercises: GetExerciseDto[];
@@ -8,58 +8,16 @@ export interface selectExercisesDataModel {
   pageNumber: number;
 }
 
-export const selectCreatedExercises = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.createdExercises;
-  }
-);
-
-export const selectPublicExercises = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.publicExercises;
-  }
-);
-
-export const selectPublicExercisesPageNumber = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.publicExercisesPageNumber;
-  }
-);
-
-export const selectPublicExercisesPageSize = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.publicExercisesPageSize;
-  }
-);
-
-export const selectCreatedExercisesPageNumber = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.publicExercisesPageNumber;
-  }
-);
-
-export const selectCreatedExercisesPageSize = createSelector(
-  createFeatureSelector('exercise'),
-  (state: ExerciseState) => {
-    return state.createdExercisesPageSize;
-  }
-);
-
 export const selectCanAssignExercises = createSelector(
   createFeatureSelector('exercise'),
-  (state: ExerciseState) => state.canAssign
+  (state: State) => state.canAssign
 );
 
 export const selectPublicExercisesDataModel = createSelector(
   createFeatureSelector('exercise'),
-  (state: ExerciseState) =>
+  (state: State) =>
     <selectExercisesDataModel>{
-      exercises: state.publicExercises,
+      exercises: Object.values(state.publicExercises.entities),
       pageSize: state.publicExercisesPageSize,
       pageNumber: state.publicExercisesPageNumber,
     }
@@ -67,9 +25,9 @@ export const selectPublicExercisesDataModel = createSelector(
 
 export const selectCreatedExercisesDataModel = createSelector(
   createFeatureSelector('exercise'),
-  (state: ExerciseState) =>
+  (state: State) =>
     <selectExercisesDataModel>{
-      exercises: state.createdExercises,
+      exercises: Object.values(state.createdExercises.entities),
       pageSize: state.createdExercisesPageSize,
       pageNumber: state.createdExercisesPageNumber,
     }

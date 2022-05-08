@@ -19,16 +19,13 @@ import {
   loadCreatedExercises,
   loadPublicExercises,
   loadCanAssignExercises,
+  loadExerciseById,
 } from '../../shared/root-store/store/exercises/store/actions';
 import {
   selectCanAssignExercises,
-  selectCreatedExercises,
   selectCreatedExercisesDataModel,
   selectExercisesDataModel,
-  selectPublicExercises,
   selectPublicExercisesDataModel,
-  selectPublicExercisesPageNumber,
-  selectPublicExercisesPageSize,
 } from '../../shared/root-store/store/exercises/store/selectors';
 
 @Component({
@@ -45,27 +42,26 @@ export class ExerciseListComponent implements OnInit {
   constructor(private store: Store) {}
 
   ngOnInit(): void {
-    console.log(this.typeOfExercise.toString());
     this.store.dispatch(loadCanAssignExercises());
-    this.select();
-    this.refresh();
+    this.selectExercises();
+    this.refreshExercises();
   }
 
   onPageChange(event: PageEvent) {
-    this.getExercises(this.typeOfExercise, event.pageIndex, event.pageSize);
+    this.loadExercises(this.typeOfExercise, event.pageIndex, event.pageSize);
   }
 
-  refresh(): void {
+  refreshExercises(): void {
     let pageSize: number = 8;
     let pageNumber: number = 0;
 
     this.exercisesData$?.subscribe((x) => (pageSize = x.pageSize));
     this.exercisesData$?.subscribe((x) => (pageNumber = x.pageNumber));
 
-    this.getExercises(this.typeOfExercise, pageNumber, pageSize);
+    this.loadExercises(this.typeOfExercise, pageNumber, pageSize);
   }
 
-  select(): void {
+  selectExercises(): void {
     switch (this.typeOfExercise) {
       case TypeOfExercise.Created:
         this.exercisesData$ = this.store.select(
@@ -78,15 +74,13 @@ export class ExerciseListComponent implements OnInit {
     }
   }
 
-  getExercises(
+  loadExercises(
     typeOfExercise: TypeOfExercise,
     pageNumber: number,
     pageSize: number
   ) {
     switch (typeOfExercise) {
       case TypeOfExercise.Created: {
-        console.log('Created');
-
         this.store.dispatch(
           loadCreatedExercises({ pageNumber: pageNumber, pageSize: pageSize })
         );
@@ -96,8 +90,6 @@ export class ExerciseListComponent implements OnInit {
         break;
       }
       case TypeOfExercise.Public: {
-        console.log('Public');
-
         this.store.dispatch(
           loadPublicExercises({ pageNumber: pageNumber, pageSize: pageSize })
         );

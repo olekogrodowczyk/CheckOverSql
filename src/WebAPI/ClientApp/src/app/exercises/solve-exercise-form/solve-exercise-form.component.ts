@@ -5,6 +5,8 @@ import {
   MAT_DIALOG_DATA,
   MatDialog,
 } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { solveExercise } from 'src/app/shared/root-store/store/exercises/store/actions';
 import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { CreateSolutionCommand, SolutionClient } from 'src/app/web-api-client';
 
@@ -26,7 +28,7 @@ export class SolveExerciseFormComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<SolveExerciseFormComponent>,
-    private solutionClient: SolutionClient,
+    private store: Store,
     private snackBar: SnackbarService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
@@ -37,24 +39,14 @@ export class SolveExerciseFormComponent implements OnInit {
     if (this.solveExerciseForm.invalid) {
       return;
     }
-    this.solutionClient
-      .createSolution(<CreateSolutionCommand>{
-        exerciseId: this.data.exerciseId,
-        query: this.solveExerciseForm.get('query')?.value,
+    this.store.dispatch(
+      solveExercise({
+        command: <CreateSolutionCommand>{
+          exerciseId: this.data.exerciseId,
+          query: this.solveExerciseForm.get('query')?.value,
+        },
       })
-      .subscribe({
-        next: ({ value }) => {
-          if (value?.result) {
-            this.snackBar.openSnackBar("You've passed the exercise");
-            this.ngOnInit();
-          } else {
-            this.snackBar.openSnackBar("You haven't passed the exercise");
-          }
-        },
-        error: ({ message }) => {
-          this.snackBar.openSnackBar(message);
-        },
-      });
+    );
     this.dialogRef.close(true);
   }
 }

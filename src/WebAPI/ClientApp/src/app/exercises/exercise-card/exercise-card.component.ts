@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { GetExerciseDto, GroupClient, QueryDto } from 'src/app/web-api-client';
@@ -9,12 +16,15 @@ import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercis
   selector: 'app-exercise-card',
   templateUrl: './exercise-card.component.html',
   styleUrls: ['./exercise-card.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExerciseCardComponent implements OnInit {
   shortenedDescription: string = '';
   buttonText!: string;
+
   @Input() canAssign: boolean | undefined;
   @Input() model: GetExerciseDto = {} as GetExerciseDto;
+
   @Output() onSolve = new EventEmitter();
   constructor(
     public dialog: MatDialog,

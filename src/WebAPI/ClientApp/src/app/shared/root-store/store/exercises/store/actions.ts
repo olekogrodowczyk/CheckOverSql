@@ -1,9 +1,15 @@
+import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
-import { CreateExerciseCommand, GetExerciseDto } from 'src/app/web-api-client';
+import {
+  CreateExerciseCommand,
+  CreateSolutionCommand,
+  GetComparisonDto,
+  GetExerciseDto,
+} from 'src/app/web-api-client';
 
 export const addExercise = createAction(
   '[Exercise] Add Exercise',
-  props<{ exercise: GetExerciseDto }>()
+  props<{ exercise: CreateExerciseCommand }>()
 );
 
 export const addExerciseSuccess = createAction(
@@ -56,5 +62,33 @@ export const loadCanAssignExercisesSuccess = createAction(
 
 export const loadCanAssignExercisesFailure = createAction(
   '[Exercise] Load Can Assign Exercises Failure',
+  props<{ error: string }>()
+);
+
+export const solveExercise = createAction(
+  '[Exercise] Solve Exercise',
+  props<{ command: CreateSolutionCommand }>()
+);
+export const solveExerciseSuccess = createAction(
+  '[Exercise] Solve Exercise Success',
+  props<{ result: GetComparisonDto }>()
+);
+export const solveExerciseFailure = createAction(
+  '[Exercise] Solve Exercise Failure',
+  props<{ error: string }>()
+);
+
+export const loadExerciseById = createAction(
+  '[Exercise] Load Exercise By Id',
+  props<{ exerciseId: number }>()
+);
+
+export const loadExerciseByIdSuccess = createAction(
+  '[Exercise] Load Exercise By Id Success',
+  props<{ result: GetExerciseDto }>()
+);
+
+export const loadExerciseByIdFailure = createAction(
+  '[Exercise] Load Exercise By Id Failure',
   props<{ error: string }>()
 );

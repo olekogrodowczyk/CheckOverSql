@@ -25,6 +25,8 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { exerciseReducer } from './shared/root-store/store/exercises/store/reducer';
 import { ExerciseEffects } from './shared/root-store/store/exercises/store/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent, HomePageComponent],
@@ -38,6 +40,11 @@ import { ExerciseEffects } from './shared/root-store/store/exercises/store/effec
     MatProgressBarModule,
     StoreModule.forRoot({ exercise: exerciseReducer }),
     EffectsModule.forRoot([ExerciseEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+      autoPause: true,
+    }),
   ],
   providers: [
     AccountClient,

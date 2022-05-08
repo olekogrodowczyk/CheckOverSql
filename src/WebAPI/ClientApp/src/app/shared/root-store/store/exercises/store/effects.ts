@@ -22,7 +22,11 @@ import {
 } from 'rxjs';
 import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { AppState } from 'src/app/store/app.state';
-import { ExerciseClient } from 'src/app/web-api-client';
+import {
+  CreateExerciseCommand,
+  ExerciseClient,
+  SolutionClient,
+} from 'src/app/web-api-client';
 import {
   loadCreatedExercises,
   loadCreatedExercisesSuccess,
@@ -34,6 +38,12 @@ import {
   addExerciseFailure,
   loadCanAssignExercises,
   loadCanAssignExercisesSuccess,
+  solveExercise,
+  loadExerciseById,
+  loadExerciseByIdSuccess,
+  loadExerciseByIdFailure,
+  solveExerciseFailure,
+  solveExerciseSuccess,
 } from './actions';
 import { selectCanAssignExercises } from './selectors';
 
@@ -52,6 +62,7 @@ export class ExerciseEffects {
     private actions$: Actions,
     private store: Store<AppState>,
     private exerciseClient: ExerciseClient,
+    private solutionClient: SolutionClient,
     private snackBar: SnackbarService
   ) {}
 
@@ -60,10 +71,14 @@ export class ExerciseEffects {
       ofType(addExercise),
       switchMap(({ exercise }) => {
         return this.exerciseClient.createExercise(exercise).pipe(
-          mergeMap(() => {
-            return [addExerciseSuccess()];
+          pluck('value'),
+          mergeMap((exerciseId) => {
+            return [
+              addExerciseSuccess(),
+              loadExerciseById({ exerciseId: exerciseId! }),
+            ];
           }),
-          tap((x) =>
+          tap(() =>
             this.snackBar.openSnackBar(
               'The exercise has been added successfully'
             )
@@ -133,7 +148,6 @@ export class ExerciseEffects {
     return this.actions$.pipe(
       ofType(loadCanAssignExercises),
       withLatestFrom(this.store.select(selectCanAssignExercises)),
-      tap(([action, x]) => console.log('Hej', x)),
       filter(([action, canAssign]) => canAssign === undefined),
       exhaustMap(() => {
         return this.exerciseClient.checkIfUserCanAssignExercise().pipe(
@@ -147,6 +161,50 @@ export class ExerciseEffects {
           catchError((error) => {
             this.snackBar.openErrorSnackBar(error);
             return of(loadCreatedExercisesFailure(error));
+          })
+        );
+      })
+    );
+  });
+
+  loadExerciseByIdEffect$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(loadExerciseById),
+      exhaustMap(({ exerciseId }) => {
+        return this.exerciseClient.getById(exerciseId).pipe(
+          pluck('value'),
+          filterNullish(),
+          map((exercise) => loadExerciseByIdSuccess({ result: exercise })),
+          catchError((error) => {
+            this.snackBar.openErrorSnackBar(error);
+            return of(loadExerciseByIdFailure(error));
+          })
+        );
+      })
+    );
+  });
+
+  solveExerciseEffect$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(solveExercise),
+      exhaustMap(({ command }) => {
+        return this.solutionClient.createSolution(command).pipe(
+          pluck('value'),
+          filterNullish(),
+          mergeMap((response) => {
+            if (response.result) {
+              this.snackBar.openSnackBar("You've passed the exercise");
+            } else {
+              this.snackBar.openSnackBar("You haven't passed the exercise");
+            }
+            return [
+              loadExerciseById({ exerciseId: response.exerciseId! }),
+              solveExerciseSuccess({ result: response }),
+            ];
+          }),
+          catchError((error) => {
+            this.snackBar.openErrorSnackBar(error);
+            return of(solveExerciseFailure(error));
           })
         );
       })

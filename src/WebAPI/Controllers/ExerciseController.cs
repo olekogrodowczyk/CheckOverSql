@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Application.Common.Models;
 using Domain.Common;
 using Application.Exercises.Queries.CheckIfUserCanAssigneExercise;
+using Application.Exercises.Queries.GetExerciseById;
 
 namespace WebAPI.Controllers
 {
@@ -31,6 +32,15 @@ namespace WebAPI.Controllers
         public ExerciseController(IUserContextService userContextService)
         {
             _userContextService = userContextService;
+        }
+
+        [HttpGet("GetById/{exerciseId}")]
+        [ProducesResponseType(200, Type = typeof(Result<GetExerciseDto>))]
+        [ProducesResponseType(400, Type = typeof(ErrorResult))]
+        public async Task<IActionResult> GetById([FromRoute] int exerciseId)
+        {
+            var result = await Mediator.Send(new GetExerciseByIdQuery { ExerciseId = exerciseId });
+            return Ok(new Result<GetExerciseDto>(result, "Exercises returned successfully"));
         }
 
         [HttpPost("CreateExercise")]
@@ -49,7 +59,7 @@ namespace WebAPI.Controllers
         {
             var result = await Mediator.Send(query);
             return Ok(new Result<PaginatedList<GetExerciseDto>>
-                (result,"All exercises created by logged user returned successfully"));
+                (result, "All exercises created by logged user returned successfully"));
         }
 
         [AllowAnonymous]
@@ -68,7 +78,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AssignExerciseToUsersInGroup
             ([FromBody] AssignExerciseToUsersCommand command)
         {
-            var result = await Mediator.Send(command);   
+            var result = await Mediator.Send(command);
             return Ok(new Result<IEnumerable<int>>(result, "Created solving identifiers returned successfully"));
         }
 

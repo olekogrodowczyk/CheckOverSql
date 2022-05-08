@@ -15,30 +15,34 @@ import {
   loadCanAssignExercises,
   loadCanAssignExercisesFailure,
   loadCanAssignExercisesSuccess,
+  solveExercise,
+  solveExerciseSuccess,
+  solveExerciseFailure,
+  loadExerciseByIdSuccess,
 } from './actions';
 import { initialState } from './state';
 
 export const exerciseReducer = createReducer(
   initialState,
-  on(addExercise, (state) => ({
-    ...state,
-  })),
-  on(addExerciseSuccess, (state) => ({
-    ...state,
-    error: '',
-    createdExercises: [...state.createdExercises],
-  })),
-  on(addExerciseFailure, (state, { error }) => ({
-    ...state,
-    error: error,
-  })),
-  on(loadCreatedExercises, (state) => ({
-    ...state,
-  })),
+  // on(addExercise, (state) => ({
+  //   ...state,
+  // })),
+  // on(addExerciseSuccess, (state) => ({
+  //   ...state,
+  //   error: '',
+  //   createdExercises: adapter.upsertOne(),
+  // })),
+  // on(addExerciseFailure, (state, { error }) => ({
+  //   ...state,
+  //   error: error,
+  // })),
   on(loadCreatedExercisesSuccess, (state, data) => ({
     ...state,
     error: '',
-    createdExercises: data.exercises,
+    createdExercises: adapter.upsertMany(
+      data.exercises,
+      state.createdExercises
+    ),
     createdExercisesPageNumber: data.pageNumber,
     createdExercisesPageSize: data.pageSize,
   })),
@@ -46,13 +50,10 @@ export const exerciseReducer = createReducer(
     ...state,
     error: error,
   })),
-  on(loadPublicExercises, (state) => ({
-    ...state,
-  })),
   on(loadPublicExercisesSuccess, (state, data) => ({
     ...state,
     error: '',
-    publicExercises: data.exercises,
+    publicExercises: adapter.setAll(data.exercises, state.publicExercises),
     publicExercisesPageNumber: data.pageNumber,
     publicExercisesPageSize: data.pageSize,
   })),
@@ -60,16 +61,35 @@ export const exerciseReducer = createReducer(
     ...state,
     error: error,
   })),
-  on(loadCanAssignExercises, (state) => ({
-    ...state,
-  })),
   on(loadCanAssignExercisesSuccess, (state, { canAssign }) => ({
     ...state,
     error: '',
-    canAssign: true,
+    canAssign: canAssign,
   })),
   on(loadCanAssignExercisesFailure, (state, { error }) => ({
     ...state,
     error: error,
-  }))
+  })),
+  on(solveExerciseFailure, (state, { error }) => ({
+    ...state,
+    error: error,
+  })),
+  on(solveExerciseSuccess, (state, { result }) => {
+    return {
+      ...state,
+      publicExercises: adapter.updateOne(
+        { id: result.exerciseId!, changes: { passed: result.result } },
+        state.publicExercises
+      ),
+    };
+  }),
+  on(loadExerciseByIdSuccess, (state, { result }) => {
+    return {
+      ...state,
+      publicExercises: adapter.upsertOne(result, state.publicExercises),
+    };
+  })
 );
+
+export const adapter: EntityAdapter<GetExerciseDto> =
+  createEntityAdapter<GetExerciseDto>();
