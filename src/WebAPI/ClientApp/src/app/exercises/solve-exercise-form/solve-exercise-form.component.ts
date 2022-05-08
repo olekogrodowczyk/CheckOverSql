@@ -5,7 +5,7 @@ import {
   MAT_DIALOG_DATA,
   MatDialog,
 } from '@angular/material/dialog';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { CreateSolutionCommand, SolutionClient } from 'src/app/web-api-client';
 
 export interface DialogData {

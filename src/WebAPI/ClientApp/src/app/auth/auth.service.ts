@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SnackbarService } from '../shared/snackbar.service';
+import { SnackbarService } from '../shared/services/snackbar.service';
 import { AccountClient, LoginUserCommand } from '../web-api-client';
 
 @Injectable({

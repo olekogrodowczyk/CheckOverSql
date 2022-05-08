@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { MakeInvitationFormComponent } from 'src/app/invitations/make-invitation-form/make-invitation-form.component';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 
-import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { GetAssignmentDto, GroupClient } from 'src/app/web-api-client';
 
 @Component({

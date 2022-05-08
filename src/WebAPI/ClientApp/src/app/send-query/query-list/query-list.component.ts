@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { DatabaseClient, QueryDto } from 'src/app/web-api-client';
 
 @Component({

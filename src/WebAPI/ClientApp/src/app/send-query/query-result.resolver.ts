@@ -16,7 +16,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { SnackbarService } from '../shared/snackbar.service';
+import { SnackbarService } from '../shared/services/snackbar.service';
 import { DatabaseClient } from '../web-api-client';
 import { SendQueryService } from './send-query.service';
 

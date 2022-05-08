@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { DatabaseClient, ExerciseClient } from 'src/app/web-api-client';
 import { addExercise } from '../../shared/root-store/store/exercises/store/actions';
 

@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DialogData } from 'src/app/exercises/solve-exercise-form/solve-exercise-form.component';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { DatabaseClient, GetQueryValueQuery } from 'src/app/web-api-client';
 import { SendQueryService } from '../send-query.service';
 

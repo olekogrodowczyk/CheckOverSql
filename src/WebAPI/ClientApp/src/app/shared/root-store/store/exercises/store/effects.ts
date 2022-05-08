@@ -20,7 +20,7 @@ import {
   UnaryFunction,
   withLatestFrom,
 } from 'rxjs';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { AppState } from 'src/app/store/app.state';
 import { ExerciseClient } from 'src/app/web-api-client';
 import {

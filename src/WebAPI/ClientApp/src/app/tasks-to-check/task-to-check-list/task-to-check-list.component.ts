@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { GetSolvingDto, SolvingClient } from 'src/app/web-api-client';
 
 @Component({

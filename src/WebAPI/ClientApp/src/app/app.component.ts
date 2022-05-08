@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ResolveEnd, ResolveStart, Router } from '@angular/router';
 import { filter, mapTo, Observable } from 'rxjs';
 import { merge } from 'rxjs';
-import { HeaderService } from './shared/header.service';
+import { HeaderService } from './shared/services/header.service';
 
 @Component({
   selector: 'app-root',

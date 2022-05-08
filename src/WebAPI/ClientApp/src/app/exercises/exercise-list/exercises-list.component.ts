@@ -9,7 +9,6 @@ import {
 import { PageEvent } from '@angular/material/paginator';
 import { select, Store } from '@ngrx/store';
 import { filter, map, Observable, tap } from 'rxjs';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
 import {
   ExerciseClient,
   GetExerciseDto,

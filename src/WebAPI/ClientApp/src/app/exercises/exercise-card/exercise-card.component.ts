@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { GetExerciseDto, GroupClient, QueryDto } from 'src/app/web-api-client';
 import { ShowSolutionDialogComponent } from '../show-solution-dialog/show-solution-dialog.component';
 import { SolveExerciseFormComponent } from '../solve-exercise-form/solve-exercise-form.component';

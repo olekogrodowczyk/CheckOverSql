@@ -4,9 +4,9 @@ import { MatInputModule } from '@angular/material/input';
 import { FormGroup, Validators } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { AccountClient } from 'src/app/web-api-client';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 
 @Component({
   selector: 'app-login',

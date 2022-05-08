@@ -4,16 +4,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './components/footer/footer.component';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
-import { SnackbarService } from './snackbar.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { InvitationsModule } from '../invitations/invitations.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HeaderService } from './header.service';
+import { HeaderService } from './services/header.service';
 import { AuthModule } from '../auth/auth.module';
 import { HeaderComponent } from './components/header/header.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { SnackbarService } from './services/snackbar.service';
 
 @NgModule({
   declarations: [NavbarComponent, FooterComponent, HeaderComponent],

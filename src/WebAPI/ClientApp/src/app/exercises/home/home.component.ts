@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalVariables } from 'src/app/global';
-import { HeaderService } from 'src/app/shared/header.service';
+import { HeaderService } from 'src/app/shared/services/header.service';
 export enum TypeOfExercise {
   Created,
   Public,

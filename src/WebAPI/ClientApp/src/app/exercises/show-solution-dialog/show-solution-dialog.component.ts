@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { delay } from 'rxjs';
 import { SendQueryService } from 'src/app/send-query/send-query.service';
-import { SnackbarService } from 'src/app/shared/snackbar.service';
+import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import {
   GetQueryValueQuery,
   GetSolutionDto,

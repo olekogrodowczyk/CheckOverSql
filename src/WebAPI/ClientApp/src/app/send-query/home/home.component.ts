@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { HeaderService } from 'src/app/shared/header.service';
+import { HeaderService } from 'src/app/shared/services/header.service';
 import { SendQueryFormComponent } from '../send-query-form/send-request-form.component';
 
 @Component({
