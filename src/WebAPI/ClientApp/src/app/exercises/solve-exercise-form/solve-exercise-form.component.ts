@@ -6,7 +6,7 @@ import {
   MatDialog,
 } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { solveExercise } from 'src/app/shared/root-store/store/exercises/store/actions';
+import { solveExercise } from 'src/app/shared/root-store/store/exercises/actions';
 import { SnackbarService } from 'src/app/shared/services/snackbar.service';
 import { CreateSolutionCommand, SolutionClient } from 'src/app/web-api-client';
 

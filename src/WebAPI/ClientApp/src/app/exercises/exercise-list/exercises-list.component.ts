@@ -20,13 +20,13 @@ import {
   loadPublicExercises,
   loadCanAssignExercises,
   loadExerciseById,
-} from '../../shared/root-store/store/exercises/store/actions';
+} from '../../shared/root-store/store/exercises/actions';
 import {
   selectCanAssignExercises,
   selectCreatedExercisesDataModel,
   selectExercisesDataModel,
   selectPublicExercisesDataModel,
-} from '../../shared/root-store/store/exercises/store/selectors';
+} from '../../shared/root-store/store/exercises/selectors';
 
 @Component({
   selector: 'app-exercise-list',

@@ -7,7 +7,7 @@ import {
   DatabaseClient,
   ExerciseClient,
 } from 'src/app/web-api-client';
-import { addExercise } from '../../shared/root-store/store/exercises/store/actions';
+import { addExercise } from '../../shared/root-store/store/exercises/actions';
 
 @Component({
   selector: 'app-create-exercise-form',

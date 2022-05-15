@@ -1,4 +1,4 @@
-import { State } from '../shared/root-store/store/exercises/store/state';
+import { State } from '../shared/root-store/store/exercises/state';
 
 export interface AppState {
   exercises: State;
